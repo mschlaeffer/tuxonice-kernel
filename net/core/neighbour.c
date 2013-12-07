@@ -2851,11 +2851,12 @@ static struct neigh_sysctl_table {
 };
 
 int neigh_sysctl_register(struct net_device *dev, struct neigh_parms *p,
-			  char *p_name, proc_handler *handler)
+			  proc_handler *handler)
 {
 	int i;
 	struct neigh_sysctl_table *t;
 	const char *dev_name_source;
+	char *p_name;
 
 #define NEIGH_CTL_PATH_ROOT	0
 #define NEIGH_CTL_PATH_PROTO	1
@@ -2906,6 +2907,17 @@ int neigh_sysctl_register(struct net_device *dev, struct neigh_parms *p,
 	t->dev_name = kstrdup(dev_name_source, GFP_KERNEL);
 	if (!t->dev_name)
 		goto free;
+
+	switch (neigh_parms_family(p)) {
+	case AF_INET:
+	      p_name = "ipv4";
+	      break;
+	case AF_INET6:
+	      p_name = "ipv6";
+	      break;
+	default:
+	      BUG();
+	}
 
 	neigh_path[NEIGH_CTL_PATH_DEV].procname = t->dev_name;
 	neigh_path[NEIGH_CTL_PATH_PROTO].procname = p_name;

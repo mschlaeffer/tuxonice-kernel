@@ -201,6 +201,11 @@ struct neigh_table {
 	struct pneigh_entry	**phash_buckets;
 };
 
+static inline int neigh_parms_family(struct neigh_parms *p)
+{
+	return p->tbl->family;
+}
+
 /* flags for neigh_update() */
 #define NEIGH_UPDATE_F_OVERRIDE			0x00000001
 #define NEIGH_UPDATE_F_WEAK_OVERRIDE		0x00000002
@@ -292,7 +297,6 @@ int neigh_proc_dointvec_ms_jiffies(struct ctl_table *ctl, int write,
 
 extern int			neigh_sysctl_register(struct net_device *dev, 
 						      struct neigh_parms *p,
-						      char *p_name,
 						      proc_handler *proc_handler);
 extern void			neigh_sysctl_unregister(struct neigh_parms *p);
 
