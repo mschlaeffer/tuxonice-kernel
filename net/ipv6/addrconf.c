@@ -893,7 +893,7 @@ retry:
 
 	regen_advance = idev->cnf.regen_max_retry *
 	                idev->cnf.dad_transmits *
-	                idev->nd_parms->retrans_time / HZ;
+	                NEIGH_VAR(idev->nd_parms, RETRANS_TIME) / HZ;
 	write_unlock(&idev->lock);
 
 	/* A temporary address is created only if this calculated Preferred
@@ -1665,7 +1665,8 @@ static void ipv6_regen_rndid(unsigned long data)
 
 	expires = jiffies +
 		idev->cnf.temp_prefered_lft * HZ -
-		idev->cnf.regen_max_retry * idev->cnf.dad_transmits * idev->nd_parms->retrans_time -
+		idev->cnf.regen_max_retry * idev->cnf.dad_transmits *
+		NEIGH_VAR(idev->nd_parms, RETRANS_TIME) -
 		idev->cnf.max_desync_factor * HZ;
 	if (time_before(expires, jiffies)) {
 		printk(KERN_WARNING
@@ -3067,7 +3068,8 @@ static void addrconf_dad_timer(unsigned long data)
 	}
 
 	ifp->probes--;
-	addrconf_mod_timer(ifp, AC_DAD, ifp->idev->nd_parms->retrans_time);
+	addrconf_mod_timer(ifp, AC_DAD,
+			       NEIGH_VAR(ifp->idev->nd_parms, RETRANS_TIME));
 	spin_unlock(&ifp->lock);
 	read_unlock(&idev->lock);
 
@@ -3355,7 +3357,7 @@ restart:
 				   !(ifp->flags&IFA_F_TENTATIVE)) {
 				unsigned long regen_advance = ifp->idev->cnf.regen_max_retry *
 					ifp->idev->cnf.dad_transmits *
-					ifp->idev->nd_parms->retrans_time / HZ;
+					NEIGH_VAR(ifp->idev->nd_parms, RETRANS_TIME) / HZ;
 
 				if (age >= ifp->prefered_lft - regen_advance) {
 					struct inet6_ifaddr *ifpub = ifp->ifpub;
@@ -4038,7 +4040,7 @@ static int inet6_fill_ifla6_attrs(struct sk_buff *skb, struct inet6_dev *idev)
 	ci.max_reasm_len = IPV6_MAXPLEN;
 	ci.tstamp = cstamp_delta(idev->tstamp);
 	ci.reachable_time = jiffies_to_msecs(idev->nd_parms->reachable_time);
-	ci.retrans_time = jiffies_to_msecs(idev->nd_parms->retrans_time);
+	ci.retrans_time = jiffies_to_msecs(NEIGH_VAR(idev->nd_parms, RETRANS_TIME));
 	NLA_PUT(skb, IFLA_INET6_CACHEINFO, sizeof(ci), &ci);
 
 	nla = nla_reserve(skb, IFLA_INET6_CONF, DEVCONF_MAX * sizeof(s32));

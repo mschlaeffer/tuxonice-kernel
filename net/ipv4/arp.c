@@ -167,18 +167,20 @@ struct neigh_table arp_tbl = {
 	.id		= "arp_cache",
 	.parms		= {
 		.tbl			= &arp_tbl,
-		.base_reachable_time	= 30 * HZ,
-		.retrans_time		= 1 * HZ,
-		.gc_staletime		= 60 * HZ,
 		.reachable_time		= 30 * HZ,
-		.delay_probe_time	= 5 * HZ,
-		.queue_len_bytes	= 64*1024,
-		.ucast_probes		= 3,
-		.mcast_probes		= 3,
-		.anycast_delay		= 1 * HZ,
-		.proxy_delay		= (8 * HZ) / 10,
-		.proxy_qlen		= 64,
-		.locktime		= 1 * HZ,
+		.data	= {
+			[NEIGH_VAR_MCAST_PROBES] = 3,
+			[NEIGH_VAR_UCAST_PROBES] = 3,
+			[NEIGH_VAR_RETRANS_TIME] = 1 * HZ,
+			[NEIGH_VAR_BASE_REACHABLE_TIME] = 30 * HZ,
+			[NEIGH_VAR_DELAY_PROBE_TIME] = 5 * HZ,
+			[NEIGH_VAR_GC_STALETIME] = 60 * HZ,
+			[NEIGH_VAR_QUEUE_LEN_BYTES] = 64 * 1024,
+			[NEIGH_VAR_PROXY_QLEN] = 64,
+			[NEIGH_VAR_ANYCAST_DELAY] = 1 * HZ,
+			[NEIGH_VAR_PROXY_DELAY]	= (8 * HZ) / 10,
+			[NEIGH_VAR_LOCKTIME] = 1 * HZ,
+		},
 	},
 	.gc_interval	= 30 * HZ,
 	.gc_thresh1	= 128,
@@ -363,7 +365,7 @@ static void arp_solicit(struct neighbour *neigh, struct sk_buff *skb)
 	if (!saddr)
 		saddr = inet_select_addr(dev, target, RT_SCOPE_LINK);
 
-	probes -= neigh->parms->ucast_probes;
+	probes -= NEIGH_VAR(neigh->parms, UCAST_PROBES);
 	if (probes < 0) {
 		if (!(neigh->nud_state & NUD_VALID))
 			printk(KERN_DEBUG
@@ -371,7 +373,7 @@ static void arp_solicit(struct neighbour *neigh, struct sk_buff *skb)
 		dst_ha = neigh->ha;
 		read_lock_bh(&neigh->lock);
 	} else {
-		probes -= neigh->parms->app_probes;
+		probes -= NEIGH_VAR(neigh->parms, APP_PROBES);
 		if (probes < 0) {
 #ifdef CONFIG_ARPD
 			neigh_app_ns(neigh);
@@ -872,7 +874,7 @@ static int arp_process(struct sk_buff *skb)
 
 				if (NEIGH_CB(skb)->flags & LOCALLY_ENQUEUED ||
 				    skb->pkt_type == PACKET_HOST ||
-				    in_dev->arp_parms->proxy_delay == 0) {
+				    NEIGH_VAR(in_dev->arp_parms, PROXY_DELAY) == 0) {
 					arp_send(ARPOP_REPLY, ETH_P_ARP, sip,
 						 dev, tip, sha, dev->dev_addr,
 						 sha);
@@ -911,7 +913,8 @@ static int arp_process(struct sk_buff *skb)
 		   agents are active. Taking the first reply prevents
 		   arp trashing and chooses the fastest router.
 		 */
-		override = time_after(jiffies, n->updated + n->parms->locktime);
+		override = time_after(jiffies, n->updated +
+					       NEIGH_VAR(n->parms, LOCKTIME));
 
 		/* Broadcast replies and request packets
 		   do not assert neighbour reachability.
