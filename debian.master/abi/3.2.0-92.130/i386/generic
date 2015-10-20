@@ -8838,8 +8838,6 @@ EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0x9f2b15fb	wl1271_free_hw
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xacb7d0c9	wl1271_set_partition
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xcf618a3d	wl1271_init_ieee80211
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xe795ba26	wl1271_irq
-EXPORT_SYMBOL_GPL drivers/pci/hotplug/acpiphp 0x83ae9e6f	acpiphp_register_attention
-EXPORT_SYMBOL_GPL drivers/pci/hotplug/acpiphp 0x8810a7e9	acpiphp_unregister_attention
 EXPORT_SYMBOL_GPL drivers/platform/x86/asus-wmi 0x154d5a8e	asus_wmi_register_driver
 EXPORT_SYMBOL_GPL drivers/platform/x86/asus-wmi 0x1a0989d9	asus_wmi_unregister_driver
 EXPORT_SYMBOL_GPL drivers/platform/x86/intel_ips 0x46809fa9	ips_link_to_i915_driver
@@ -11507,6 +11505,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x82f776b7	gpio_export
 EXPORT_SYMBOL_GPL vmlinux 0x82ffed6a	spi_bus_unlock
 EXPORT_SYMBOL_GPL vmlinux 0x8346198c	sysfs_create_bin_file
 EXPORT_SYMBOL_GPL vmlinux 0x838b13e7	ring_buffer_free
+EXPORT_SYMBOL_GPL vmlinux 0x83ae9e6f	acpiphp_register_attention
 EXPORT_SYMBOL_GPL vmlinux 0x83c4d1a1	skb_cow_data
 EXPORT_SYMBOL_GPL vmlinux 0x83c6e2c2	rdev_get_id
 EXPORT_SYMBOL_GPL vmlinux 0x83ce82eb	get_monotonic_boottime
@@ -11544,6 +11543,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x87754115	raw_notifier_chain_register
 EXPORT_SYMBOL_GPL vmlinux 0x87c5f1b4	debugfs_create_x16
 EXPORT_SYMBOL_GPL vmlinux 0x87cbf8a1	fuse_dev_release
 EXPORT_SYMBOL_GPL vmlinux 0x87cf0a90	injectm
+EXPORT_SYMBOL_GPL vmlinux 0x8810a7e9	acpiphp_unregister_attention
 EXPORT_SYMBOL_GPL vmlinux 0x8810ad5e	crypto_xor
 EXPORT_SYMBOL_GPL vmlinux 0x8831f8b1	kmap_atomic_pfn
 EXPORT_SYMBOL_GPL vmlinux 0x883270cf	rt_mutex_unlock

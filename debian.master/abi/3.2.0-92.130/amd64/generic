@@ -8657,8 +8657,6 @@ EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xca0b1bef	wl1271_alloc_hw
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xdf12b418	wl1271_register_hw
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xe795ba26	wl1271_irq
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xf57b6137	wl1271_unregister_hw
-EXPORT_SYMBOL_GPL drivers/pci/hotplug/acpiphp 0x6c1c8f3b	acpiphp_register_attention
-EXPORT_SYMBOL_GPL drivers/pci/hotplug/acpiphp 0xa237ab8f	acpiphp_unregister_attention
 EXPORT_SYMBOL_GPL drivers/platform/x86/asus-wmi 0x371efc3d	asus_wmi_register_driver
 EXPORT_SYMBOL_GPL drivers/platform/x86/asus-wmi 0xad4164ee	asus_wmi_unregister_driver
 EXPORT_SYMBOL_GPL drivers/platform/x86/intel_ips 0x46809fa9	ips_link_to_i915_driver
@@ -11143,6 +11141,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x6ba0df7f	ata_pci_device_suspend
 EXPORT_SYMBOL_GPL vmlinux 0x6ba418e7	mddev_resume
 EXPORT_SYMBOL_GPL vmlinux 0x6be94bd4	usb_put_intf
 EXPORT_SYMBOL_GPL vmlinux 0x6c1251fd	apei_exec_read_register
+EXPORT_SYMBOL_GPL vmlinux 0x6c1c8f3b	acpiphp_register_attention
 EXPORT_SYMBOL_GPL vmlinux 0x6c2058bb	pm_generic_thaw_noirq
 EXPORT_SYMBOL_GPL vmlinux 0x6c37f1bf	crypto_alloc_ablkcipher
 EXPORT_SYMBOL_GPL vmlinux 0x6c49c4f2	clockevents_notify
@@ -11673,6 +11672,7 @@ EXPORT_SYMBOL_GPL vmlinux 0xa18676fe	wm831x_reg_unlock
 EXPORT_SYMBOL_GPL vmlinux 0xa1a5af3c	pstore_write
 EXPORT_SYMBOL_GPL vmlinux 0xa1d63627	pci_msi_off
 EXPORT_SYMBOL_GPL vmlinux 0xa1ddf303	fpu_finit
+EXPORT_SYMBOL_GPL vmlinux 0xa237ab8f	acpiphp_unregister_attention
 EXPORT_SYMBOL_GPL vmlinux 0xa23c2c13	usb_hcd_pci_shutdown
 EXPORT_SYMBOL_GPL vmlinux 0xa2409e9b	sdio_writew
 EXPORT_SYMBOL_GPL vmlinux 0xa2985fbc	xen_swiotlb_free_coherent

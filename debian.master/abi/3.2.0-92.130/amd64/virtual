@@ -8656,8 +8656,6 @@ EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0x8fb9c89a	wl1271_unregiste
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xc7b72cdf	wl1271_register_hw
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xe795ba26	wl1271_irq
 EXPORT_SYMBOL_GPL drivers/net/wireless/wl12xx/wl12xx 0xecc112d6	wl1271_set_partition
-EXPORT_SYMBOL_GPL drivers/pci/hotplug/acpiphp 0x0c038846	acpiphp_register_attention
-EXPORT_SYMBOL_GPL drivers/pci/hotplug/acpiphp 0x138dbe22	acpiphp_unregister_attention
 EXPORT_SYMBOL_GPL drivers/platform/x86/asus-wmi 0x6ad94c6f	asus_wmi_unregister_driver
 EXPORT_SYMBOL_GPL drivers/platform/x86/asus-wmi 0x9455d365	asus_wmi_register_driver
 EXPORT_SYMBOL_GPL drivers/platform/x86/intel_ips 0x46809fa9	ips_link_to_i915_driver
@@ -10221,6 +10219,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x0ba50289	aead_geniv_init
 EXPORT_SYMBOL_GPL vmlinux 0x0bd50fbe	ata_std_prereset
 EXPORT_SYMBOL_GPL vmlinux 0x0be13004	usb_storage_usb_ids
 EXPORT_SYMBOL_GPL vmlinux 0x0bffa10a	spi_add_device
+EXPORT_SYMBOL_GPL vmlinux 0x0c038846	acpiphp_register_attention
 EXPORT_SYMBOL_GPL vmlinux 0x0c0c015e	ring_buffer_swap_cpu
 EXPORT_SYMBOL_GPL vmlinux 0x0c2cdbf1	synchronize_sched
 EXPORT_SYMBOL_GPL vmlinux 0x0c316396	swiotlb_tbl_sync_single
@@ -10295,6 +10294,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x1360f480	virtqueue_poll
 EXPORT_SYMBOL_GPL vmlinux 0x1371b737	spi_async
 EXPORT_SYMBOL_GPL vmlinux 0x1387628c	inet_getpeer
 EXPORT_SYMBOL_GPL vmlinux 0x138aff76	gnttab_init
+EXPORT_SYMBOL_GPL vmlinux 0x138dbe22	acpiphp_unregister_attention
 EXPORT_SYMBOL_GPL vmlinux 0x139b1499	ata_bmdma_port_start32
 EXPORT_SYMBOL_GPL vmlinux 0x13b2a946	register_keyboard_notifier
 EXPORT_SYMBOL_GPL vmlinux 0x13dca9e5	tpm_show_caps
