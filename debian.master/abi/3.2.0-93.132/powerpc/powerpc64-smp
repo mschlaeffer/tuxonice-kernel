@@ -5080,6 +5080,7 @@ EXPORT_SYMBOL vmlinux 0x6901169a	ps2_cmd_aborted
 EXPORT_SYMBOL vmlinux 0x6908d473	compat_sock_get_timestampns
 EXPORT_SYMBOL vmlinux 0x690c8397	arp_send
 EXPORT_SYMBOL vmlinux 0x6971447a	rtc_month_days
+EXPORT_SYMBOL vmlinux 0x6989cd24	__ip4_datagram_connect
 EXPORT_SYMBOL vmlinux 0x699ccbf8	_lv1_deconfigure_virtual_uart_irq
 EXPORT_SYMBOL vmlinux 0x69a0ca7d	iowrite16be
 EXPORT_SYMBOL vmlinux 0x69a358a6	iomem_resource

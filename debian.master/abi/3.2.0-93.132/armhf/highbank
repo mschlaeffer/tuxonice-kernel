@@ -2219,6 +2219,7 @@ EXPORT_SYMBOL vmlinux 0x00000000	__init_waitqueue_head
 EXPORT_SYMBOL vmlinux 0x00000000	__insert_inode_hash
 EXPORT_SYMBOL vmlinux 0x00000000	__invalidate_device
 EXPORT_SYMBOL vmlinux 0x00000000	__iounmap
+EXPORT_SYMBOL vmlinux 0x00000000	__ip4_datagram_connect
 EXPORT_SYMBOL vmlinux 0x00000000	__ip_dev_find
 EXPORT_SYMBOL vmlinux 0x00000000	__ip_select_ident
 EXPORT_SYMBOL vmlinux 0x00000000	__ipv6_addr_type

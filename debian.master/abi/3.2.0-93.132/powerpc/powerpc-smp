@@ -4647,6 +4647,7 @@ EXPORT_SYMBOL vmlinux 0x506d7182	mutex_unlock
 EXPORT_SYMBOL vmlinux 0x507052cb	bitmap_startwrite
 EXPORT_SYMBOL vmlinux 0x5081cc18	skb_add_rx_frag
 EXPORT_SYMBOL vmlinux 0x50942327	journal_restart
+EXPORT_SYMBOL vmlinux 0x509f3097	__ip4_datagram_connect
 EXPORT_SYMBOL vmlinux 0x50ab4c6d	files_lglock_global_lock
 EXPORT_SYMBOL vmlinux 0x50eae282	i8042_install_filter
 EXPORT_SYMBOL vmlinux 0x50f23362	unregister_framebuffer

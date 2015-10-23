@@ -5311,6 +5311,7 @@ EXPORT_SYMBOL vmlinux 0xdc711f4a	tcp_getsockopt
 EXPORT_SYMBOL vmlinux 0xdc798d37	__mutex_init
 EXPORT_SYMBOL vmlinux 0xdc7dcb4f	netlink_broadcast_filtered
 EXPORT_SYMBOL vmlinux 0xdc989b14	skb_free_datagram
+EXPORT_SYMBOL vmlinux 0xdca4699c	__ip4_datagram_connect
 EXPORT_SYMBOL vmlinux 0xdca7a472	unregister_key_type
 EXPORT_SYMBOL vmlinux 0xdcb0349b	sys_close
 EXPORT_SYMBOL vmlinux 0xdce2dee3	netif_carrier_on
