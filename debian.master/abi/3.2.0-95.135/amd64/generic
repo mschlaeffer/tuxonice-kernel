@@ -7796,6 +7796,7 @@ EXPORT_SYMBOL_GPL drivers/hid/usbhid/usbhid 0xd625cd62	usbhid_submit_report
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x0aa9d15c	vmbus_prep_negotiate_resp
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x0bb6a391	__vmbus_driver_register
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x2ca1be6f	vmbus_driver_unregister
+EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x46a417ca	vmbus_proto_version
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x58636e63	vmbus_sendpacket_multipagebuffer
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x5b78383a	vmbus_open
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x7551b271	vmbus_sendpacket_pagebuffer

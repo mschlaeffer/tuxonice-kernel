@@ -7958,6 +7958,7 @@ EXPORT_SYMBOL_GPL drivers/hid/usbhid/usbhid 0x778958ad	usbhid_set_leds
 EXPORT_SYMBOL_GPL drivers/hid/usbhid/usbhid 0xfa3f6eaa	hiddev_hid_event
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x0aa9d15c	vmbus_prep_negotiate_resp
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x346a01c3	vmbus_driver_unregister
+EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x46a417ca	vmbus_proto_version
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x4a9c8a0c	vmbus_sendpacket_pagebuffer
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x4b59b5b1	vmbus_establish_gpadl
 EXPORT_SYMBOL_GPL drivers/hv/hv_vmbus 0x619477cd	vmbus_teardown_gpadl
