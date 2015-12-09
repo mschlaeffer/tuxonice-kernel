@@ -4404,7 +4404,6 @@ EXPORT_SYMBOL vmlinux 0x35225ba3	xfrm_dst_ifdown
 EXPORT_SYMBOL vmlinux 0x35328466	seq_bitmap
 EXPORT_SYMBOL vmlinux 0x353a4b58	__put_cred
 EXPORT_SYMBOL vmlinux 0x357c90d2	qdisc_put_stab
-EXPORT_SYMBOL vmlinux 0x35b177ae	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0x35bd0e87	generic_fillattr
 EXPORT_SYMBOL vmlinux 0x35c2ba9e	refrigerator
 EXPORT_SYMBOL vmlinux 0x35ca8cfa	dm_kcopyd_client_create
@@ -6453,6 +6452,7 @@ EXPORT_SYMBOL vmlinux 0xbc422db9	iov_iter_copy_from_user
 EXPORT_SYMBOL vmlinux 0xbc447d67	scsi_device_put
 EXPORT_SYMBOL vmlinux 0xbc46462f	key_validate
 EXPORT_SYMBOL vmlinux 0xbc528a6b	acpi_unlock_battery_dir
+EXPORT_SYMBOL vmlinux 0xbc69b4b4	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xbc90b228	ethtool_op_get_tso
 EXPORT_SYMBOL vmlinux 0xbc952300	inet_put_port
 EXPORT_SYMBOL vmlinux 0xbcacec7b	alloc_fcdev

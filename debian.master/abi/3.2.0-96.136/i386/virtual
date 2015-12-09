@@ -6442,6 +6442,7 @@ EXPORT_SYMBOL vmlinux 0xaf611eac	amd_nb_misc_ids
 EXPORT_SYMBOL vmlinux 0xaf7535be	__sk_mem_reclaim
 EXPORT_SYMBOL vmlinux 0xaf87cc19	bio_integrity_tag_size
 EXPORT_SYMBOL vmlinux 0xaf91d89f	__kernel_param_lock
+EXPORT_SYMBOL vmlinux 0xafe998dd	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xb0146c3a	param_set_byte
 EXPORT_SYMBOL vmlinux 0xb01c647d	mount_single
 EXPORT_SYMBOL vmlinux 0xb0207ecf	___ratelimit
@@ -6478,7 +6479,6 @@ EXPORT_SYMBOL vmlinux 0xb23e5191	lro_receive_skb
 EXPORT_SYMBOL vmlinux 0xb23f6296	pnp_is_active
 EXPORT_SYMBOL vmlinux 0xb2682405	utf8_to_utf32
 EXPORT_SYMBOL vmlinux 0xb2744b36	down_write_trylock
-EXPORT_SYMBOL vmlinux 0xb27e063e	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xb288b967	bdget
 EXPORT_SYMBOL vmlinux 0xb2a2c24f	ethtool_op_get_ufo
 EXPORT_SYMBOL vmlinux 0xb2e14a50	pci_remove_bus_device

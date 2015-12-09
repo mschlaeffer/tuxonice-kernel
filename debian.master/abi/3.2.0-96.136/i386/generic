@@ -4415,7 +4415,6 @@ EXPORT_SYMBOL vmlinux 0x2d05204b	nf_ip_checksum
 EXPORT_SYMBOL vmlinux 0x2d140a58	genl_unlock
 EXPORT_SYMBOL vmlinux 0x2d37342e	cpu_online_mask
 EXPORT_SYMBOL vmlinux 0x2d3d2f34	__inet6_hash
-EXPORT_SYMBOL vmlinux 0x2d483abc	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0x2d56fd86	sk_common_release
 EXPORT_SYMBOL vmlinux 0x2d616dad	inc_zone_page_state
 EXPORT_SYMBOL vmlinux 0x2d7a4518	put_page
@@ -6598,6 +6597,7 @@ EXPORT_SYMBOL vmlinux 0xbb189cad	disallow_signal
 EXPORT_SYMBOL vmlinux 0xbb2db173	ppp_register_compressor
 EXPORT_SYMBOL vmlinux 0xbb3ad59d	scsi_finish_command
 EXPORT_SYMBOL vmlinux 0xbb40ce72	proc_net_netfilter
+EXPORT_SYMBOL vmlinux 0xbb4f2039	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xbb594b5b	mca_register_driver
 EXPORT_SYMBOL vmlinux 0xbb5d343d	xfrm_get_acqseq
 EXPORT_SYMBOL vmlinux 0xbb61dfae	scsi_setup_blk_pc_cmnd

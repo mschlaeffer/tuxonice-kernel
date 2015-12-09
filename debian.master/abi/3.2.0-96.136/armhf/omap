@@ -2268,7 +2268,6 @@ EXPORT_SYMBOL vmlinux 0x0816cc48	cancel_dirty_page
 EXPORT_SYMBOL vmlinux 0x083eb21c	rfkill_unregister
 EXPORT_SYMBOL vmlinux 0x085e8611	backlight_device_unregister
 EXPORT_SYMBOL vmlinux 0x087a28f2	ppp_output_wakeup
-EXPORT_SYMBOL vmlinux 0x088fb040	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0x08a4c534	omap_mcbsp_get_rx_delay
 EXPORT_SYMBOL vmlinux 0x08b781fd	snd_info_create_card_entry
 EXPORT_SYMBOL vmlinux 0x08c4d267	bh_uptodate_or_lock
@@ -5701,6 +5700,7 @@ EXPORT_SYMBOL vmlinux 0xf6fa0f24	bio_integrity_endio
 EXPORT_SYMBOL vmlinux 0xf708a6e7	abx500_get_register_interruptible
 EXPORT_SYMBOL vmlinux 0xf70a69a9	of_get_mac_address
 EXPORT_SYMBOL vmlinux 0xf70fe699	remap_vmalloc_range
+EXPORT_SYMBOL vmlinux 0xf75503dc	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xf7584a9c	find_font
 EXPORT_SYMBOL vmlinux 0xf77ecc28	thermal_zone_device_register
 EXPORT_SYMBOL vmlinux 0xf7802486	__aeabi_uidivmod

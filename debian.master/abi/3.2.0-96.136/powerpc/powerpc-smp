@@ -3593,7 +3593,6 @@ EXPORT_SYMBOL vmlinux 0x0740d0b3	skb_seq_read
 EXPORT_SYMBOL vmlinux 0x07452d37	udp_sendmsg
 EXPORT_SYMBOL vmlinux 0x074989f8	ida_simple_remove
 EXPORT_SYMBOL vmlinux 0x074e9213	down_killable
-EXPORT_SYMBOL vmlinux 0x07554696	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0x075ab340	padata_do_parallel
 EXPORT_SYMBOL vmlinux 0x07620756	xfrm_unregister_type
 EXPORT_SYMBOL vmlinux 0x0799aca4	local_bh_enable
@@ -6176,6 +6175,7 @@ EXPORT_SYMBOL vmlinux 0xb6bf4860	__pskb_pull_tail
 EXPORT_SYMBOL vmlinux 0xb6c5a973	scsi_show_result
 EXPORT_SYMBOL vmlinux 0xb6db4296	serio_rescan
 EXPORT_SYMBOL vmlinux 0xb6e73939	ip_getsockopt
+EXPORT_SYMBOL vmlinux 0xb6f347d3	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xb7050576	pci_claim_resource
 EXPORT_SYMBOL vmlinux 0xb70c81b7	ab3100_event_unregister
 EXPORT_SYMBOL vmlinux 0xb72b33e9	pci_unmap_rom

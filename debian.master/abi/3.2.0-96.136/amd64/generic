@@ -6107,7 +6107,6 @@ EXPORT_SYMBOL vmlinux 0xa350a8f8	set_memory_array_uc
 EXPORT_SYMBOL vmlinux 0xa35284a1	__vlan_find_dev_deep
 EXPORT_SYMBOL vmlinux 0xa35de80f	ipv4_config
 EXPORT_SYMBOL vmlinux 0xa3643761	sock_kfree_s
-EXPORT_SYMBOL vmlinux 0xa38231ef	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xa3a0a6b5	page_symlink_inode_operations
 EXPORT_SYMBOL vmlinux 0xa3a5be95	memmove
 EXPORT_SYMBOL vmlinux 0xa3a77c69	down_read_trylock
@@ -6350,6 +6349,7 @@ EXPORT_SYMBOL vmlinux 0xb4709322	scsi_dev_info_add_list
 EXPORT_SYMBOL vmlinux 0xb4a261e9	ata_link_printk
 EXPORT_SYMBOL vmlinux 0xb4b7b067	clocksource_unregister
 EXPORT_SYMBOL vmlinux 0xb4d13457	vga_tryget
+EXPORT_SYMBOL vmlinux 0xb4de5399	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xb4df9b0f	simple_readpage
 EXPORT_SYMBOL vmlinux 0xb4f86dfe	__ip_dev_find
 EXPORT_SYMBOL vmlinux 0xb4fffaf8	lro_flush_pkt

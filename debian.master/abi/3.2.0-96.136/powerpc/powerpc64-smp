@@ -5326,6 +5326,7 @@ EXPORT_SYMBOL vmlinux 0x7889a4ba	blk_queue_free_tags
 EXPORT_SYMBOL vmlinux 0x789a17f7	_lv1_destruct_logical_spe
 EXPORT_SYMBOL vmlinux 0x78df6bd7	no_pci_devices
 EXPORT_SYMBOL vmlinux 0x78ed3e5c	__init_waitqueue_head
+EXPORT_SYMBOL vmlinux 0x790110c5	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0x790df6ca	__wait_on_bit_lock
 EXPORT_SYMBOL vmlinux 0x7951dda7	__elv_add_request
 EXPORT_SYMBOL vmlinux 0x7957cf0a	pmac_resume_agp_for_card
@@ -6016,7 +6017,6 @@ EXPORT_SYMBOL vmlinux 0xa6fcebdd	ps3_sb_event_receive_port_setup
 EXPORT_SYMBOL vmlinux 0xa71bf293	swiotlb_sync_single_for_device
 EXPORT_SYMBOL vmlinux 0xa72a0f5b	nr_online_nodes
 EXPORT_SYMBOL vmlinux 0xa753a9e4	compat_mc_getsockopt
-EXPORT_SYMBOL vmlinux 0xa760a37f	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xa777261e	i2c_master_send
 EXPORT_SYMBOL vmlinux 0xa77fb1ab	swiotlb_map_sg_attrs
 EXPORT_SYMBOL vmlinux 0xa7817c26	scsi_block_when_processing_errors
