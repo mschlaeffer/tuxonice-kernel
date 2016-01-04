@@ -15,7 +15,14 @@
 #include <linux/syscalls.h>
 #include <linux/freezer.h>
 #include <linux/delay.h>
+#include <linux/buffer_head.h>
 #include <linux/workqueue.h>
+
+int freezer_state;
+EXPORT_SYMBOL_GPL(freezer_state);
+
+int freezer_sync = 1;
+EXPORT_SYMBOL_GPL(freezer_sync);
 
 /* 
  * Timeout for stopping processes
@@ -141,7 +148,10 @@ int freeze_processes(void)
 {
 	int error;
 
-	printk("Freezing user space processes ... ");
+	printk(KERN_INFO "Stopping fuse filesystems.\n");
+	freeze_filesystems(FS_FREEZER_FUSE);
+	freezer_state = FREEZER_FILESYSTEMS_FROZEN;
+	printk(KERN_INFO "Freezing user space processes ... ");
 	error = try_to_freeze_tasks(true);
 	if (!error) {
 		printk("done.");
@@ -152,6 +162,7 @@ int freeze_processes(void)
 
 	return error;
 }
+EXPORT_SYMBOL_GPL(freeze_processes);
 
 /**
  * freeze_kernel_threads - Make freezable kernel threads go to the refrigerator.
@@ -160,16 +171,24 @@ int freeze_kernel_threads(void)
 {
 	int error;
 
-	printk("Freezing remaining freezable tasks ... ");
+	if (freezer_sync)
+		sys_sync();
+	printk(KERN_INFO "Stopping normal filesystems.\n");
+	freeze_filesystems(FS_FREEZER_NORMAL);
+	freezer_state = FREEZER_USERSPACE_FROZEN;
+	printk(KERN_INFO "Freezing remaining freezable tasks ... ");
 	error = try_to_freeze_tasks(false);
-	if (!error)
+	if (!error) {
 		printk("done.");
+		freezer_state = FREEZER_FULLY_ON;
+	}
 
 	printk("\n");
 	BUG_ON(in_atomic());
 
 	return error;
 }
+EXPORT_SYMBOL_GPL(freeze_kernel_threads);
 
 static void thaw_tasks(bool nosig_only)
 {
@@ -193,22 +212,39 @@ static void thaw_tasks(bool nosig_only)
 
 void thaw_processes(void)
 {
+	int old_state = freezer_state;
+
+	if (old_state == FREEZER_OFF)
+		return;
+
+	freezer_state = FREEZER_OFF;
+
 	oom_killer_enable();
 
-	printk("Restarting tasks ... ");
-	thaw_workqueues();
-	thaw_tasks(true);
+	printk(KERN_INFO "Restarting all filesystems ...\n");
+	thaw_filesystems(FS_FREEZER_ALL);
+
+	printk(KERN_INFO "Restarting tasks ... ");
+	if (old_state == FREEZER_FULLY_ON) {
+		thaw_workqueues();
+		thaw_tasks(true);
+	}
+
 	thaw_tasks(false);
 	schedule();
 	printk("done.\n");
 }
+EXPORT_SYMBOL_GPL(thaw_processes);
 
 void thaw_kernel_threads(void)
 {
+	freezer_state = FREEZER_USERSPACE_FROZEN;
 	printk("Restarting kernel threads ... ");
+	thaw_filesystems(FS_FREEZER_NORMAL);
 	thaw_workqueues();
 	thaw_tasks(true);
 	schedule();
 	printk("done.\n");
 }
 
+EXPORT_SYMBOL_GPL(thaw_kernel_threads);

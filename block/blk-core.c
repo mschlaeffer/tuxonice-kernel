@@ -39,6 +39,9 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(block_bio_remap);
 EXPORT_TRACEPOINT_SYMBOL_GPL(block_rq_remap);
 EXPORT_TRACEPOINT_SYMBOL_GPL(block_bio_complete);
 
+int trap_non_toi_io;
+EXPORT_SYMBOL_GPL(trap_non_toi_io);
+
 /*
  * For the allocated request tables
  */
@@ -1673,6 +1676,9 @@ void submit_bio(int rw, struct bio *bio)
 	int count = bio_sectors(bio);
 
 	bio->bi_rw |= rw;
+
+	if (unlikely(trap_non_toi_io))
+		BUG_ON(!(bio->bi_rw & REQ_TOI));
 
 	/*
 	 * If it's a regular read/write or a barrier with data attached,
