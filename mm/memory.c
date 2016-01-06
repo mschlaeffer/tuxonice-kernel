@@ -1632,6 +1632,7 @@ struct page *follow_page_mask(struct vm_area_struct *vma,
 	}
 	return follow_page_pte(vma, address, pmd, flags);
 }
+EXPORT_SYMBOL_GPL(follow_page_mask);
 
 static inline int stack_guard_page(struct vm_area_struct *vma, unsigned long addr)
 {

@@ -181,6 +181,7 @@ done:
 		thaw_processes();
 	return error;
 }
+EXPORT_SYMBOL_GPL(freeze_processes);
 
 /**
  * freeze_kernel_threads - Make freezable kernel threads go to the refrigerator.
@@ -207,6 +208,7 @@ int freeze_kernel_threads(void)
 		thaw_kernel_threads();
 	return error;
 }
+EXPORT_SYMBOL_GPL(freeze_kernel_threads);
 
 void thaw_processes(void)
 {
@@ -241,6 +243,7 @@ void thaw_processes(void)
 	schedule();
 	printk("done.\n");
 }
+EXPORT_SYMBOL_GPL(thaw_processes);
 
 void thaw_kernel_threads(void)
 {
@@ -261,3 +264,4 @@ void thaw_kernel_threads(void)
 	schedule();
 	printk("done.\n");
 }
+EXPORT_SYMBOL_GPL(thaw_kernel_threads);
