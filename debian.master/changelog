@@ -1,3 +1,18 @@
+linux (4.2.0-23.28) wily; urgency=low
+
+  [ Andy Whitcroft ]
+
+  * Release Tracking Bug
+    - LP: #1529361
+
+  [ Upstream Kernel Changes ]
+
+  * ovl: fix permission checking for setattr
+    - LP: #1528904
+    - CVE-2015-8660
+
+ -- Andy Whitcroft <apw@canonical.com>  Sat, 26 Dec 2015 09:42:47 +0000
+
 linux (4.2.0-22.27) wily; urgency=low
 
   [ Kamal Mostafa ]
