@@ -1,3 +1,13 @@
+linux (3.13.0-76.120) trusty; urgency=low
+
+  [ Upstream Kernel Changes ]
+
+  * KEYS: Fix keyring ref leak in join_session_keyring()
+    - LP: #1534887
+    - CVE-2016-0728
+
+ -- Luis Henriques <luis.henriques@canonical.com>  Mon, 18 Jan 2016 09:54:03 +0000
+
 linux (3.13.0-74.118) trusty; urgency=low
 
   [ Kamal Mostafa ]
