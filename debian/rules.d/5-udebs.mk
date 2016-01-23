@@ -23,16 +23,3 @@ do-binary-udebs: debian/control
 	touch $(CURDIR)/debian/build/no-modules
 
 	touch ignore-dups
-	export SOURCEDIR=$(CURDIR)/debian/d-i-${arch} && \
-	  cd $(builddir) && \
-	  kernel-wedge install-files && \
-	  kernel-wedge check
-
-        # Build just the udebs
-	dilist=$$(dh_listpackages -s | grep "\-di$$") && \
-	[ -z "$dilist" ] || \
-	for i in $$dilist; do \
-	  dh_fixperms -p$$i; \
-	  $(lockme) dh_gencontrol -p$$i; \
-	  dh_builddeb -p$$i; \
-	done
