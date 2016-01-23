@@ -1,17 +1,17 @@
 # arch	version		flavour		installedname			suffix	bdep
-amd64	PKGVER-ABINUM	generic		PKGVER-ABINUM-generic		-	
-amd64	PKGVER-ABINUM	virtual		PKGVER-ABINUM-virtual		-	
+amd64	PKGVER-ABINUM	generic-tuxonice		PKGVER-ABINUM-generic-tuxonice		-	
+amd64	PKGVER-ABINUM	virtual-tuxonice		PKGVER-ABINUM-virtual-tuxonice		-	
 
-i386	PKGVER-ABINUM	generic		PKGVER-ABINUM-generic		-	
-i386	PKGVER-ABINUM	generic-pae	PKGVER-ABINUM-generic-pae	-	
-i386	PKGVER-ABINUM	virtual		PKGVER-ABINUM-virtual		-	
+i386	PKGVER-ABINUM	generic-tuxonice		PKGVER-ABINUM-generic-tuxonice		-	
+i386	PKGVER-ABINUM	generic-pae-tuxonice	PKGVER-ABINUM-generic-pae-tuxonice	-	
+i386	PKGVER-ABINUM	virtual-tuxonice		PKGVER-ABINUM-virtual-tuxonice		-	
 
-armel	PKGVER-ABINUM	omap		PKGVER-ABINUM-omap		-
+armel	PKGVER-ABINUM	omap-tuxonice		PKGVER-ABINUM-omap-tuxonice		-
 
-armhf	PKGVER-ABINUM	omap		PKGVER-ABINUM-omap		-
-armhf	PKGVER-ABINUM	highbank	PKGVER-ABINUM-highbank		-
+armhf	PKGVER-ABINUM	omap-tuxonice		PKGVER-ABINUM-omap-tuxonice		-
+armhf	PKGVER-ABINUM	highbank-tuxonice	PKGVER-ABINUM-highbank-tuxonice		-
 
 # Ports
 # arch	version		flavour		installedname			suffix	bdep
-powerpc	PKGVER-ABINUM	powerpc-smp			PKGVER-ABINUM-powerpc-smp		-	
-powerpc	PKGVER-ABINUM	powerpc64-smp		PKGVER-ABINUM-powerpc64-smp	-	
+powerpc	PKGVER-ABINUM	powerpc-smp-tuxonice			PKGVER-ABINUM-powerpc-smp-tuxonice		-	
+powerpc	PKGVER-ABINUM	powerpc64-smp-tuxonice		PKGVER-ABINUM-powerpc64-smp-tuxonice	-	
