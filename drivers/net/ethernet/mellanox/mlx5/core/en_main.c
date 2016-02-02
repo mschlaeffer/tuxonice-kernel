@@ -1692,6 +1692,8 @@ static int mlx5e_change_mtu(struct net_device *netdev, int new_mtu)
 
 	mlx5_query_port_max_mtu(mdev, &max_mtu, 1);
 
+	max_mtu = MLX5E_HW2SW_MTU(max_mtu);
+
 	if (new_mtu > max_mtu) {
 		netdev_err(netdev,
 			   "%s: Bad MTU (%d) > (%d) Max\n",
@@ -1833,6 +1835,7 @@ static void mlx5e_build_netdev(struct net_device *netdev)
 		netdev->vlan_features    |= NETIF_F_LRO;
 
 	netdev->hw_features       = netdev->vlan_features;
+	netdev->hw_features      |= NETIF_F_HW_VLAN_CTAG_TX;
 	netdev->hw_features      |= NETIF_F_HW_VLAN_CTAG_RX;
 	netdev->hw_features      |= NETIF_F_HW_VLAN_CTAG_FILTER;
 

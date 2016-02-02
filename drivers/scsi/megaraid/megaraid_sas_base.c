@@ -1650,6 +1650,20 @@ static struct megasas_instance *megasas_lookup_instance(u16 host_no)
 
 static int megasas_slave_configure(struct scsi_device *sdev)
 {
+	u16 pd_index = 0;
+	struct megasas_instance *instance;
+
+	instance = megasas_lookup_instance(sdev->host->host_no);
+	if (instance->allow_fw_scan) {
+		if (sdev->channel < MEGASAS_MAX_PD_CHANNELS &&
+			sdev->type == TYPE_DISK) {
+			pd_index = (sdev->channel * MEGASAS_MAX_DEV_PER_CHANNEL) +
+				sdev->id;
+			if (instance->pd_list[pd_index].driveState !=
+				MR_PD_STATE_SYSTEM)
+				return -ENXIO;
+		}
+	}
 	/*
 	* The RAID firmware may require extended timeouts.
 	*/
@@ -1671,8 +1685,8 @@ static int megasas_slave_alloc(struct scsi_device *sdev)
 		pd_index =
 			(sdev->channel * MEGASAS_MAX_DEV_PER_CHANNEL) +
 			sdev->id;
-		if (instance->pd_list[pd_index].driveState ==
-					MR_PD_STATE_SYSTEM) {
+		if ((instance->allow_fw_scan || instance->pd_list[pd_index].driveState ==
+			MR_PD_STATE_SYSTEM)) {
 			return 0;
 		}
 		return -ENXIO;
@@ -4542,6 +4556,7 @@ static int megasas_init_fw(struct megasas_instance *instance)
 	case PCI_DEVICE_ID_DELL_PERC5:
 	default:
 		instance->instancet = &megasas_instance_template_xscale;
+		instance->allow_fw_scan = 1;
 		break;
 	}
 
@@ -6325,6 +6340,9 @@ static int megasas_mgmt_compat_ioctl_fw(struct file *file, unsigned long arg)
 	int i;
 	int error = 0;
 	compat_uptr_t ptr;
+	unsigned long local_raw_ptr;
+	u32 local_sense_off;
+	u32 local_sense_len;
 
 	if (clear_user(ioc, sizeof(*ioc)))
 		return -EFAULT;
@@ -6342,9 +6360,15 @@ static int megasas_mgmt_compat_ioctl_fw(struct file *file, unsigned long arg)
 	 * sense_len is not null, so prepare the 64bit value under
 	 * the same condition.
 	 */
-	if (ioc->sense_len) {
+	if (get_user(local_raw_ptr, ioc->frame.raw) ||
+		get_user(local_sense_off, &ioc->sense_off) ||
+		get_user(local_sense_len, &ioc->sense_len))
+		return -EFAULT;
+
+
+	if (local_sense_len) {
 		void __user **sense_ioc_ptr =
-			(void __user **)(ioc->frame.raw + ioc->sense_off);
+			(void __user **)((u8*)local_raw_ptr + local_sense_off);
 		compat_uptr_t *sense_cioc_ptr =
 			(compat_uptr_t *)(cioc->frame.raw + cioc->sense_off);
 		if (get_user(ptr, sense_cioc_ptr) ||

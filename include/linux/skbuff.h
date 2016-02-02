@@ -37,6 +37,7 @@
 #include <net/flow_dissector.h>
 #include <linux/splice.h>
 #include <linux/in6.h>
+#include <net/flow.h>
 
 /* A. Checksumming of received packets by device.
  *
@@ -922,29 +923,6 @@ enum pkt_hash_types {
 	PKT_HASH_TYPE_L4,	/* Input: src_IP, dst_IP, src_port, dst_port */
 };
 
-static inline void
-skb_set_hash(struct sk_buff *skb, __u32 hash, enum pkt_hash_types type)
-{
-	skb->l4_hash = (type == PKT_HASH_TYPE_L4);
-	skb->sw_hash = 0;
-	skb->hash = hash;
-}
-
-static inline __u32 skb_get_hash(struct sk_buff *skb)
-{
-	if (!skb->l4_hash && !skb->sw_hash)
-		__skb_get_hash(skb);
-
-	return skb->hash;
-}
-
-__u32 skb_get_hash_perturb(const struct sk_buff *skb, u32 perturb);
-
-static inline __u32 skb_get_hash_raw(const struct sk_buff *skb)
-{
-	return skb->hash;
-}
-
 static inline void skb_clear_hash(struct sk_buff *skb)
 {
 	skb->hash = 0;
@@ -956,6 +934,112 @@ static inline void skb_clear_hash_if_not_l4(struct sk_buff *skb)
 {
 	if (!skb->l4_hash)
 		skb_clear_hash(skb);
+}
+
+static inline void
+__skb_set_hash(struct sk_buff *skb, __u32 hash, bool is_sw, bool is_l4)
+{
+	skb->l4_hash = is_l4;
+	skb->sw_hash = is_sw;
+	skb->hash = hash;
+}
+
+static inline void
+skb_set_hash(struct sk_buff *skb, __u32 hash, enum pkt_hash_types type)
+{
+	/* Used by drivers to set hash from HW */
+	__skb_set_hash(skb, hash, false, type == PKT_HASH_TYPE_L4);
+}
+
+static inline void
+__skb_set_sw_hash(struct sk_buff *skb, __u32 hash, bool is_l4)
+{
+	__skb_set_hash(skb, hash, true, is_l4);
+}
+
+void __skb_get_hash(struct sk_buff *skb);
+u32 skb_get_poff(const struct sk_buff *skb);
+u32 __skb_get_poff(const struct sk_buff *skb, void *data,
+		   const struct flow_keys *keys, int hlen);
+__be32 __skb_flow_get_ports(const struct sk_buff *skb, int thoff, u8 ip_proto,
+			    void *data, int hlen_proto);
+
+static inline __be32 skb_flow_get_ports(const struct sk_buff *skb,
+					int thoff, u8 ip_proto)
+{
+	return __skb_flow_get_ports(skb, thoff, ip_proto, NULL, 0);
+}
+
+void skb_flow_dissector_init(struct flow_dissector *flow_dissector,
+			     const struct flow_dissector_key *key,
+			     unsigned int key_count);
+
+bool __skb_flow_dissect(const struct sk_buff *skb,
+			struct flow_dissector *flow_dissector,
+			void *target_container,
+			void *data, __be16 proto, int nhoff, int hlen,
+			unsigned int flags);
+
+static inline bool skb_flow_dissect(const struct sk_buff *skb,
+				    struct flow_dissector *flow_dissector,
+				    void *target_container, unsigned int flags)
+{
+	return __skb_flow_dissect(skb, flow_dissector, target_container,
+				  NULL, 0, 0, 0, flags);
+}
+
+static inline bool skb_flow_dissect_flow_keys(const struct sk_buff *skb,
+					      struct flow_keys *flow,
+					      unsigned int flags)
+{
+	memset(flow, 0, sizeof(*flow));
+	return __skb_flow_dissect(skb, &flow_keys_dissector, flow,
+				  NULL, 0, 0, 0, flags);
+}
+
+static inline bool skb_flow_dissect_flow_keys_buf(struct flow_keys *flow,
+						  void *data, __be16 proto,
+						  int nhoff, int hlen,
+						  unsigned int flags)
+{
+	memset(flow, 0, sizeof(*flow));
+	return __skb_flow_dissect(NULL, &flow_keys_buf_dissector, flow,
+				  data, proto, nhoff, hlen, flags);
+}
+
+static inline __u32 skb_get_hash(struct sk_buff *skb)
+{
+	if (!skb->l4_hash && !skb->sw_hash)
+		__skb_get_hash(skb);
+
+	return skb->hash;
+}
+
+__u32 __skb_get_hash_flowi6(struct sk_buff *skb, struct flowi6 *fl6);
+
+static inline __u32 skb_get_hash_flowi6(struct sk_buff *skb, struct flowi6 *fl6)
+{
+	if (!skb->l4_hash && !skb->sw_hash)
+		__skb_get_hash_flowi6(skb, fl6);
+
+	return skb->hash;
+}
+
+__u32 __skb_get_hash_flowi4(struct sk_buff *skb, struct flowi4 *fl);
+
+static inline __u32 skb_get_hash_flowi4(struct sk_buff *skb, struct flowi4 *fl4)
+{
+	if (!skb->l4_hash && !skb->sw_hash)
+		__skb_get_hash_flowi4(skb, fl4);
+
+	return skb->hash;
+}
+
+__u32 skb_get_hash_perturb(const struct sk_buff *skb, u32 perturb);
+
+static inline __u32 skb_get_hash_raw(const struct sk_buff *skb)
+{
+	return skb->hash;
 }
 
 static inline void skb_copy_hash(struct sk_buff *to, const struct sk_buff *from)
@@ -1943,7 +2027,7 @@ static inline void skb_probe_transport_header(struct sk_buff *skb,
 
 	if (skb_transport_header_was_set(skb))
 		return;
-	else if (skb_flow_dissect_flow_keys(skb, &keys))
+	else if (skb_flow_dissect_flow_keys(skb, &keys, 0))
 		skb_set_transport_header(skb, keys.control.thoff);
 	else
 		skb_set_transport_header(skb, offset_hint);

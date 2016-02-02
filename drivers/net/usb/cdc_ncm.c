@@ -1006,9 +1006,17 @@ static struct usb_cdc_ncm_ndp16 *cdc_ncm_ndp(struct cdc_ncm_ctx *ctx, struct sk_
 	* NTH16 header as we would normally do. NDP isn't written to the SKB yet, and
 	* the wNdpIndex field in the header is actually not consistent with reality. It will be later.
 	*/
-	if (ctx->drvflags & CDC_NCM_FLAG_NDP_TO_END)
+	if (ctx->drvflags & CDC_NCM_FLAG_NDP_TO_END) {
 		if (ctx->delayed_ndp16->dwSignature == sign)
 			return ctx->delayed_ndp16;
+
+		/* We can only push a single NDP to the end. Return
+		 * NULL to send what we've already got and queue this
+		 * skb for later.
+		 */
+		else if (ctx->delayed_ndp16->dwSignature)
+			return NULL;
+	}
 
 	/* follow the chain of NDPs, looking for a match */
 	while (ndpoffset) {
@@ -1599,6 +1607,24 @@ static const struct usb_device_id cdc_devs[] = {
 	  .bInterfaceSubClass = USB_CDC_SUBCLASS_NCM,
 	  .bInterfaceProtocol = USB_CDC_PROTO_NONE,
 	  .driver_info = (unsigned long) &wwan_info,
+	},
+
+	/* DW5812 LTE Verizon Mobile Broadband Card
+	 * Unlike DW5550 this device requires FLAG_NOARP
+	 */
+	{ USB_DEVICE_AND_INTERFACE_INFO(0x413c, 0x81bb,
+		USB_CLASS_COMM,
+		USB_CDC_SUBCLASS_NCM, USB_CDC_PROTO_NONE),
+	  .driver_info = (unsigned long)&wwan_noarp_info,
+	},
+
+	/* DW5813 LTE AT&T Mobile Broadband Card
+	 * Unlike DW5550 this device requires FLAG_NOARP
+	 */
+	{ USB_DEVICE_AND_INTERFACE_INFO(0x413c, 0x81bc,
+		USB_CLASS_COMM,
+		USB_CDC_SUBCLASS_NCM, USB_CDC_PROTO_NONE),
+	  .driver_info = (unsigned long)&wwan_noarp_info,
 	},
 
 	/* Dell branded MBM devices like DW5550 */

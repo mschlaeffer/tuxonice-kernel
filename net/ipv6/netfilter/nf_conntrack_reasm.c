@@ -190,7 +190,7 @@ static void nf_ct_frag6_expire(unsigned long data)
 /* Creation primitives. */
 static inline struct frag_queue *fq_find(struct net *net, __be32 id,
 					 u32 user, struct in6_addr *src,
-					 struct in6_addr *dst, u8 ecn)
+					 struct in6_addr *dst, int iif, u8 ecn)
 {
 	struct inet_frag_queue *q;
 	struct ip6_create_arg arg;
@@ -200,6 +200,7 @@ static inline struct frag_queue *fq_find(struct net *net, __be32 id,
 	arg.user = user;
 	arg.src = src;
 	arg.dst = dst;
+	arg.iif = iif;
 	arg.ecn = ecn;
 
 	local_bh_disable();
@@ -603,7 +604,7 @@ struct sk_buff *nf_ct_frag6_gather(struct sk_buff *skb, u32 user)
 	fhdr = (struct frag_hdr *)skb_transport_header(clone);
 
 	fq = fq_find(net, fhdr->identification, user, &hdr->saddr, &hdr->daddr,
-		     ip6_frag_ecn(hdr));
+		     skb->dev ? skb->dev->ifindex : 0, ip6_frag_ecn(hdr));
 	if (fq == NULL) {
 		pr_debug("Can't find and can't create new queue\n");
 		goto ret_orig;
@@ -648,12 +649,18 @@ void nf_ct_frag6_consume_orig(struct sk_buff *skb)
 
 static int nf_ct_net_init(struct net *net)
 {
+	int res;
+
 	net->nf_frag.frags.high_thresh = IPV6_FRAG_HIGH_THRESH;
 	net->nf_frag.frags.low_thresh = IPV6_FRAG_LOW_THRESH;
 	net->nf_frag.frags.timeout = IPV6_FRAG_TIMEOUT;
-	inet_frags_init_net(&net->nf_frag.frags);
-
-	return nf_ct_frag6_sysctl_register(net);
+	res = inet_frags_init_net(&net->nf_frag.frags);
+	if (res)
+		return res;
+	res = nf_ct_frag6_sysctl_register(net);
+	if (res)
+		inet_frags_uninit_net(&net->nf_frag.frags);
+	return res;
 }
 
 static void nf_ct_net_exit(struct net *net)

@@ -3148,7 +3148,7 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct tcp_fastopen_request *fo = tp->fastopen_req;
-	int syn_loss = 0, space, err = 0, copied;
+	int syn_loss = 0, space, err = 0;
 	unsigned long last_syn_loss = 0;
 	struct sk_buff *syn_data;
 
@@ -3186,17 +3186,18 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
 		goto fallback;
 	syn_data->ip_summed = CHECKSUM_PARTIAL;
 	memcpy(syn_data->cb, syn->cb, sizeof(syn->cb));
-	copied = copy_from_iter(skb_put(syn_data, space), space,
-				&fo->data->msg_iter);
-	if (unlikely(!copied)) {
-		kfree_skb(syn_data);
-		goto fallback;
+	if (space) {
+		int copied = copy_from_iter(skb_put(syn_data, space), space,
+					    &fo->data->msg_iter);
+		if (unlikely(!copied)) {
+			kfree_skb(syn_data);
+			goto fallback;
+		}
+		if (copied != space) {
+			skb_trim(syn_data, copied);
+			space = copied;
+		}
 	}
-	if (copied != space) {
-		skb_trim(syn_data, copied);
-		space = copied;
-	}
-
 	/* No more data pending in inet_wait_for_connect() */
 	if (space == fo->size)
 		fo->data = NULL;
@@ -3406,7 +3407,7 @@ static int tcp_xmit_probe_skb(struct sock *sk, int urgent, int mib)
 	 */
 	tcp_init_nondata_skb(skb, tp->snd_una - !urgent, TCPHDR_ACK);
 	skb_mstamp_get(&skb->skb_mstamp);
-	NET_INC_STATS_BH(sock_net(sk), mib);
+	NET_INC_STATS(sock_net(sk), mib);
 	return tcp_transmit_skb(sk, skb, 0, GFP_ATOMIC);
 }
 
