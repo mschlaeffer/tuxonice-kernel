@@ -749,8 +749,16 @@ next_slot:
 		}
 
 		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-		if (key.objectid > ino ||
-		    key.type > BTRFS_EXTENT_DATA_KEY || key.offset >= end)
+
+		if (key.objectid > ino)
+			break;
+		if (WARN_ON_ONCE(key.objectid < ino) ||
+		    key.type < BTRFS_EXTENT_DATA_KEY) {
+			ASSERT(del_nr == 0);
+			path->slots[0]++;
+			goto next_slot;
+		}
+		if (key.type > BTRFS_EXTENT_DATA_KEY || key.offset >= end)
 			break;
 
 		fi = btrfs_item_ptr(leaf, path->slots[0],
@@ -766,10 +774,11 @@ next_slot:
 				btrfs_file_extent_num_bytes(leaf, fi);
 		} else if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
 			extent_end = key.offset +
-				btrfs_file_extent_inline_len(leaf, fi);
+				btrfs_file_extent_inline_len(leaf,
+						     path->slots[0], fi);
 		} else {
-			WARN_ON(1);
-			extent_end = search_start;
+			/* can't happen */
+			BUG();
 		}
 
 		if (extent_end <= search_start) {
@@ -1781,7 +1790,13 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 	int ret = 0;
 	struct btrfs_trans_handle *trans;
 	bool full_sync = 0;
+	u64 len;
 
+	/*
+	 * The range length can be represented by u64, we have to do the typecasts
+	 * to avoid signed overflow if it's [0, LLONG_MAX] eg. from fsync()
+	 */
+	len = (u64)end - (u64)start + 1;
 	trace_btrfs_sync_file(file, datasync);
 
 	/*
@@ -1809,7 +1824,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 	full_sync = test_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
 			     &BTRFS_I(inode)->runtime_flags);
 	if (full_sync) {
-		ret = btrfs_wait_ordered_range(inode, start, end - start + 1);
+		ret = btrfs_wait_ordered_range(inode, start, len);
 		if (ret) {
 			mutex_unlock(&inode->i_mutex);
 			goto out;
@@ -1900,8 +1915,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 			}
 		}
 		if (!full_sync) {
-			ret = btrfs_wait_ordered_range(inode, start,
-						       end - start + 1);
+			ret = btrfs_wait_ordered_range(inode, start, len);
 			if (ret)
 				goto out;
 		}

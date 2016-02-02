@@ -533,6 +533,9 @@ struct hv_dynmem_device {
 	 */
 	struct task_struct *thread;
 
+	struct mutex ha_region_mutex;
+	struct completion waiter_event;
+
 	/*
 	 * A list of hot-add regions.
 	 */
@@ -549,7 +552,61 @@ struct hv_dynmem_device {
 static struct hv_dynmem_device dm_device;
 
 static void post_status(struct hv_dynmem_device *dm);
+
 #ifdef CONFIG_MEMORY_HOTPLUG
+static void acquire_region_mutex(bool trylock)
+{
+	if (trylock) {
+		reinit_completion(&dm_device.waiter_event);
+		while (!mutex_trylock(&dm_device.ha_region_mutex))
+			wait_for_completion(&dm_device.waiter_event);
+	} else {
+		mutex_lock(&dm_device.ha_region_mutex);
+	}
+}
+
+static void release_region_mutex(bool trylock)
+{
+	if (trylock) {
+		mutex_unlock(&dm_device.ha_region_mutex);
+	} else {
+		mutex_unlock(&dm_device.ha_region_mutex);
+		complete(&dm_device.waiter_event);
+	}
+}
+
+static int hv_memory_notifier(struct notifier_block *nb, unsigned long val,
+			      void *v)
+{
+	switch (val) {
+	case MEM_GOING_ONLINE:
+		acquire_region_mutex(true);
+		break;
+
+	case MEM_ONLINE:
+	case MEM_CANCEL_ONLINE:
+		if (val == MEM_ONLINE ||
+		    mutex_is_locked(&dm_device.ha_region_mutex))
+			mutex_unlock(&dm_device.ha_region_mutex);
+		if (dm_device.ha_waiting) {
+			dm_device.ha_waiting = false;
+			complete(&dm_device.ol_waitevent);
+		}
+		break;
+
+	case MEM_GOING_OFFLINE:
+	case MEM_OFFLINE:
+	case MEM_CANCEL_OFFLINE:
+		break;
+	}
+	return NOTIFY_OK;
+}
+
+static struct notifier_block hv_memory_nb = {
+	.notifier_call = hv_memory_notifier,
+	.priority = 0
+};
+
 
 static void hv_bring_pgs_online(unsigned long start_pfn, unsigned long size)
 {
@@ -591,6 +648,7 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
 		init_completion(&dm_device.ol_waitevent);
 		dm_device.ha_waiting = true;
 
+		release_region_mutex(false);
 		nid = memory_add_physaddr_to_nid(PFN_PHYS(start_pfn));
 		ret = add_memory(nid, PFN_PHYS((start_pfn)),
 				(HA_CHUNK << PAGE_SHIFT));
@@ -619,6 +677,7 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
 		 * have not been "onlined" within the allowed time.
 		 */
 		wait_for_completion_timeout(&dm_device.ol_waitevent, 5*HZ);
+		acquire_region_mutex(false);
 		post_status(&dm_device);
 	}
 
@@ -631,11 +690,6 @@ static void hv_online_page(struct page *pg)
 	struct hv_hotadd_state *has;
 	unsigned long cur_start_pgp;
 	unsigned long cur_end_pgp;
-
-	if (dm_device.ha_waiting) {
-		dm_device.ha_waiting = false;
-		complete(&dm_device.ol_waitevent);
-	}
 
 	list_for_each(cur, &dm_device.ha_region_list) {
 		has = list_entry(cur, struct hv_hotadd_state, list);
@@ -834,6 +888,7 @@ static void hot_add_req(struct work_struct *dummy)
 	resp.hdr.size = sizeof(struct dm_hot_add_response);
 
 #ifdef CONFIG_MEMORY_HOTPLUG
+	acquire_region_mutex(false);
 	pg_start = dm->ha_wrk.ha_page_range.finfo.start_page;
 	pfn_cnt = dm->ha_wrk.ha_page_range.finfo.page_cnt;
 
@@ -865,6 +920,7 @@ static void hot_add_req(struct work_struct *dummy)
 	if (do_hot_add)
 		resp.page_count = process_hot_add(pg_start, pfn_cnt,
 						rg_start, rg_sz);
+	release_region_mutex(false);
 #endif
 	/*
 	 * The result field of the response structure has the
@@ -1028,11 +1084,12 @@ static void free_balloon_pages(struct hv_dynmem_device *dm,
 
 
 
-static int  alloc_balloon_pages(struct hv_dynmem_device *dm, int num_pages,
-			 struct dm_balloon_response *bl_resp, int alloc_unit,
-			 bool *alloc_error)
+static unsigned int alloc_balloon_pages(struct hv_dynmem_device *dm,
+					unsigned int num_pages,
+					struct dm_balloon_response *bl_resp,
+					int alloc_unit)
 {
-	int i = 0;
+	unsigned int i = 0;
 	struct page *pg;
 
 	if (num_pages < alloc_unit)
@@ -1051,11 +1108,8 @@ static int  alloc_balloon_pages(struct hv_dynmem_device *dm, int num_pages,
 				__GFP_NOMEMALLOC | __GFP_NOWARN,
 				get_order(alloc_unit << PAGE_SHIFT));
 
-		if (!pg) {
-			*alloc_error = true;
+		if (!pg)
 			return i * alloc_unit;
-		}
-
 
 		dm->num_pages_ballooned += alloc_unit;
 
@@ -1082,21 +1136,33 @@ static int  alloc_balloon_pages(struct hv_dynmem_device *dm, int num_pages,
 
 static void balloon_up(struct work_struct *dummy)
 {
-	int num_pages = dm_device.balloon_wrk.num_pages;
-	int num_ballooned = 0;
+	unsigned int num_pages = dm_device.balloon_wrk.num_pages;
+	unsigned int num_ballooned = 0;
 	struct dm_balloon_response *bl_resp;
 	int alloc_unit;
 	int ret;
-	bool alloc_error = false;
 	bool done = false;
 	int i;
+	struct sysinfo val;
+	unsigned long floor;
 
+	/* The host balloons pages in 2M granularity. */
+	WARN_ON_ONCE(num_pages % PAGES_IN_2M != 0);
 
 	/*
 	 * We will attempt 2M allocations. However, if we fail to
 	 * allocate 2M chunks, we will go back to 4k allocations.
 	 */
 	alloc_unit = 512;
+
+	si_meminfo(&val);
+	floor = compute_balloon_floor();
+
+	/* Refuse to balloon below the floor, keep the 2M granularity. */
+	if (val.freeram < num_pages || val.freeram - num_pages < floor) {
+		num_pages = val.freeram > floor ? (val.freeram - floor) : 0;
+		num_pages -= num_pages % PAGES_IN_2M;
+	}
 
 	while (!done) {
 		bl_resp = (struct dm_balloon_response *)send_buffer;
@@ -1108,15 +1174,14 @@ static void balloon_up(struct work_struct *dummy)
 
 		num_pages -= num_ballooned;
 		num_ballooned = alloc_balloon_pages(&dm_device, num_pages,
-						bl_resp, alloc_unit,
-						 &alloc_error);
+						    bl_resp, alloc_unit);
 
-		if ((alloc_error) && (alloc_unit != 1)) {
+		if (alloc_unit != 1 && num_ballooned == 0) {
 			alloc_unit = 1;
 			continue;
 		}
 
-		if ((alloc_error) || (num_ballooned == num_pages)) {
+		if (num_ballooned == 0 || num_ballooned == num_pages) {
 			bl_resp->more_pages = 0;
 			done = true;
 			dm_device.state = DM_INITIALIZED;
@@ -1383,7 +1448,9 @@ static int balloon_probe(struct hv_device *dev,
 	dm_device.next_version = DYNMEM_PROTOCOL_VERSION_WIN7;
 	init_completion(&dm_device.host_event);
 	init_completion(&dm_device.config_event);
+	init_completion(&dm_device.waiter_event);
 	INIT_LIST_HEAD(&dm_device.ha_region_list);
+	mutex_init(&dm_device.ha_region_mutex);
 	INIT_WORK(&dm_device.balloon_wrk.wrk, balloon_up);
 	INIT_WORK(&dm_device.ha_wrk.wrk, hot_add_req);
 	dm_device.host_specified_ha_region = false;
@@ -1397,6 +1464,7 @@ static int balloon_probe(struct hv_device *dev,
 
 #ifdef CONFIG_MEMORY_HOTPLUG
 	set_online_page_callback(&hv_online_page);
+	register_memory_notifier(&hv_memory_nb);
 #endif
 
 	hv_set_drvdata(dev, &dm_device);
@@ -1515,6 +1583,7 @@ static int balloon_remove(struct hv_device *dev)
 	kfree(send_buffer);
 #ifdef CONFIG_MEMORY_HOTPLUG
 	restore_online_page_callback(&hv_online_page);
+	unregister_memory_notifier(&hv_memory_nb);
 #endif
 	list_for_each_safe(cur, tmp, &dm->ha_region_list) {
 		has = list_entry(cur, struct hv_hotadd_state, list);
