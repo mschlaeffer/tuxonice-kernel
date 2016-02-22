@@ -4404,6 +4404,7 @@ EXPORT_SYMBOL vmlinux 0x35225ba3	xfrm_dst_ifdown
 EXPORT_SYMBOL vmlinux 0x35328466	seq_bitmap
 EXPORT_SYMBOL vmlinux 0x353a4b58	__put_cred
 EXPORT_SYMBOL vmlinux 0x357c90d2	qdisc_put_stab
+EXPORT_SYMBOL vmlinux 0x35b177ae	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0x35bd0e87	generic_fillattr
 EXPORT_SYMBOL vmlinux 0x35c2ba9e	refrigerator
 EXPORT_SYMBOL vmlinux 0x35ca8cfa	dm_kcopyd_client_create
@@ -6452,7 +6453,6 @@ EXPORT_SYMBOL vmlinux 0xbc422db9	iov_iter_copy_from_user
 EXPORT_SYMBOL vmlinux 0xbc447d67	scsi_device_put
 EXPORT_SYMBOL vmlinux 0xbc46462f	key_validate
 EXPORT_SYMBOL vmlinux 0xbc528a6b	acpi_unlock_battery_dir
-EXPORT_SYMBOL vmlinux 0xbc69b4b4	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xbc90b228	ethtool_op_get_tso
 EXPORT_SYMBOL vmlinux 0xbc952300	inet_put_port
 EXPORT_SYMBOL vmlinux 0xbcacec7b	alloc_fcdev
@@ -8242,13 +8242,13 @@ EXPORT_SYMBOL_GPL drivers/misc/cs5535-mfgpt 0x9bb2b336	cs5535_mfgpt_free_timer
 EXPORT_SYMBOL_GPL drivers/misc/cs5535-mfgpt 0xa07c4f3d	cs5535_mfgpt_write
 EXPORT_SYMBOL_GPL drivers/misc/eeprom/eeprom_93cx6 0x2df115d4	eeprom_93cx6_multiread
 EXPORT_SYMBOL_GPL drivers/misc/eeprom/eeprom_93cx6 0x63d14d2f	eeprom_93cx6_read
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x2e26b01e	enclosure_add_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x656e7257	enclosure_find
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x6fbea246	enclosure_register
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x8bc2a3b0	enclosure_component_register
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xbaea810b	enclosure_unregister
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xc6a44600	enclosure_for_each_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xf05a9e55	enclosure_remove_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x0fedd52d	enclosure_remove_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x126d30bd	enclosure_find
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x15c6d9dc	enclosure_unregister
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x34beac45	enclosure_component_register
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x5a7e7a8a	enclosure_add_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x641d9b29	enclosure_register
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xf6995092	enclosure_for_each_device
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x6b42080d	lis3lv02d_joystick_disable
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x6b8b9fa0	lis3lv02d_init_device
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0xa323953b	lis3lv02d_remove_fs

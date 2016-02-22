@@ -5326,7 +5326,6 @@ EXPORT_SYMBOL vmlinux 0x7889a4ba	blk_queue_free_tags
 EXPORT_SYMBOL vmlinux 0x789a17f7	_lv1_destruct_logical_spe
 EXPORT_SYMBOL vmlinux 0x78df6bd7	no_pci_devices
 EXPORT_SYMBOL vmlinux 0x78ed3e5c	__init_waitqueue_head
-EXPORT_SYMBOL vmlinux 0x790110c5	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0x790df6ca	__wait_on_bit_lock
 EXPORT_SYMBOL vmlinux 0x7951dda7	__elv_add_request
 EXPORT_SYMBOL vmlinux 0x7957cf0a	pmac_resume_agp_for_card
@@ -6017,6 +6016,7 @@ EXPORT_SYMBOL vmlinux 0xa6fcebdd	ps3_sb_event_receive_port_setup
 EXPORT_SYMBOL vmlinux 0xa71bf293	swiotlb_sync_single_for_device
 EXPORT_SYMBOL vmlinux 0xa72a0f5b	nr_online_nodes
 EXPORT_SYMBOL vmlinux 0xa753a9e4	compat_mc_getsockopt
+EXPORT_SYMBOL vmlinux 0xa760a37f	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xa777261e	i2c_master_send
 EXPORT_SYMBOL vmlinux 0xa77fb1ab	swiotlb_map_sg_attrs
 EXPORT_SYMBOL vmlinux 0xa7817c26	scsi_block_when_processing_errors
@@ -7970,13 +7970,13 @@ EXPORT_SYMBOL_GPL drivers/misc/cb710/cb710 0x38d03f81	cb710_set_irq_handler
 EXPORT_SYMBOL_GPL drivers/misc/cb710/cb710 0x8fcf58ad	cb710_sg_dwiter_read_next_block
 EXPORT_SYMBOL_GPL drivers/misc/eeprom/eeprom_93cx6 0x2df115d4	eeprom_93cx6_multiread
 EXPORT_SYMBOL_GPL drivers/misc/eeprom/eeprom_93cx6 0x63d14d2f	eeprom_93cx6_read
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x0a4e262e	enclosure_unregister
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x0cba13b6	enclosure_for_each_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x4e24f315	enclosure_find
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x5fc3eafc	enclosure_register
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x5fdafb3d	enclosure_component_register
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x61ba0aa8	enclosure_add_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x67e1a5fb	enclosure_remove_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x062ef5d0	enclosure_unregister
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x070b72b5	enclosure_find
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x669d16b8	enclosure_component_register
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xa6c68e24	enclosure_for_each_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xb1478da3	enclosure_register
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xcbe3f3fb	enclosure_add_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xff0301c8	enclosure_remove_device
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x3a5f49b0	lis3lv02d_poweroff
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x6402c970	lis3lv02d_remove_fs
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0xa46646ae	lis3lv02d_poweron
