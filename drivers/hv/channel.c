@@ -474,18 +474,26 @@ post_msg_err:
 }
 EXPORT_SYMBOL_GPL(vmbus_teardown_gpadl);
 
-static int vmbus_close_internal(struct vmbus_channel *channel)
+static void reset_channel_cb(void *arg)
+{
+	struct vmbus_channel *channel = arg;
+
+	channel->onchannel_callback = NULL;
+}
+
+static void vmbus_close_internal(struct vmbus_channel *channel)
 {
 	struct vmbus_channel_close_channel *msg;
 	int ret;
-	unsigned long flags;
 
 	channel->state = CHANNEL_OPEN_STATE;
 	channel->sc_creation_callback = NULL;
 	/* Stop callback and cancel the timer asap */
-	spin_lock_irqsave(&channel->inbound_lock, flags);
-	channel->onchannel_callback = NULL;
-	spin_unlock_irqrestore(&channel->inbound_lock, flags);
+	if (channel->target_cpu != smp_processor_id())
+		smp_call_function_single(channel->target_cpu, reset_channel_cb,
+					 channel, true);
+	else
+		reset_channel_cb(channel);
 
 	/* Send a closing message */
 
@@ -561,23 +569,9 @@ void vmbus_close(struct vmbus_channel *channel)
 }
 EXPORT_SYMBOL_GPL(vmbus_close);
 
-/**
- * vmbus_sendpacket() - Send the specified buffer on the given channel
- * @channel: Pointer to vmbus_channel structure.
- * @buffer: Pointer to the buffer you want to receive the data into.
- * @bufferlen: Maximum size of what the the buffer will hold
- * @requestid: Identifier of the request
- * @type: Type of packet that is being send e.g. negotiate, time
- * packet etc.
- *
- * Sends data in @buffer directly to hyper-v via the vmbus
- * This will send the data unparsed to hyper-v.
- *
- * Mainly used by Hyper-V drivers.
- */
-int vmbus_sendpacket(struct vmbus_channel *channel, void *buffer,
+int vmbus_sendpacket_ctl(struct vmbus_channel *channel, void *buffer,
 			   u32 bufferlen, u64 requestid,
-			   enum vmbus_packet_type type, u32 flags)
+			   enum vmbus_packet_type type, u32 flags, bool kick_q)
 {
 	struct vmpacket_descriptor desc;
 	u32 packetlen = sizeof(struct vmpacket_descriptor) + bufferlen;
@@ -605,21 +599,70 @@ int vmbus_sendpacket(struct vmbus_channel *channel, void *buffer,
 
 	ret = hv_ringbuffer_write(&channel->outbound, bufferlist, 3, &signal);
 
-	if (ret == 0 && signal)
+	/*
+	 * Signalling the host is conditional on many factors:
+	 * 1. The ring state changed from being empty to non-empty.
+	 *    This is tracked by the variable "signal".
+	 * 2. The variable kick_q tracks if more data will be placed
+	 *    on the ring. We will not signal if more data is
+	 *    to be placed.
+	 *
+	 * Based on the channel signal state, we will decide
+	 * which signaling policy will be applied.
+	 *
+	 * If we cannot write to the ring-buffer; signal the host
+	 * even if we may not have written anything. This is a rare
+	 * enough condition that it should not matter.
+	 */
+
+	if (channel->signal_policy)
+		signal = true;
+	else
+		kick_q = true;
+
+	if (((ret == 0) && kick_q && signal) || (ret))
 		vmbus_setevent(channel);
 
 	return ret;
 }
+EXPORT_SYMBOL(vmbus_sendpacket_ctl);
+
+/**
+ * vmbus_sendpacket() - Send the specified buffer on the given channel
+ * @channel: Pointer to vmbus_channel structure.
+ * @buffer: Pointer to the buffer you want to receive the data into.
+ * @bufferlen: Maximum size of what the the buffer will hold
+ * @requestid: Identifier of the request
+ * @type: Type of packet that is being send e.g. negotiate, time
+ * packet etc.
+ *
+ * Sends data in @buffer directly to hyper-v via the vmbus
+ * This will send the data unparsed to hyper-v.
+ *
+ * Mainly used by Hyper-V drivers.
+ */
+int vmbus_sendpacket(struct vmbus_channel *channel, void *buffer,
+			   u32 bufferlen, u64 requestid,
+			   enum vmbus_packet_type type, u32 flags)
+{
+	return vmbus_sendpacket_ctl(channel, buffer, bufferlen, requestid,
+				    type, flags, true);
+}
 EXPORT_SYMBOL(vmbus_sendpacket);
 
 /*
- * vmbus_sendpacket_pagebuffer - Send a range of single-page buffer
- * packets using a GPADL Direct packet type.
+ * vmbus_sendpacket_pagebuffer_ctl - Send a range of single-page buffer
+ * packets using a GPADL Direct packet type. This interface allows you
+ * to control notifying the host. This will be useful for sending
+ * batched data. Also the sender can control the send flags
+ * explicitly.
  */
-int vmbus_sendpacket_pagebuffer(struct vmbus_channel *channel,
+int vmbus_sendpacket_pagebuffer_ctl(struct vmbus_channel *channel,
 				     struct hv_page_buffer pagebuffers[],
 				     u32 pagecount, void *buffer, u32 bufferlen,
-				     u64 requestid)
+				     u64 requestid,
+				     u32 flags,
+				     bool kick_q)
 {
 	int ret;
 	int i;
@@ -647,7 +690,7 @@ int vmbus_sendpacket_pagebuffer(struct vmbus_channel *channel,
 
 	/* Setup the descriptor */
 	desc.type = VM_PKT_DATA_USING_GPA_DIRECT;
-	desc.flags = VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED;
+	desc.flags = flags;
 	desc.dataoffset8 = descsize >> 3; /* in 8-bytes grandularity */
 	desc.length8 = (u16)(packetlen_aligned >> 3);
 	desc.transactionid = requestid;
@@ -668,10 +711,48 @@ int vmbus_sendpacket_pagebuffer(struct vmbus_channel *channel,
 
 	ret = hv_ringbuffer_write(&channel->outbound, bufferlist, 3, &signal);
 
-	if (ret == 0 && signal)
+	/*
+	 * Signalling the host is conditional on many factors:
+	 * 1. The ring state changed from being empty to non-empty.
+	 *    This is tracked by the variable "signal".
+	 * 2. The variable kick_q tracks if more data will be placed
+	 *    on the ring. We will not signal if more data is
+	 *    to be placed.
+	 *
+	 * Based on the channel signal state, we will decide
+	 * which signaling policy will be applied.
+	 *
+	 * If we cannot write to the ring-buffer; signal the host
+	 * even if we may not have written anything. This is a rare
+	 * enough condition that it should not matter.
+	 */
+
+	if (channel->signal_policy)
+		signal = true;
+	else
+		kick_q = true;
+
+	if (((ret == 0) && kick_q && signal) || (ret))
 		vmbus_setevent(channel);
 
 	return ret;
+}
+EXPORT_SYMBOL_GPL(vmbus_sendpacket_pagebuffer_ctl);
+
+/*
+ * vmbus_sendpacket_pagebuffer - Send a range of single-page buffer
+ * packets using a GPADL Direct packet type.
+ */
+int vmbus_sendpacket_pagebuffer(struct vmbus_channel *channel,
+				     struct hv_page_buffer pagebuffers[],
+				     u32 pagecount, void *buffer, u32 bufferlen,
+				     u64 requestid)
+{
+	u32 flags = VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED;
+	return vmbus_sendpacket_pagebuffer_ctl(channel, pagebuffers, pagecount,
+					       buffer, bufferlen, requestid,
+					       flags, true);
+
 }
 EXPORT_SYMBOL_GPL(vmbus_sendpacket_pagebuffer);
 

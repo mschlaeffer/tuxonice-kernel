@@ -645,6 +645,11 @@ struct hv_input_signal_event_buffer {
 	struct hv_input_signal_event event;
 };
 
+enum hv_signal_policy {
+	HV_SIGNAL_POLICY_DEFAULT = 0,
+	HV_SIGNAL_POLICY_EXPLICIT,
+};
+
 struct vmbus_channel {
 	struct list_head listentry;
 
@@ -708,6 +713,8 @@ struct vmbus_channel {
 	 * preserve the earlier behavior.
 	 */
 	u32 target_vp;
+	/* The corresponding CPUID in the guest */
+	u32 target_cpu;
 	/*
 	 * Support for sub-channels. For high performance devices,
 	 * it will be useful to have multiple sub-channels to support
@@ -740,7 +747,25 @@ struct vmbus_channel {
 	 * This will be NULL for the primary channel.
 	 */
 	struct vmbus_channel *primary_channel;
+	/*
+	 * To support per-cpu lookup mapping of relid to channel,
+	 * link up channels based on their CPU affinity.
+	 */
+	struct list_head percpu_list;
+	/*
+	 * Host signaling policy: The default policy will be
+	 * based on the ring buffer state. We will also support
+	 * a policy where the client driver can have explicit
+	 * signaling control.
+	 */
+	enum hv_signal_policy  signal_policy;
 };
+
+static inline void set_channel_signal_state(struct vmbus_channel *c,
+					    enum hv_signal_policy policy)
+{
+	c->signal_policy = policy;
+}
 
 static inline void set_channel_read_state(struct vmbus_channel *c, bool state)
 {
@@ -833,12 +858,29 @@ extern int vmbus_sendpacket(struct vmbus_channel *channel,
 				  enum vmbus_packet_type type,
 				  u32 flags);
 
+extern int vmbus_sendpacket_ctl(struct vmbus_channel *channel,
+				  void *buffer,
+				  u32 bufferLen,
+				  u64 requestid,
+				  enum vmbus_packet_type type,
+				  u32 flags,
+				  bool kick_q);
+
 extern int vmbus_sendpacket_pagebuffer(struct vmbus_channel *channel,
 					    struct hv_page_buffer pagebuffers[],
 					    u32 pagecount,
 					    void *buffer,
 					    u32 bufferlen,
 					    u64 requestid);
+
+extern int vmbus_sendpacket_pagebuffer_ctl(struct vmbus_channel *channel,
+					   struct hv_page_buffer pagebuffers[],
+					   u32 pagecount,
+					   void *buffer,
+					   u32 bufferlen,
+					   u64 requestid,
+					   u32 flags,
+					   bool kick_q);
 
 extern int vmbus_sendpacket_multipagebuffer(struct vmbus_channel *channel,
 					struct hv_multipage_buffer *mpb,

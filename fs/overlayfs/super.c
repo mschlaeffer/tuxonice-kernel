@@ -62,6 +62,26 @@ struct ovl_entry {
 const char *ovl_whiteout_xattr = "trusted.overlay.whiteout";
 const char *ovl_opaque_xattr = "trusted.overlay.opaque";
 
+/*
+ * Returns a set of credentials suitable for overlayfs internal
+ * operations which require elevated capabilities, equivalent to those
+ * of the user which mounted the superblock. Caller must put the
+ * returned credentials.
+ */
+struct cred *ovl_prepare_creds(struct super_block *sb)
+{
+	struct ovl_fs *ofs = sb->s_fs_info;
+	struct cred *new_cred;
+
+	if (sb->s_magic != OVERLAYFS_SUPER_MAGIC)
+		return NULL;
+
+	new_cred = clone_cred(ofs->mounter_creds);
+	if (!new_cred)
+		return NULL;
+
+	return new_cred;
+}
 
 enum ovl_path_type ovl_path_type(struct dentry *dentry)
 {
@@ -205,8 +225,10 @@ bool ovl_is_whiteout(struct dentry *dentry)
 		return false;
 	if (!S_ISLNK(dentry->d_inode->i_mode))
 		return false;
+	if (!dentry->d_inode->i_op->getxattr)
+		return false;
 
-	res = vfs_getxattr(dentry, ovl_whiteout_xattr, &val, 1);
+	res = dentry->d_inode->i_op->getxattr(dentry, ovl_whiteout_xattr, &val, 1);
 	if (res == 1 && val == 'y')
 		return true;
 
@@ -217,11 +239,12 @@ static bool ovl_is_opaquedir(struct dentry *dentry)
 {
 	int res;
 	char val;
+	struct inode *inode = dentry->d_inode;
 
-	if (!S_ISDIR(dentry->d_inode->i_mode))
+	if (!S_ISDIR(dentry->d_inode->i_mode) || !inode->i_op->getxattr)
 		return false;
 
-	res = vfs_getxattr(dentry, ovl_opaque_xattr, &val, 1);
+	res = inode->i_op->getxattr(dentry, ovl_opaque_xattr, &val, 1);
 	if (res == 1 && val == 'y')
 		return true;
 
@@ -305,7 +328,7 @@ static int ovl_do_lookup(struct dentry *dentry)
 			struct cred *override_cred;
 
 			err = -ENOMEM;
-			override_cred = prepare_kernel_cred(NULL);
+			override_cred = ovl_prepare_creds(dentry->d_sb);
 			if (!override_cred)
 				goto out_dput_upper;
 
@@ -604,6 +627,9 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
 		goto out_put_lowerpath;
 	}
 
+	if (ufs->upper_mnt->mnt_flags & MNT_NOSUID)
+		sb->s_iflags |= SB_I_NOSUID;
+
 	ufs->lower_mnt = clone_private_mount(&lowerpath);
 	err = PTR_ERR(ufs->lower_mnt);
 	if (IS_ERR(ufs->lower_mnt)) {
@@ -616,6 +642,9 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
 	 * will fail instead of modifying lower fs.
 	 */
 	ufs->lower_mnt->mnt_flags |= MNT_READONLY;
+
+	if (ufs->lower_mnt->mnt_flags & MNT_NOSUID)
+		sb->s_iflags |= SB_I_NOSUID;
 
 	/* If the upper fs is r/o, we mark overlayfs r/o too */
 	if (ufs->upper_mnt->mnt_sb->s_flags & MS_RDONLY)
