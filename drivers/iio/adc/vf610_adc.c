@@ -98,6 +98,13 @@
 #define VF610_ADC_CALF			0x2
 #define VF610_ADC_TIMEOUT		msecs_to_jiffies(100)
 
+/* V at 25°C of 696 mV */
+#define VF610_VTEMP25_3V0		950
+/* V at 25°C of 699 mV */
+#define VF610_VTEMP25_3V3		867
+/* Typical sensor slope coefficient at all temperatures */
+#define VF610_TEMP_SLOPE_COEFF		1840
+
 enum clk_sel {
 	VF610_ADCIOC_BUSCLK_SET,
 	VF610_ADCIOC_ALTCLK_SET,
@@ -173,6 +180,8 @@ static inline void vf610_adc_calculate_rates(struct vf610_adc *info)
 		adc_feature->clk_div = 8;
 	}
 
+	adck_rate = ipg_rate / adc_feature->clk_div;
+
 	/*
 	 * Calculate ADC sample frequencies
 	 * Sample time unit is ADCK cycles. ADCK clk source is ipg clock,
@@ -184,7 +193,6 @@ static inline void vf610_adc_calculate_rates(struct vf610_adc *info)
 	 * BCT (Base Conversion Time): fixed to 25 ADCK cycles for 12 bit mode
 	 * LSTAdder(Long Sample Time): fixed to 3 ADCK cycles
 	 */
-	adck_rate = ipg_rate / info->adc_feature.clk_div;
 	for (i = 0; i < ARRAY_SIZE(vf610_hw_avgs); i++)
 		info->sample_freq_avail[i] =
 			adck_rate / (6 + vf610_hw_avgs[i] * (25 + 3));
@@ -569,11 +577,13 @@ static int vf610_read_raw(struct iio_dev *indio_dev,
 			break;
 		case IIO_TEMP:
 			/*
-			* Calculate in degree Celsius times 1000
-			* Using sensor slope of 1.84 mV/°C and
-			* V at 25°C of 696 mV
-			*/
-			*val = 25000 - ((int)info->value - 864) * 1000000 / 1840;
+			 * Calculate in degree Celsius times 1000
+			 * Using the typical sensor slope of 1.84 mV/°C
+			 * and VREFH_ADC at 3.3V, V at 25°C of 699 mV
+			 */
+			*val = 25000 - ((int)info->value - VF610_VTEMP25_3V3) *
+					1000000 / VF610_TEMP_SLOPE_COEFF;
+
 			break;
 		default:
 			mutex_unlock(&indio_dev->mlock);

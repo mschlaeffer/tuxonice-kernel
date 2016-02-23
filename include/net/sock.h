@@ -371,7 +371,7 @@ struct sock {
 	struct socket_wq __rcu	*sk_wq;
 
 #ifdef CONFIG_XFRM
-	struct xfrm_policy	*sk_policy[2];
+	struct xfrm_policy __rcu *sk_policy[2];
 #endif
 	unsigned long 		sk_flags;
 	struct dst_entry	*sk_rx_dst;
@@ -387,8 +387,8 @@ struct sock {
 				sk_no_check_rx : 1,
 				sk_userlocks : 4,
 				sk_protocol  : 8,
-#define SK_PROTOCOL_MAX U8_MAX
 				sk_type      : 16;
+#define SK_PROTOCOL_MAX U8_MAX
 	kmemcheck_bitfield_end(flags);
 	int			sk_wmem_queued;
 	gfp_t			sk_allocation;
@@ -1209,11 +1209,13 @@ static inline void memcg_memory_allocated_add(struct cg_proto *prot,
 					      unsigned long amt,
 					      int *parent_status)
 {
-	page_counter_charge(&prot->memory_allocated, amt);
+	struct page_counter *counter;
 
-	if (page_counter_read(&prot->memory_allocated) >
-	    prot->memory_allocated.limit)
-		*parent_status = OVER_LIMIT;
+	if (page_counter_try_charge(&prot->memory_allocated, amt, &counter))
+		return;
+
+	page_counter_charge(&prot->memory_allocated, amt);
+	*parent_status = OVER_LIMIT;
 }
 
 static inline void memcg_memory_allocated_sub(struct cg_proto *prot,
