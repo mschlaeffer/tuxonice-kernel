@@ -1,3 +1,17 @@
+linux (4.2.0-30.36) wily; urgency=high
+
+  [ Kamal Mostafa ]
+
+  * Release Tracking Bug
+    - LP: #1550037
+
+  [ Upstream Kernel Changes ]
+
+  * drm/vmwgfx: Fix an fb unlocking bug
+    - LP: #1548587
+
+ -- Kamal Mostafa <kamal@canonical.com>  Thu, 25 Feb 2016 15:02:05 -0800
+
 linux (4.2.0-30.35) wily; urgency=low
 
   [ Seth Forshee ]

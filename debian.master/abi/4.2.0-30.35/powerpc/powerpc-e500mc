@@ -6475,6 +6475,7 @@ EXPORT_SYMBOL vmlinux 0x20c55ae0	sscanf
 EXPORT_SYMBOL vmlinux 0x20cf35bf	iommu_tbl_range_alloc
 EXPORT_SYMBOL vmlinux 0x20df5a3d	vme_dma_pci_attribute
 EXPORT_SYMBOL vmlinux 0x20efd53f	page_put_link
+EXPORT_SYMBOL vmlinux 0x210da502	clone_cred
 EXPORT_SYMBOL vmlinux 0x2111d59b	devm_gpio_free
 EXPORT_SYMBOL vmlinux 0x21142333	elevator_init
 EXPORT_SYMBOL vmlinux 0x2127906b	xfrm_sad_getinfo
@@ -7782,6 +7783,7 @@ EXPORT_SYMBOL vmlinux 0x70523a7a	__cond_resched_softirq
 EXPORT_SYMBOL vmlinux 0x7054a3e4	request_dma
 EXPORT_SYMBOL vmlinux 0x7062b4cd	cmdline_parts_free
 EXPORT_SYMBOL vmlinux 0x706d051c	del_timer_sync
+EXPORT_SYMBOL vmlinux 0x707469f0	path_nosuid
 EXPORT_SYMBOL vmlinux 0x707f43f6	__ctzdi2
 EXPORT_SYMBOL vmlinux 0x708f023d	pm_vt_switch_required
 EXPORT_SYMBOL vmlinux 0x709371d0	sk_stream_kill_queues

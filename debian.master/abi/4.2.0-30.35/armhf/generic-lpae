@@ -5747,6 +5747,7 @@ EXPORT_SYMBOL vmlinux 0x04b152be	page_symlink
 EXPORT_SYMBOL vmlinux 0x04cda566	snd_interval_refine
 EXPORT_SYMBOL vmlinux 0x04e02b6b	devfreq_monitor_stop
 EXPORT_SYMBOL vmlinux 0x04ea56f9	_kstrtol
+EXPORT_SYMBOL vmlinux 0x0519b1c6	clone_cred
 EXPORT_SYMBOL vmlinux 0x05240ee7	percpu_counter_batch
 EXPORT_SYMBOL vmlinux 0x0540a95b	udp_ioctl
 EXPORT_SYMBOL vmlinux 0x058ff301	call_netdevice_notifiers
@@ -9486,6 +9487,7 @@ EXPORT_SYMBOL vmlinux 0xd845192c	edma_filter_fn
 EXPORT_SYMBOL vmlinux 0xd8460db7	input_mt_destroy_slots
 EXPORT_SYMBOL vmlinux 0xd855bbb9	xfrm6_find_1stfragopt
 EXPORT_SYMBOL vmlinux 0xd85833cb	__kfifo_dma_out_prepare_r
+EXPORT_SYMBOL vmlinux 0xd85908f9	path_nosuid
 EXPORT_SYMBOL vmlinux 0xd85cd67e	__wake_up
 EXPORT_SYMBOL vmlinux 0xd85f3050	crypto_sha256_update
 EXPORT_SYMBOL vmlinux 0xd8a5c3f8	call_usermodehelper_exec

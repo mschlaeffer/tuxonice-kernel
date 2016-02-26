@@ -6087,6 +6087,7 @@ EXPORT_SYMBOL vmlinux 0x0a01b999	sk_ns_capable
 EXPORT_SYMBOL vmlinux 0x0a1de9c3	xfrm_find_acq
 EXPORT_SYMBOL vmlinux 0x0a2487e0	unblock_all_signals
 EXPORT_SYMBOL vmlinux 0x0a292872	reservation_seqcount_class
+EXPORT_SYMBOL vmlinux 0x0a384d3e	path_nosuid
 EXPORT_SYMBOL vmlinux 0x0a3d0644	cpu_online_mask
 EXPORT_SYMBOL vmlinux 0x0a57863e	cancel_delayed_work_sync
 EXPORT_SYMBOL vmlinux 0x0a770832	register_memory_notifier
@@ -9876,6 +9877,7 @@ EXPORT_SYMBOL vmlinux 0xe3870376	generic_make_request
 EXPORT_SYMBOL vmlinux 0xe38e6bf4	loop_backing_file
 EXPORT_SYMBOL vmlinux 0xe395aad9	force_sig
 EXPORT_SYMBOL vmlinux 0xe3a53f4c	sort
+EXPORT_SYMBOL vmlinux 0xe3c0a267	clone_cred
 EXPORT_SYMBOL vmlinux 0xe3cee757	get_tz_trend
 EXPORT_SYMBOL vmlinux 0xe3d6f284	fb_find_mode_cvt
 EXPORT_SYMBOL vmlinux 0xe3fd58cd	__page_symlink

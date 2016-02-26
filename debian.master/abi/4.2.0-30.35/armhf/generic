@@ -8502,6 +8502,7 @@ EXPORT_SYMBOL vmlinux 0x9a2b75aa	blk_queue_max_segment_size
 EXPORT_SYMBOL vmlinux 0x9a423d28	debugfs_create_automount
 EXPORT_SYMBOL vmlinux 0x9a42c141	cros_ec_prepare_tx
 EXPORT_SYMBOL vmlinux 0x9a4eb74c	pci_set_power_state
+EXPORT_SYMBOL vmlinux 0x9a5280b1	path_nosuid
 EXPORT_SYMBOL vmlinux 0x9a55a9f9	dquot_reclaim_space_nodirty
 EXPORT_SYMBOL vmlinux 0x9a623142	ida_get_new_above
 EXPORT_SYMBOL vmlinux 0x9a627766	seq_path
@@ -9389,6 +9390,7 @@ EXPORT_SYMBOL vmlinux 0xcd7c8d08	omap_dss_find_output
 EXPORT_SYMBOL vmlinux 0xcd8d36f4	flow_get_u32_src
 EXPORT_SYMBOL vmlinux 0xcd9a46fc	bio_map_kern
 EXPORT_SYMBOL vmlinux 0xcda40e02	ipv4_specific
+EXPORT_SYMBOL vmlinux 0xcdbf80d1	clone_cred
 EXPORT_SYMBOL vmlinux 0xcdc39c9e	security_ismaclabel
 EXPORT_SYMBOL vmlinux 0xcdc440ff	jbd2_journal_lock_updates
 EXPORT_SYMBOL vmlinux 0xcdc49e19	lockref_get

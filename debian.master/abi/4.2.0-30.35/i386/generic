@@ -6510,6 +6510,7 @@ EXPORT_SYMBOL vmlinux 0x08a45664	request_key
 EXPORT_SYMBOL vmlinux 0x08d6afe3	i2c_master_send
 EXPORT_SYMBOL vmlinux 0x08e8cd19	down_write_trylock
 EXPORT_SYMBOL vmlinux 0x08ea69e7	mipi_dsi_packet_format_is_long
+EXPORT_SYMBOL vmlinux 0x08f26b19	clone_cred
 EXPORT_SYMBOL vmlinux 0x0903a061	pci_choose_state
 EXPORT_SYMBOL vmlinux 0x09100b35	remap_pfn_range
 EXPORT_SYMBOL vmlinux 0x093a7411	bitmap_cond_end_sync
@@ -8809,6 +8810,7 @@ EXPORT_SYMBOL vmlinux 0x8bafa780	blkdev_put
 EXPORT_SYMBOL vmlinux 0x8bb299ac	pnp_device_detach
 EXPORT_SYMBOL vmlinux 0x8bbe831d	textsearch_destroy
 EXPORT_SYMBOL vmlinux 0x8c183cbe	iowrite16
+EXPORT_SYMBOL vmlinux 0x8c233e6b	path_nosuid
 EXPORT_SYMBOL vmlinux 0x8c294fbc	uart_get_baud_rate
 EXPORT_SYMBOL vmlinux 0x8c49b3fc	fb_blank
 EXPORT_SYMBOL vmlinux 0x8c588af5	do_truncate

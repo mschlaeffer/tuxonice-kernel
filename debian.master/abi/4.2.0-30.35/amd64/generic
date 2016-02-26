@@ -6614,6 +6614,7 @@ EXPORT_SYMBOL vmlinux 0x160ef3c9	nla_put
 EXPORT_SYMBOL vmlinux 0x1616cb30	acpi_evaluate_dsm
 EXPORT_SYMBOL vmlinux 0x161e6d78	dev_addr_init
 EXPORT_SYMBOL vmlinux 0x16290d45	bioset_free
+EXPORT_SYMBOL vmlinux 0x162b16b0	clone_cred
 EXPORT_SYMBOL vmlinux 0x16305289	warn_slowpath_null
 EXPORT_SYMBOL vmlinux 0x16568541	scsi_register_driver
 EXPORT_SYMBOL vmlinux 0x16767365	vga_get
@@ -10083,6 +10084,7 @@ EXPORT_SYMBOL vmlinux 0xdd6e4244	__skb_get_hash_flowi6
 EXPORT_SYMBOL vmlinux 0xdd72d373	dev_set_allmulti
 EXPORT_SYMBOL vmlinux 0xdd78158d	swiotlb_sync_sg_for_device
 EXPORT_SYMBOL vmlinux 0xdd9099ee	seq_printf
+EXPORT_SYMBOL vmlinux 0xddda488b	path_nosuid
 EXPORT_SYMBOL vmlinux 0xdde83545	intel_gtt_get
 EXPORT_SYMBOL vmlinux 0xddfa577e	scsi_test_unit_ready
 EXPORT_SYMBOL vmlinux 0xde0396a7	pv_mmu_ops

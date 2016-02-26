@@ -7028,6 +7028,7 @@ EXPORT_SYMBOL vmlinux 0x43a01f90	complete_all
 EXPORT_SYMBOL vmlinux 0x43a227f4	pagecache_write_end
 EXPORT_SYMBOL vmlinux 0x43abb1f1	vfs_statfs
 EXPORT_SYMBOL vmlinux 0x43b11772	tcp_connect
+EXPORT_SYMBOL vmlinux 0x43be5818	path_nosuid
 EXPORT_SYMBOL vmlinux 0x43ee0b37	ipv6_skip_exthdr
 EXPORT_SYMBOL vmlinux 0x43f23311	dm_table_get_md
 EXPORT_SYMBOL vmlinux 0x43fa1c66	kmem_cache_destroy
@@ -8624,6 +8625,7 @@ EXPORT_SYMBOL vmlinux 0xa202a8e5	kmalloc_order_trace
 EXPORT_SYMBOL vmlinux 0xa209451c	bitmap_fold
 EXPORT_SYMBOL vmlinux 0xa20c3421	mmc_gpiod_request_ro
 EXPORT_SYMBOL vmlinux 0xa223e100	dmam_alloc_noncoherent
+EXPORT_SYMBOL vmlinux 0xa2418a7b	clone_cred
 EXPORT_SYMBOL vmlinux 0xa25e52ba	pci_get_slot
 EXPORT_SYMBOL vmlinux 0xa2848c50	ecryptfs_get_auth_tok_key
 EXPORT_SYMBOL vmlinux 0xa28b71c0	bitmap_close_sync

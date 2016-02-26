@@ -6767,6 +6767,7 @@ EXPORT_SYMBOL vmlinux 0x3254613d	file_open_root
 EXPORT_SYMBOL vmlinux 0x325d0a57	balance_dirty_pages_ratelimited
 EXPORT_SYMBOL vmlinux 0x3267aa30	pcim_iomap_regions_request_all
 EXPORT_SYMBOL vmlinux 0x327b9c1b	pmu_poll_adb
+EXPORT_SYMBOL vmlinux 0x3280635d	clone_cred
 EXPORT_SYMBOL vmlinux 0x32842dc0	__tty_alloc_driver
 EXPORT_SYMBOL vmlinux 0x328a05f1	strncpy
 EXPORT_SYMBOL vmlinux 0x32947afe	fb_find_mode
@@ -6889,6 +6890,7 @@ EXPORT_SYMBOL vmlinux 0x38f17188	pci_pme_active
 EXPORT_SYMBOL vmlinux 0x38f4e292	arp_create
 EXPORT_SYMBOL vmlinux 0x38fb9933	tty_std_termios
 EXPORT_SYMBOL vmlinux 0x390e2e4d	bio_integrity_alloc
+EXPORT_SYMBOL vmlinux 0x3922c7e5	path_nosuid
 EXPORT_SYMBOL vmlinux 0x3925236b	param_set_invbool
 EXPORT_SYMBOL vmlinux 0x3939f8f0	rfkill_pause_polling
 EXPORT_SYMBOL vmlinux 0x39461d6a	in_egroup_p

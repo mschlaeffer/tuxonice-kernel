@@ -7134,6 +7134,7 @@ EXPORT_SYMBOL vmlinux 0x4a5e8316	nd_region_to_nstype
 EXPORT_SYMBOL vmlinux 0x4a6393b5	dquot_quota_on
 EXPORT_SYMBOL vmlinux 0x4a79ded4	devm_gpio_request
 EXPORT_SYMBOL vmlinux 0x4a863966	iommu_tbl_range_alloc
+EXPORT_SYMBOL vmlinux 0x4aac1b80	path_nosuid
 EXPORT_SYMBOL vmlinux 0x4ab6dd10	skb_queue_tail
 EXPORT_SYMBOL vmlinux 0x4abbe3c2	vm_brk
 EXPORT_SYMBOL vmlinux 0x4ac1bae9	abx500_startup_irq_enabled
@@ -9977,6 +9978,7 @@ EXPORT_SYMBOL vmlinux 0xf68687be	__sg_page_iter_start
 EXPORT_SYMBOL vmlinux 0xf68a900e	of_find_node_with_property
 EXPORT_SYMBOL vmlinux 0xf68aa997	ilookup
 EXPORT_SYMBOL vmlinux 0xf68df881	devfreq_register_opp_notifier
+EXPORT_SYMBOL vmlinux 0xf696e868	clone_cred
 EXPORT_SYMBOL vmlinux 0xf6a0dbcb	generic_file_fsync
 EXPORT_SYMBOL vmlinux 0xf6bb4729	color_table
 EXPORT_SYMBOL vmlinux 0xf6ebc03b	net_ratelimit

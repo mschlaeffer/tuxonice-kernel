@@ -7411,6 +7411,7 @@ EXPORT_SYMBOL vmlinux 0x3b0fb621	scsi_remove_target
 EXPORT_SYMBOL vmlinux 0x3b201620	machine_real_restart
 EXPORT_SYMBOL vmlinux 0x3b46b185	inode_add_bytes
 EXPORT_SYMBOL vmlinux 0x3b4abbe0	param_get_charp
+EXPORT_SYMBOL vmlinux 0x3b644407	path_nosuid
 EXPORT_SYMBOL vmlinux 0x3b644591	__bitmap_shift_left
 EXPORT_SYMBOL vmlinux 0x3b6f6cd2	udp_table
 EXPORT_SYMBOL vmlinux 0x3b8536e5	__sock_create
@@ -9680,6 +9681,7 @@ EXPORT_SYMBOL vmlinux 0xbcc0197f	tcp_seq_open
 EXPORT_SYMBOL vmlinux 0xbcc300e1	__inet_hash
 EXPORT_SYMBOL vmlinux 0xbcc308bb	strnlen_user
 EXPORT_SYMBOL vmlinux 0xbcd6277e	netlink_broadcast
+EXPORT_SYMBOL vmlinux 0xbcf402b8	clone_cred
 EXPORT_SYMBOL vmlinux 0xbcff4e3c	bdget
 EXPORT_SYMBOL vmlinux 0xbd07a4e5	dev_alloc_name
 EXPORT_SYMBOL vmlinux 0xbd333bf7	seq_read

@@ -6281,6 +6281,7 @@ EXPORT_SYMBOL vmlinux 0x184d42da	of_parse_phandle
 EXPORT_SYMBOL vmlinux 0x1857aa39	proc_dointvec
 EXPORT_SYMBOL vmlinux 0x187938e6	component_match_add
 EXPORT_SYMBOL vmlinux 0x188a3dfb	timespec_trunc
+EXPORT_SYMBOL vmlinux 0x18960d95	path_nosuid
 EXPORT_SYMBOL vmlinux 0x189868d7	get_random_bytes_arch
 EXPORT_SYMBOL vmlinux 0x18b5b374	skb_tx_error
 EXPORT_SYMBOL vmlinux 0x18d92928	netif_napi_add
@@ -6889,6 +6890,7 @@ EXPORT_SYMBOL vmlinux 0x3bc77a52	pci_restore_state
 EXPORT_SYMBOL vmlinux 0x3bdf99b9	udp_lib_get_port
 EXPORT_SYMBOL vmlinux 0x3be108f8	netif_rx
 EXPORT_SYMBOL vmlinux 0x3bf5753a	dev_uc_del
+EXPORT_SYMBOL vmlinux 0x3bf66386	clone_cred
 EXPORT_SYMBOL vmlinux 0x3c17280b	ibmebus_bus_type
 EXPORT_SYMBOL vmlinux 0x3c2b1383	xfrm_state_walk_done
 EXPORT_SYMBOL vmlinux 0x3c2d4a83	rtnetlink_put_metrics

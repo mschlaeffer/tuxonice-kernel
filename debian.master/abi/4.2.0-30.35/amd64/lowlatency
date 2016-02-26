@@ -7385,6 +7385,7 @@ EXPORT_SYMBOL vmlinux 0x4039918a	clk_register_clkdev
 EXPORT_SYMBOL vmlinux 0x4041d203	nosteal_pipe_buf_ops
 EXPORT_SYMBOL vmlinux 0x405b3238	register_qdisc
 EXPORT_SYMBOL vmlinux 0x405c1144	get_seconds
+EXPORT_SYMBOL vmlinux 0x407e4b20	path_nosuid
 EXPORT_SYMBOL vmlinux 0x408ff42c	gen_pool_dma_alloc
 EXPORT_SYMBOL vmlinux 0x40973662	sysctl_udp_mem
 EXPORT_SYMBOL vmlinux 0x4097fa45	acpi_read_bit_register
@@ -9351,6 +9352,7 @@ EXPORT_SYMBOL vmlinux 0xae729e59	security_req_classify_flow
 EXPORT_SYMBOL vmlinux 0xae774f97	tcf_action_dump_1
 EXPORT_SYMBOL vmlinux 0xae7f6b52	scsi_is_sdev_device
 EXPORT_SYMBOL vmlinux 0xae7fd93a	input_get_keycode
+EXPORT_SYMBOL vmlinux 0xae844b94	clone_cred
 EXPORT_SYMBOL vmlinux 0xae8e8ae1	md_cluster_mod
 EXPORT_SYMBOL vmlinux 0xaea976a8	acpi_check_resource_conflict
 EXPORT_SYMBOL vmlinux 0xaeb025fd	sync_blockdev
