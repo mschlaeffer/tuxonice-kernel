@@ -2134,6 +2134,7 @@ int drop_caches_sysctl_handler(struct ctl_table *, int,
 					void __user *, size_t *, loff_t *);
 #endif
 
+void drop_pagecache(void);
 unsigned long shrink_node_slabs(gfp_t gfp_mask, int nid,
 				unsigned long nr_scanned,
 				unsigned long nr_eligible);
