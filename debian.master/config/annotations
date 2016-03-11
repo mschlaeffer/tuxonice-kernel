@@ -3919,7 +3919,7 @@ CONFIG_ND_BLK                                   policy<{'amd64': 'm', 'arm64': '
 CONFIG_BTT                                      policy<{'amd64': 'y', 'arm64': 'y', 'armhf-generic-lpae': 'y', 'i386': 'y', 'powerpc-powerpc64-emb': 'y', 'powerpc-powerpc64-smp': 'y', 'powerpc-powerpc-e500mc': 'y', 'ppc64el': 'y'}>
 
 # Menu: Device Drivers >> NVMEM Support
-CONFIG_NVMEM                                    policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'i386': 'm', 'powerpc': 'm', 'ppc64el': 'm', 's390x': 'm'}>
+CONFIG_NVMEM                                    policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'i386': 'm', 'powerpc': 'm', 'ppc64el': 'm', 's390x': 'n'}>
 CONFIG_QCOM_QFPROM                              policy<{'arm64': 'm', 'armhf': 'm'}>
 #
 CONFIG_NVMEM					flag<REVIEW> note<Q: is this appropriate for s390x>
@@ -4039,7 +4039,7 @@ CONFIG_NET_VENDOR_DLINK                         policy<{'amd64': 'y', 'arm64': '
 CONFIG_DL2K                                     policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'i386': 'm', 'powerpc': 'm', 'ppc64el': 'm'}>
 CONFIG_SUNDANCE                                 policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'i386': 'm', 'powerpc': 'm', 'ppc64el': 'm'}>
 CONFIG_SUNDANCE_MMIO                            policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n'}>
-CONFIG_NET_VENDOR_EMULEX                        policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+CONFIG_NET_VENDOR_EMULEX                        policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'n'}>
 CONFIG_BE2NET                                   policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'i386': 'm', 'powerpc': 'm', 'ppc64el': 'm', 's390x': 'm'}>
 CONFIG_BE2NET_HWMON                             policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y'}>
 CONFIG_BE2NET_VXLAN                             policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
@@ -4108,10 +4108,8 @@ CONFIG_WIZNET_W5100                             policy<{'amd64': 'm', 'arm64': '
 CONFIG_WIZNET_W5300                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'i386': 'm', 'powerpc': 'm', 'ppc64el': 'm'}>
 CONFIG_NET_VENDOR_XIRCOM                        policy<{'amd64': 'y', 'i386': 'y', 'powerpc': 'y'}>
 CONFIG_PCMCIA_XIRC2PS                           policy<{'amd64': 'm', 'i386': 'm', 'powerpc': 'm'}>
-CONFIG_NET_VENDOR_SYNOPSYS                      policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+CONFIG_NET_VENDOR_SYNOPSYS                      policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'n'}>
 CONFIG_SYNOPSYS_DWC_ETH_QOS                     policy<{'arm64': 'm', 'armhf': 'm', 'powerpc': 'm', 'ppc64el': 'm'}>
-#
-CONFIG_NET_VENDOR_SYNOPSYS			flag<REVIEW> note<check s390x>
 
 # Menu: Device Drivers >> Network device support >> Ethernet driver support >> 3Com devices
 CONFIG_NET_VENDOR_3COM                          policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'n'}>
@@ -9481,7 +9479,7 @@ CONFIG_MATH_EMULATION                           policy<{'i386': 'n', 'powerpc-po
 CONFIG_CMDLINE_BOOL                             policy<{'amd64': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n'}>
 CONFIG_HIGHMEM                                  policy<{'armhf': 'y', 'i386': 'y', 'powerpc-powerpc-e500mc': 'y', 'powerpc-powerpc-smp': 'y'}>
 CONFIG_HOTPLUG_CPU                              policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc-powerpc64-smp': 'y', 'powerpc-powerpc-e500mc': 'y', 'powerpc-powerpc-smp': 'y', 'ppc64el': 'y', 's390x': 'y'}>
-CONFIG_NUMA                                     policy<{'amd64': 'y', 'powerpc-powerpc64-emb': 'n', 'powerpc-powerpc64-smp': 'y', 'ppc64el': 'y', 's390x': 'n'}>
+CONFIG_NUMA                                     policy<{'amd64': 'y', 'powerpc-powerpc64-emb': 'n', 'powerpc-powerpc64-smp': 'y', 'ppc64el': 'y', 's390x': 'y'}>
 CONFIG_FORCE_MAX_ZONEORDER                      policy<{'arm64': '11', 'armhf-generic': '12', 'armhf-generic-lpae': '11', 'powerpc-powerpc64-emb': '13', 'powerpc-powerpc64-smp': '13', 'powerpc-powerpc-e500mc': '11', 'powerpc-powerpc-smp': '11', 'ppc64el': '9', 's390x': '9'}>
 CONFIG_SCHED_SMT                                policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'n', 'i386': 'y', 'powerpc-powerpc64-emb': 'n', 'powerpc-powerpc64-smp': 'y', 'ppc64el': 'y', 's390x': 'y'}>
 CONFIG_XEN                                      policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'n', 'i386': 'y'}>
@@ -9649,8 +9647,8 @@ CONFIG_PPC_4K_PAGES                             policy<{'powerpc': 'y', 'ppc64el
 CONFIG_PPC_64K_PAGES                            policy<{'powerpc-powerpc64-smp': 'n', 'ppc64el': 'y'}>
 
 # Menu: Processor type and features >> Preemption Model
-CONFIG_PREEMPT_NONE                             policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n', 's390x': 'n'}>
-CONFIG_PREEMPT_VOLUNTARY                        policy<{'amd64-generic': 'y', 'amd64-lowlatency': 'n', 'arm64': 'y', 'armhf': 'y', 'i386-generic': 'y', 'i386-lowlatency': 'n', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+CONFIG_PREEMPT_NONE                             policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n', 's390x': 'y'}>
+CONFIG_PREEMPT_VOLUNTARY                        policy<{'amd64-generic': 'y', 'amd64-lowlatency': 'n', 'arm64': 'y', 'armhf': 'y', 'i386-generic': 'y', 'i386-lowlatency': 'n', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'n'}>
 CONFIG_PREEMPT                                  policy<{'amd64-generic': 'n', 'amd64-lowlatency': 'y', 'arm64': 'n', 'armhf': 'n', 'i386-generic': 'n', 'i386-lowlatency': 'y', 'powerpc': 'n', 'ppc64el': 'n', 's390x': 'n'}>
 
 # Menu: Processor type and features >> Processor family
@@ -9723,7 +9721,7 @@ CONFIG_BL_SWITCHER                              policy<{'armhf': 'y'}>
 CONFIG_BL_SWITCHER_DUMMY_IF                     policy<{'armhf': 'm'}>
 
 # Menu: Processor type and features >> Symmetric multi-processing support
-CONFIG_NODES_SHIFT                              policy<{'amd64': '6', 'powerpc-powerpc64-smp': '8', 'ppc64el': '8'}>
+CONFIG_NODES_SHIFT                              policy<{'amd64': '6', 'powerpc-powerpc64-smp': '8', 'ppc64el': '8', 's390x': '4'}>
 
 # Menu: Processor type and features >> Symmetric multi-processing support >> Architecture: s390
 CONFIG_SCHED_TOPOLOGY                           policy<{'s390x': 'y'}>
