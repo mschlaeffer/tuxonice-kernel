@@ -1180,6 +1180,9 @@ static int team_port_add(struct team *team, struct net_device *port_dev)
 		goto err_set_upper_link;
 	}
 
+	if (!(dev->features & NETIF_F_LRO))
+		dev_disable_lro(port_dev);
+
 	err = netdev_rx_handler_register(port_dev, team_handle_frame,
 					 port);
 	if (err) {
@@ -1838,10 +1841,10 @@ static int team_vlan_rx_kill_vid(struct net_device *dev, __be16 proto, u16 vid)
 	struct team *team = netdev_priv(dev);
 	struct team_port *port;
 
-	rcu_read_lock();
-	list_for_each_entry_rcu(port, &team->port_list, list)
+	mutex_lock(&team->lock);
+	list_for_each_entry(port, &team->port_list, list)
 		vlan_vid_del(port->dev, proto, vid);
-	rcu_read_unlock();
+	mutex_unlock(&team->lock);
 
 	return 0;
 }
