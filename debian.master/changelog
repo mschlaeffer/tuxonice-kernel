@@ -1,3 +1,252 @@
+linux (4.2.0-34.39) wily; urgency=low
+
+  [ Brad Figg ]
+
+  * Release Tracking Bug
+    - LP: #1555821
+
+  [ Florian Westphal ]
+
+  * SAUCE: [nf] netfilter: x_tables: check for size overflow
+    - LP: #1555353
+  * SAUCE: [nf,v2] netfilter: x_tables: don't rely on well-behaving
+    userspace
+    - LP: #1555338
+
+ -- Brad Figg <brad.figg@canonical.com>  Thu, 10 Mar 2016 13:46:44 -0800
+
+linux (4.2.0-33.38) wily; urgency=low
+
+  [ Brad Figg ]
+
+  * Release Tracking Bug
+    - LP: #1554649
+
+  [ Upstream Kernel Changes ]
+
+  * Revert "drm/radeon: call hpd_irq_event on resume"
+    - LP: #1554608
+  * cxl: Fix PSL timebase synchronization detection
+    - LP: #1532914
+
+ -- Brad Figg <brad.figg@canonical.com>  Tue, 08 Mar 2016 10:32:44 -0800
+
+linux (4.2.0-32.37) wily; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * Release Tracking Bug
+    - LP: #1550045
+
+  [ Kamal Mostafa ]
+
+  * Merged back Ubuntu-4.2.0-31.36
+
+ -- Kamal Mostafa <kamal@canonical.com>  Thu, 25 Feb 2016 17:47:15 -0800
+
+linux (4.2.0-31.36) wily; urgency=low
+
+  [ Brad Figg ]
+
+  * Release Tracking Bug
+    - LP: #1548579
+
+  [ Andy Whitcroft ]
+
+  * [Debian] hv: hv_set_ifconfig -- convert to python3
+    - LP: #1506521
+  * [Debian] hv: hv_set_ifconfig -- switch to approved indentation
+    - LP: #1540586
+  * [Debian] hv: hv_set_ifconfig -- fix numerous parameter handling issues
+    - LP: #1540586
+
+  [ Carol L Soto ]
+
+  * SAUCE: IB/IPoIB: Do not set skb truesize since using one linearskb
+    - LP: #1541326
+
+  [ Dan Streetman ]
+
+  * SAUCE: nbd: ratelimit error msgs after socket close
+    - LP: #1505564
+
+  [ Tim Gardner ]
+
+  * Revert "SAUCE: (noup) cxlflash: Fix to avoid virtual LUN failover
+    failure"
+    - LP: #1541635
+  * Revert "SAUCE: (noup) cxlflash: Fix to escalate LINK_RESET also on port
+    1"
+    - LP: #1541635
+  * [Config] ARMV8_DEPRECATED=y
+    - LP: #1545542
+
+  [ Upstream Kernel Changes ]
+
+  * x86/xen/p2m: hint at the last populated P2M entry
+    - LP: #1542941
+  * mm: add dma_pool_zalloc() call to DMA API
+    - LP: #1543737
+  * sctp: Prevent soft lockup when sctp_accept() is called during a timeout
+    event
+    - LP: #1543737
+  * xen-netback: respect user provided max_queues
+    - LP: #1543737
+  * xen-netfront: respect user provided max_queues
+    - LP: #1543737
+  * xen-netfront: update num_queues to real created
+    - LP: #1543737
+  * iio: adis_buffer: Fix out-of-bounds memory access
+    - LP: #1543737
+  * KVM: PPC: Fix emulation of H_SET_DABR/X on POWER8
+    - LP: #1543737
+  * KVM: PPC: Fix ONE_REG AltiVec support
+    - LP: #1543737
+  * x86/irq: Call chip->irq_set_affinity in proper context
+    - LP: #1543737
+  * drm/amdgpu: fix tonga smu resume
+    - LP: #1543737
+  * perf kvm record/report: 'unprocessable sample' error while
+    recording/reporting guest data
+    - LP: #1543737
+  * hrtimer: Handle remaining time proper for TIME_LOW_RES
+    - LP: #1543737
+  * timerfd: Handle relative timers with CONFIG_TIME_LOW_RES proper
+    - LP: #1543737
+  * posix-timers: Handle relative timers with CONFIG_TIME_LOW_RES proper
+    - LP: #1543737
+  * itimers: Handle relative timers with CONFIG_TIME_LOW_RES proper
+    - LP: #1543737
+  * drm/amdgpu: Use drm_calloc_large for VM page_tables array
+    - LP: #1543737
+  * drm/amdgpu: fix amdgpu_bo_pin_restricted VRAM placing v2
+    - LP: #1543737
+  * drm/radeon: properly byte swap vce firmware setup
+    - LP: #1543737
+  * ACPI: Revert "ACPI / video: Add Dell Inspiron 5737 to the blacklist"
+    - LP: #1543737
+  * ACPI / PCI / hotplug: unlock in error path in acpiphp_enable_slot()
+    - LP: #1543737
+  * hwmon: (dell-smm) Blacklist Dell Studio XPS 8000
+    - LP: #1543737
+  * usb: cdc-acm: handle unlinked urb in acm read callback
+    - LP: #1543737
+  * usb: cdc-acm: send zero packet for intel 7260 modem
+    - LP: #1543737
+  * cdc-acm:exclude Samsung phone 04e8:685d
+    - LP: #1543737
+  * usb: hub: do not clear BOS field during reset device
+    - LP: #1543737
+  * USB: cp210x: add ID for IAI USB to RS485 adaptor
+    - LP: #1543737
+  * USB: visor: fix null-deref at probe
+    - LP: #1543737
+  * USB: serial: visor: fix crash on detecting device without write_urbs
+    - LP: #1543737
+  * USB: serial: option: Adding support for Telit LE922
+    - LP: #1543737
+  * ALSA: seq: Fix incorrect sanity check at snd_seq_oss_synth_cleanup()
+    - LP: #1543737
+  * ALSA: seq: Degrade the error message for too many opens
+    - LP: #1543737
+  * USB: serial: ftdi_sio: add support for Yaesu SCU-18 cable
+    - LP: #1543737
+  * arm64: kernel: fix architected PMU registers unconditional access
+    - LP: #1543737
+  * USB: option: fix Cinterion AHxx enumeration
+    - LP: #1543737
+  * ALSA: compress: Disable GET_CODEC_CAPS ioctl for some architectures
+    - LP: #1543737
+  * ALSA: usb-audio: Fix TEAC UD-501/UD-503/NT-503 usb delay
+    - LP: #1543737
+  * virtio_pci: fix use after free on release
+    - LP: #1543737
+  * ALSA: bebob: Use a signed return type for get_formation_index
+    - LP: #1543737
+  * arm64: errata: Add -mpc-relative-literal-loads to build flags
+    - LP: #1533009, #1543737
+  * arm64: mm: avoid calling apply_to_page_range on empty range
+    - LP: #1543737
+  * x86/mm: Fix types used in pgprot cacheability flags translations
+    - LP: #1543737
+  * powerpc/eeh: Fix PE location code
+    - LP: #1543737
+  * SCSI: fix crashes in sd and sr runtime PM
+    - LP: #1543737
+  * tty: Fix unsafe ldisc reference via ioctl(TIOCGETD)
+    - LP: #1543737
+  * n_tty: Fix unsafe reference to "other" ldisc
+    - LP: #1543737
+  * staging/speakup: Use tty_ldisc_ref() for paste kworker
+    - LP: #1543737
+  * tick/nohz: Set the correct expiry when switching to nohz/lowres mode
+    - LP: #1543737
+  * irqchip/atmel-aic: Fix wrong bit operation for IRQ priority
+    - LP: #1543737
+  * seccomp: always propagate NO_NEW_PRIVS on tsync
+    - LP: #1543737
+  * drm/radeon: cleaned up VCO output settings for DP audio
+    - LP: #1543737
+  * drm/radeon: Add a common function for DFS handling
+    - LP: #1543737
+  * drm/radeon: fix DP audio support for APU with DCE4.1 display engine
+    - LP: #1543737
+  * cpufreq: Fix NULL reference crash while accessing policy->governor_data
+    - LP: #1543737
+  * cpufreq: pxa2xx: fix pxa_cpufreq_change_voltage prototype
+    - LP: #1543737
+  * ALSA: dummy: Disable switching timer backend via sysfs
+    - LP: #1543737
+  * drm/vmwgfx: respect 'nomodeset'
+    - LP: #1543737
+  * Staging: speakup: Fix getting port information
+    - LP: #1543737
+  * x86/mm/pat: Avoid truncation when converting cpa->numpages to address
+    - LP: #1543737
+  * serial: 8250_pci: Add Intel Broadwell ports
+    - LP: #1543737
+  * perf annotate browser: Fix behaviour of Shift-Tab with nothing focussed
+    - LP: #1543737
+  * perf hists: Fix HISTC_MEM_DCACHELINE width setting
+    - LP: #1543737
+  * powerpc/perf: Remove PPMU_HAS_SSLOT flag for Power8
+    - LP: #1543737
+  * Linux 4.2.8-ckt4
+    - LP: #1543737
+  * cxlflash: Resolve oops in wait_port_offline
+    - LP: #1541635
+  * cxlflash: Fix to resolve cmd leak after host reset
+    - LP: #1541635
+  * cxlflash: Removed driver date print
+    - LP: #1541635
+  * cxlflash: drop unlikely before IS_ERR_OR_NULL
+    - LP: #1541635
+  * powerpc/powernv: Panic on unhandled Machine Check
+    - LP: #1541635
+  * cxlflash: Fix to avoid virtual LUN failover failure
+    - LP: #1541635
+  * cxlflash: Fix to escalate LINK_RESET also on port 1
+    - LP: #1541635
+  * IB/ipoib: Suppress warning for send only join failures
+    - LP: #1542444
+  * IB/ipoib: Expire sendonly multicast joins
+    - LP: #1542444
+  * IB/ipoib: increase the max mcast backlog queue
+    - LP: #1542444
+  * IB/ipoib: For sendonly join free the multicast group on leave
+    - LP: #1542444
+  * qeth: initialize net_device with carrier off
+    - LP: #1541907
+  * mwifiex: remove USB8897 chipset support
+    - LP: #1494593
+  * powerpc/powernv: Fix stale PE primary bus
+    - LP: #1546145
+  * ALSA: usb-audio: avoid freeing umidi object twice
+    - LP: #1546177
+    - CVE-2016-2384
+
+ -- Brad Figg <brad.figg@canonical.com>  Mon, 22 Feb 2016 17:29:33 -0800
+
 linux (4.2.0-30.36) wily; urgency=high
 
   [ Kamal Mostafa ]

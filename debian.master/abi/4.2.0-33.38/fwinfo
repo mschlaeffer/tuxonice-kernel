@@ -469,7 +469,6 @@ firmware:       mrvl/sd8897_uapsta.bin
 firmware:       mrvl/usb8766_uapsta.bin
 firmware:       mrvl/usb8797_uapsta.bin
 firmware:       mrvl/usb8801_uapsta.bin
-firmware:       mrvl/usb8897_uapsta.bin
 firmware:       mt7601u.bin
 firmware:       mts_cdma.fw
 firmware:       mts_edge.fw
