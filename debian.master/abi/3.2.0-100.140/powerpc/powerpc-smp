@@ -3593,6 +3593,7 @@ EXPORT_SYMBOL vmlinux 0x0740d0b3	skb_seq_read
 EXPORT_SYMBOL vmlinux 0x07452d37	udp_sendmsg
 EXPORT_SYMBOL vmlinux 0x074989f8	ida_simple_remove
 EXPORT_SYMBOL vmlinux 0x074e9213	down_killable
+EXPORT_SYMBOL vmlinux 0x07554696	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0x075ab340	padata_do_parallel
 EXPORT_SYMBOL vmlinux 0x07620756	xfrm_unregister_type
 EXPORT_SYMBOL vmlinux 0x0799aca4	local_bh_enable
@@ -6175,7 +6176,6 @@ EXPORT_SYMBOL vmlinux 0xb6bf4860	__pskb_pull_tail
 EXPORT_SYMBOL vmlinux 0xb6c5a973	scsi_show_result
 EXPORT_SYMBOL vmlinux 0xb6db4296	serio_rescan
 EXPORT_SYMBOL vmlinux 0xb6e73939	ip_getsockopt
-EXPORT_SYMBOL vmlinux 0xb6f347d3	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xb7050576	pci_claim_resource
 EXPORT_SYMBOL vmlinux 0xb70c81b7	ab3100_event_unregister
 EXPORT_SYMBOL vmlinux 0xb72b33e9	pci_unmap_rom
@@ -7804,13 +7804,13 @@ EXPORT_SYMBOL_GPL drivers/misc/cb710/cb710 0xac14c1a6	cb710_sg_dwiter_write_next
 EXPORT_SYMBOL_GPL drivers/misc/cb710/cb710 0xc9aa1a73	cb710_set_irq_handler
 EXPORT_SYMBOL_GPL drivers/misc/eeprom/eeprom_93cx6 0x2df115d4	eeprom_93cx6_multiread
 EXPORT_SYMBOL_GPL drivers/misc/eeprom/eeprom_93cx6 0x63d14d2f	eeprom_93cx6_read
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x0544ed0a	enclosure_add_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x3c494efe	enclosure_register
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x4c7f1839	enclosure_component_register
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x66fc8446	enclosure_remove_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x735838e7	enclosure_for_each_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xbef624c5	enclosure_find
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xd8c5187d	enclosure_unregister
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x236644af	enclosure_add_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x4d01f83a	enclosure_register
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x6f4789d0	enclosure_component_register
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x888adba1	enclosure_for_each_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x9ec31a9d	enclosure_unregister
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x9edc043a	enclosure_find
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xb319a6dc	enclosure_remove_device
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x06a41535	lis3lv02d_poweroff
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x18e21eb3	lis3lv02d_remove_fs
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x21c01ee9	lis3lv02d_joystick_enable

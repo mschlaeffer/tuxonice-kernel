@@ -1,3 +1,36 @@
+linux (3.2.0-101.141) precise; urgency=low
+
+  [ Brad Figg ]
+
+  * Release Tracking Bug
+    - LP: #1555809
+
+  [ Florian Westphal ]
+
+  * SAUCE: [nf,v2] netfilter: x_tables: don't rely on well-behaving
+    userspace
+    - LP: #1555338
+
+ -- Brad Figg <brad.figg@canonical.com>  Thu, 10 Mar 2016 13:05:32 -0800
+
+linux (3.2.0-100.140) precise; urgency=low
+
+  [ Brad Figg ]
+
+  * Release Tracking Bug
+    - LP: #1548504
+
+  [ Upstream Kernel Changes ]
+
+  * veth: don’t modify ip_summed; doing so treats packets with bad
+    checksums as good.
+    - LP: #1547207
+  * ALSA: usb-audio: avoid freeing umidi object twice
+    - LP: #1546177
+    - CVE-2016-2384
+
+ -- Brad Figg <brad.figg@canonical.com>  Mon, 22 Feb 2016 13:08:37 -0800
+
 linux (3.2.0-99.139) precise; urgency=low
 
   [ Brad Figg ]

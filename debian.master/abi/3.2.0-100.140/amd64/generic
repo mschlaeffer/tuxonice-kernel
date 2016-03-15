@@ -6107,6 +6107,7 @@ EXPORT_SYMBOL vmlinux 0xa350a8f8	set_memory_array_uc
 EXPORT_SYMBOL vmlinux 0xa35284a1	__vlan_find_dev_deep
 EXPORT_SYMBOL vmlinux 0xa35de80f	ipv4_config
 EXPORT_SYMBOL vmlinux 0xa3643761	sock_kfree_s
+EXPORT_SYMBOL vmlinux 0xa38231ef	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xa3a0a6b5	page_symlink_inode_operations
 EXPORT_SYMBOL vmlinux 0xa3a5be95	memmove
 EXPORT_SYMBOL vmlinux 0xa3a77c69	down_read_trylock
@@ -6349,7 +6350,6 @@ EXPORT_SYMBOL vmlinux 0xb4709322	scsi_dev_info_add_list
 EXPORT_SYMBOL vmlinux 0xb4a261e9	ata_link_printk
 EXPORT_SYMBOL vmlinux 0xb4b7b067	clocksource_unregister
 EXPORT_SYMBOL vmlinux 0xb4d13457	vga_tryget
-EXPORT_SYMBOL vmlinux 0xb4de5399	skb_copy_and_csum_datagram_iovec
 EXPORT_SYMBOL vmlinux 0xb4df9b0f	simple_readpage
 EXPORT_SYMBOL vmlinux 0xb4f86dfe	__ip_dev_find
 EXPORT_SYMBOL vmlinux 0xb4fffaf8	lro_flush_pkt
@@ -8243,13 +8243,13 @@ EXPORT_SYMBOL_GPL drivers/misc/cs5535-mfgpt 0x9bb2b336	cs5535_mfgpt_free_timer
 EXPORT_SYMBOL_GPL drivers/misc/cs5535-mfgpt 0xa07c4f3d	cs5535_mfgpt_write
 EXPORT_SYMBOL_GPL drivers/misc/eeprom/eeprom_93cx6 0x2df115d4	eeprom_93cx6_multiread
 EXPORT_SYMBOL_GPL drivers/misc/eeprom/eeprom_93cx6 0x63d14d2f	eeprom_93cx6_read
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x223fe2a0	enclosure_register
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x7247126a	enclosure_remove_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x7a74212a	enclosure_for_each_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xa449b9c3	enclosure_find
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xe8e9e327	enclosure_component_register
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xefde1859	enclosure_add_device
-EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xf792ade8	enclosure_unregister
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x0785b899	enclosure_remove_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x376090b4	enclosure_component_register
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x45332ea3	enclosure_for_each_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0x4a061641	enclosure_add_device
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xa4f6bd05	enclosure_unregister
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xbddfd0cc	enclosure_register
+EXPORT_SYMBOL_GPL drivers/misc/enclosure 0xd9abf2d8	enclosure_find
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x45231550	lis3lv02d_joystick_enable
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0x46cb7117	lis3lv02d_poweron
 EXPORT_SYMBOL_GPL drivers/misc/lis3lv02d/lis3lv02d 0xa235de1f	lis3lv02d_poweroff
