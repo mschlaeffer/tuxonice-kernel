@@ -7657,7 +7657,7 @@ CONFIG_IKCONFIG                                 policy<{'amd64': 'n', 'arm64': '
 CONFIG_LOG_BUF_SHIFT                            policy<{'amd64': '18', 'arm64': '14', 'armhf': '17', 'i386': '17', 'powerpc': '17', 'ppc64el': '17', 's390x': '17'}>
 CONFIG_LOG_CPU_MAX_BUF_SHIFT                    policy<{'amd64': '12', 'arm64': '12', 'armhf': '12', 'i386': '12', 'powerpc': '12', 'ppc64el': '12', 's390x': '12'}>
 CONFIG_NUMA_BALANCING                           policy<{'amd64': 'y', 'powerpc-powerpc64-smp': 'y', 'ppc64el': 'y'}>
-CONFIG_NUMA_BALANCING_DEFAULT_ENABLED           policy<{'amd64': 'y', 'powerpc-powerpc64-smp': 'y', 'ppc64el': 'y'}>
+CONFIG_NUMA_BALANCING_DEFAULT_ENABLED           policy<{'amd64': 'y', 'powerpc-powerpc64-smp': 'y', 'ppc64el': 'y', 's390x': 'n'}>
 CONFIG_CHECKPOINT_RESTORE                       policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
 CONFIG_SCHED_AUTOGROUP                          policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
 CONFIG_SYSFS_DEPRECATED                         policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n', 's390x': 'n'}>
@@ -7680,6 +7680,7 @@ CONFIG_SYSFS_DEPRECATED                         mark<ENFORCED> note<ensure nothi
 CONFIG_COMPAT_BRK                               mark<ENFORCED> note<disables brk ASLR>
 CONFIG_LOCALVERSION_AUTO                        mark<ENFORCED> note<triggers packaging failures>
 CONFIG_JUMP_LABEL                               flag<REVIEW>
+CONFIG_NUMA_BALANCING_DEFAULT_ENABLE            note<LP:1557690>
 
 # Menu: General setup >> CPU/Task time and stats accounting
 CONFIG_BSD_PROCESS_ACCT                         policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
@@ -8906,10 +8907,9 @@ CONFIG_IP_ROUTE_MULTIPATH                       policy<{'amd64': 'y', 'arm64': '
 CONFIG_IP_ROUTE_VERBOSE                         policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
 
 # Menu: Networking support >> Networking options >> TCP/IP networking >> IP: kernel level autoconfiguration
-CONFIG_IP_PNP                                   policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
-CONFIG_IP_PNP_DHCP                              policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
-CONFIG_IP_PNP_BOOTP                             policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n', 's390x': 'n'}>
-CONFIG_IP_PNP_RARP                              policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n', 's390x': 'n'}>
+CONFIG_IP_PNP                                   policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n', 's390x': 'n'}>
+#
+CONFIG_IP_PNP					note<LP:1259861>
 
 # Menu: Networking support >> Networking options >> TCP/IP networking >> IP: multicast routing
 CONFIG_IP_MROUTE                                policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'y'}>
@@ -9023,7 +9023,8 @@ CONFIG_NET_9P                                   policy<{'amd64': 'm', 'arm64': '
 CONFIG_NET_9P_VIRTIO                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'i386': 'm', 'powerpc': 'm', 'ppc64el': 'm', 's390x': 'm'}>
 CONFIG_NET_9P_RDMA                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'i386': 'm', 'powerpc': 'm', 'ppc64el': 'm', 's390x': 'm'}>
 CONFIG_NET_9P_DEBUG                             policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'i386': 'n', 'powerpc': 'n', 'ppc64el': 'n', 's390x': 'n'}>
-CONFIG_NET_9P                                   note<LP#1557994>
+#
+CONFIG_NET_9P                                   note<LP:1557994>
 
 # Menu: Networking support >> RF switch subsystem support
 CONFIG_RFKILL                                   policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'i386': 'y', 'powerpc': 'y', 'ppc64el': 'y', 's390x': 'n'}>

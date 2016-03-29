@@ -88,12 +88,6 @@ binary: binary-indep binary-arch
 
 build: build-arch build-indep
 
-# If we are building zfs update the provides.
-rprovides=
-ifeq ($(do_zfs),true)
-rprovides:=$(rprovides), spl-dkms, zfs-dkms
-endif
-
 clean: debian/control
 	dh_testdir
 	dh_testroot
@@ -118,11 +112,14 @@ clean: debian/control
 	cp $(DEBIAN)/copyright debian/copyright
 
 	# If we have a reconstruct script use it.
-	[ -f $(DEBIAN)/reconstruct ] && bash -x $(DEBIAN)/reconstruct
+	[ -f $(DEBIAN)/reconstruct ] && bash $(DEBIAN)/reconstruct
+
+	# Remove generated intermediate files
+	rm -f $(DROOT)/control.stub $(DEBIAN)/control.stub \
+		$(DEBIAN)/d-i/kernel-versions
 
 distclean: clean
-	rm -rf $(DROOT)/control $(DROOT)/control.stub $(DEBIAN)/control.stub \
-		$(DEBIAN)/d-i/kernel-versions debian/changelog \
+	rm -rf $(DROOT)/control debian/changelog \
 		debian/control debian/control.stub debian/copyright
 
 # Builds the image, arch headers and debug packages
@@ -150,7 +147,6 @@ $(DEBIAN)/control.stub: $(DEBIAN)/d-i/kernel-versions.in	\
 	        -e 's/ABINUM/$(abinum)/g'                                       \
 		-e 's/SRCPKGNAME/$(src_pkg_name)/g'                             \
 		-e 's/=HUMAN=/$(human_arch)/g'                                    \
-		-e 's/=RPROVIDES=/$(rprovides)/g'                               \
 	  > $$new;								\
 	done
 	flavours="$(sort $(wildcard $(DEBIAN)/control.d/vars.* $(DEBIAN)/sub-flavours/*.vars))";\
@@ -160,7 +156,6 @@ $(DEBIAN)/control.stub: $(DEBIAN)/d-i/kernel-versions.in	\
 		-e 's/ABINUM/$(abinum)/g'                                       \
 		-e 's/SRCPKGNAME/$(src_pkg_name)/g'                             \
 		-e 's/=HUMAN=/$(human_arch)/g'                                    \
-		-e 's/=RPROVIDES=/$(rprovides)/g'                               \
 		>> $(DEBIAN)/control.stub;						\
 	done
 
