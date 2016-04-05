@@ -244,7 +244,7 @@ void vmbus_disconnect(void)
 	/*
 	 * First send the unload request to the host.
 	 */
-	vmbus_initiate_unload();
+	vmbus_initiate_unload(false);
 
 	if (vmbus_connection.work_queue) {
 		drain_workqueue(vmbus_connection.work_queue);
@@ -296,7 +296,8 @@ struct vmbus_channel *relid2channel(u32 relid)
 	struct list_head *cur, *tmp;
 	struct vmbus_channel *cur_sc;
 
-	mutex_lock(&vmbus_connection.channel_mutex);
+	BUG_ON(!mutex_is_locked(&vmbus_connection.channel_mutex));
+
 	list_for_each_entry(channel, &vmbus_connection.chn_list, listentry) {
 		if (channel->offermsg.child_relid == relid) {
 			found_channel = channel;
@@ -315,7 +316,6 @@ struct vmbus_channel *relid2channel(u32 relid)
 			}
 		}
 	}
-	mutex_unlock(&vmbus_connection.channel_mutex);
 
 	return found_channel;
 }
@@ -482,7 +482,7 @@ int vmbus_post_msg(void *buffer, size_t buflen)
 /*
  * vmbus_set_event - Send an event notification to the parent
  */
-int vmbus_set_event(struct vmbus_channel *channel)
+void vmbus_set_event(struct vmbus_channel *channel)
 {
 	u32 child_relid = channel->offermsg.child_relid;
 
@@ -493,5 +493,5 @@ int vmbus_set_event(struct vmbus_channel *channel)
 			(child_relid >> 5));
 	}
 
-	return hv_signal_event(channel->sig_event);
+	hv_do_hypercall(HVCALL_SIGNAL_EVENT, channel->sig_event, NULL);
 }
