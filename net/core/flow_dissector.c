@@ -193,7 +193,6 @@ ip:
 	case htons(ETH_P_IPV6): {
 		const struct ipv6hdr *iph;
 		struct ipv6hdr _iph;
-		__be32 flow_label;
 
 ipv6:
 		iph = __skb_header_pointer(skb, nhoff, sizeof(_iph), data, hlen, &_iph);
@@ -215,8 +214,9 @@ ipv6:
 			key_control->addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
 		}
 
-		flow_label = ip6_flowlabel(iph);
-		if (flow_label) {
+		if (skb && ip6_flowlabel(iph)) {
+			__be32 flow_label = ip6_flowlabel(iph);
+
 			if (skb_flow_dissector_uses_key(flow_dissector,
 				FLOW_DISSECTOR_KEY_FLOW_LABEL)) {
 				key_tags = skb_flow_dissector_target(flow_dissector,
@@ -382,6 +382,13 @@ ip_proto_again:
 				return false;
 			proto = eth->h_proto;
 			nhoff += sizeof(*eth);
+
+			/* Cap headers that we access via pointers at the
+			 * end of the Ethernet header as our maximum alignment
+			 * at that point is only 2 bytes.
+			 */
+			if (NET_IP_ALIGN)
+				hlen = nhoff;
 		}
 		goto again;
 	}
