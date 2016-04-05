@@ -165,6 +165,7 @@ int snd_rawmidi_drop_output(struct snd_rawmidi_substream *substream)
 	spin_unlock_irqrestore(&runtime->lock, flags);
 	return 0;
 }
+EXPORT_SYMBOL(snd_rawmidi_drop_output);
 
 int snd_rawmidi_drain_output(struct snd_rawmidi_substream *substream)
 {
@@ -194,6 +195,7 @@ int snd_rawmidi_drain_output(struct snd_rawmidi_substream *substream)
 	}
 	return err;
 }
+EXPORT_SYMBOL(snd_rawmidi_drain_output);
 
 int snd_rawmidi_drain_input(struct snd_rawmidi_substream *substream)
 {
@@ -208,6 +210,7 @@ int snd_rawmidi_drain_input(struct snd_rawmidi_substream *substream)
 	spin_unlock_irqrestore(&runtime->lock, flags);
 	return 0;
 }
+EXPORT_SYMBOL(snd_rawmidi_drain_input);
 
 /* look for an available substream for the given stream direction;
  * if a specific subdevice is given, try to assign it
@@ -345,6 +348,7 @@ int snd_rawmidi_kernel_open(struct snd_card *card, int device, int subdevice,
 		module_put(rmidi->card->module);
 	return err;
 }
+EXPORT_SYMBOL(snd_rawmidi_kernel_open);
 
 static int snd_rawmidi_open(struct inode *inode, struct file *file)
 {
@@ -523,6 +527,7 @@ int snd_rawmidi_kernel_release(struct snd_rawmidi_file *rfile)
 	module_put(rmidi->card->module);
 	return 0;
 }
+EXPORT_SYMBOL(snd_rawmidi_kernel_release);
 
 static int snd_rawmidi_release(struct inode *inode, struct file *file)
 {
@@ -599,6 +604,7 @@ int snd_rawmidi_info_select(struct snd_card *card, struct snd_rawmidi_info *info
 	}
 	return -ENXIO;
 }
+EXPORT_SYMBOL(snd_rawmidi_info_select);
 
 static int snd_rawmidi_info_select_user(struct snd_card *card,
 					struct snd_rawmidi_info __user *_info)
@@ -646,6 +652,7 @@ int snd_rawmidi_output_params(struct snd_rawmidi_substream *substream,
 	substream->active_sensing = !params->no_active_sensing;
 	return 0;
 }
+EXPORT_SYMBOL(snd_rawmidi_output_params);
 
 int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
 			     struct snd_rawmidi_params * params)
@@ -671,6 +678,7 @@ int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
 	runtime->avail_min = params->avail_min;
 	return 0;
 }
+EXPORT_SYMBOL(snd_rawmidi_input_params);
 
 static int snd_rawmidi_output_status(struct snd_rawmidi_substream *substream,
 				     struct snd_rawmidi_status * status)
@@ -926,6 +934,7 @@ int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
 	spin_unlock_irqrestore(&runtime->lock, flags);
 	return result;
 }
+EXPORT_SYMBOL(snd_rawmidi_receive);
 
 static long snd_rawmidi_kernel_read1(struct snd_rawmidi_substream *substream,
 				     unsigned char __user *userbuf,
@@ -934,31 +943,36 @@ static long snd_rawmidi_kernel_read1(struct snd_rawmidi_substream *substream,
 	unsigned long flags;
 	long result = 0, count1;
 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+	unsigned long appl_ptr;
 
+	spin_lock_irqsave(&runtime->lock, flags);
 	while (count > 0 && runtime->avail) {
 		count1 = runtime->buffer_size - runtime->appl_ptr;
 		if (count1 > count)
 			count1 = count;
-		spin_lock_irqsave(&runtime->lock, flags);
 		if (count1 > (int)runtime->avail)
 			count1 = runtime->avail;
+
+		/* update runtime->appl_ptr before unlocking for userbuf */
+		appl_ptr = runtime->appl_ptr;
+		runtime->appl_ptr += count1;
+		runtime->appl_ptr %= runtime->buffer_size;
+		runtime->avail -= count1;
+
 		if (kernelbuf)
-			memcpy(kernelbuf + result, runtime->buffer + runtime->appl_ptr, count1);
+			memcpy(kernelbuf + result, runtime->buffer + appl_ptr, count1);
 		if (userbuf) {
 			spin_unlock_irqrestore(&runtime->lock, flags);
 			if (copy_to_user(userbuf + result,
-					 runtime->buffer + runtime->appl_ptr, count1)) {
+					 runtime->buffer + appl_ptr, count1)) {
 				return result > 0 ? result : -EFAULT;
 			}
 			spin_lock_irqsave(&runtime->lock, flags);
 		}
-		runtime->appl_ptr += count1;
-		runtime->appl_ptr %= runtime->buffer_size;
-		runtime->avail -= count1;
-		spin_unlock_irqrestore(&runtime->lock, flags);
 		result += count1;
 		count -= count1;
 	}
+	spin_unlock_irqrestore(&runtime->lock, flags);
 	return result;
 }
 
@@ -968,6 +982,7 @@ long snd_rawmidi_kernel_read(struct snd_rawmidi_substream *substream,
 	snd_rawmidi_input_trigger(substream, 1);
 	return snd_rawmidi_kernel_read1(substream, NULL/*userbuf*/, buf, count);
 }
+EXPORT_SYMBOL(snd_rawmidi_kernel_read);
 
 static ssize_t snd_rawmidi_read(struct file *file, char __user *buf, size_t count,
 				loff_t *offset)
@@ -1042,25 +1057,19 @@ int snd_rawmidi_transmit_empty(struct snd_rawmidi_substream *substream)
 	spin_unlock_irqrestore(&runtime->lock, flags);
 	return result;		
 }
+EXPORT_SYMBOL(snd_rawmidi_transmit_empty);
 
 /**
- * snd_rawmidi_transmit_peek - copy data from the internal buffer
+ * __snd_rawmidi_transmit_peek - copy data from the internal buffer
  * @substream: the rawmidi substream
  * @buffer: the buffer pointer
  * @count: data size to transfer
  *
- * Copies data from the internal output buffer to the given buffer.
- *
- * Call this in the interrupt handler when the midi output is ready,
- * and call snd_rawmidi_transmit_ack() after the transmission is
- * finished.
- *
- * Return: The size of copied data, or a negative error code on failure.
+ * This is a variant of snd_rawmidi_transmit_peek() without spinlock.
  */
-int snd_rawmidi_transmit_peek(struct snd_rawmidi_substream *substream,
+int __snd_rawmidi_transmit_peek(struct snd_rawmidi_substream *substream,
 			      unsigned char *buffer, int count)
 {
-	unsigned long flags;
 	int result, count1;
 	struct snd_rawmidi_runtime *runtime = substream->runtime;
 
@@ -1069,7 +1078,6 @@ int snd_rawmidi_transmit_peek(struct snd_rawmidi_substream *substream,
 		return -EINVAL;
 	}
 	result = 0;
-	spin_lock_irqsave(&runtime->lock, flags);
 	if (runtime->avail >= runtime->buffer_size) {
 		/* warning: lowlevel layer MUST trigger down the hardware */
 		goto __skip;
@@ -1094,31 +1102,53 @@ int snd_rawmidi_transmit_peek(struct snd_rawmidi_substream *substream,
 		}
 	}
       __skip:
+	return result;
+}
+EXPORT_SYMBOL(__snd_rawmidi_transmit_peek);
+
+/**
+ * snd_rawmidi_transmit_peek - copy data from the internal buffer
+ * @substream: the rawmidi substream
+ * @buffer: the buffer pointer
+ * @count: data size to transfer
+ *
+ * Copies data from the internal output buffer to the given buffer.
+ *
+ * Call this in the interrupt handler when the midi output is ready,
+ * and call snd_rawmidi_transmit_ack() after the transmission is
+ * finished.
+ *
+ * Return: The size of copied data, or a negative error code on failure.
+ */
+int snd_rawmidi_transmit_peek(struct snd_rawmidi_substream *substream,
+			      unsigned char *buffer, int count)
+{
+	struct snd_rawmidi_runtime *runtime = substream->runtime;
+	int result;
+	unsigned long flags;
+
+	spin_lock_irqsave(&runtime->lock, flags);
+	result = __snd_rawmidi_transmit_peek(substream, buffer, count);
 	spin_unlock_irqrestore(&runtime->lock, flags);
 	return result;
 }
+EXPORT_SYMBOL(snd_rawmidi_transmit_peek);
 
 /**
- * snd_rawmidi_transmit_ack - acknowledge the transmission
+ * __snd_rawmidi_transmit_ack - acknowledge the transmission
  * @substream: the rawmidi substream
  * @count: the tranferred count
  *
- * Advances the hardware pointer for the internal output buffer with
- * the given size and updates the condition.
- * Call after the transmission is finished.
- *
- * Return: The advanced size if successful, or a negative error code on failure.
+ * This is a variant of __snd_rawmidi_transmit_ack() without spinlock.
  */
-int snd_rawmidi_transmit_ack(struct snd_rawmidi_substream *substream, int count)
+int __snd_rawmidi_transmit_ack(struct snd_rawmidi_substream *substream, int count)
 {
-	unsigned long flags;
 	struct snd_rawmidi_runtime *runtime = substream->runtime;
 
 	if (runtime->buffer == NULL) {
 		snd_printd("snd_rawmidi_transmit_ack: output is not active!!!\n");
 		return -EINVAL;
 	}
-	spin_lock_irqsave(&runtime->lock, flags);
 	snd_BUG_ON(runtime->avail + count > runtime->buffer_size);
 	runtime->hw_ptr += count;
 	runtime->hw_ptr %= runtime->buffer_size;
@@ -1128,9 +1158,33 @@ int snd_rawmidi_transmit_ack(struct snd_rawmidi_substream *substream, int count)
 		if (runtime->drain || snd_rawmidi_ready(substream))
 			wake_up(&runtime->sleep);
 	}
-	spin_unlock_irqrestore(&runtime->lock, flags);
 	return count;
 }
+EXPORT_SYMBOL(__snd_rawmidi_transmit_ack);
+
+/**
+ * snd_rawmidi_transmit_ack - acknowledge the transmission
+ * @substream: the rawmidi substream
+ * @count: the transferred count
+ *
+ * Advances the hardware pointer for the internal output buffer with
+ * the given size and updates the condition.
+ * Call after the transmission is finished.
+ *
+ * Return: The advanced size if successful, or a negative error code on failure.
+ */
+int snd_rawmidi_transmit_ack(struct snd_rawmidi_substream *substream, int count)
+{
+	struct snd_rawmidi_runtime *runtime = substream->runtime;
+	int result;
+	unsigned long flags;
+
+	spin_lock_irqsave(&runtime->lock, flags);
+	result = __snd_rawmidi_transmit_ack(substream, count);
+	spin_unlock_irqrestore(&runtime->lock, flags);
+	return result;
+}
+EXPORT_SYMBOL(snd_rawmidi_transmit_ack);
 
 /**
  * snd_rawmidi_transmit - copy from the buffer to the device
@@ -1145,13 +1199,24 @@ int snd_rawmidi_transmit_ack(struct snd_rawmidi_substream *substream, int count)
 int snd_rawmidi_transmit(struct snd_rawmidi_substream *substream,
 			 unsigned char *buffer, int count)
 {
+	struct snd_rawmidi_runtime *runtime = substream->runtime;
+	int result;
+	unsigned long flags;
+
+	spin_lock_irqsave(&runtime->lock, flags);
 	if (!substream->opened)
-		return -EBADFD;
-	count = snd_rawmidi_transmit_peek(substream, buffer, count);
-	if (count < 0)
-		return count;
-	return snd_rawmidi_transmit_ack(substream, count);
+		result = -EBADFD;
+	else {
+		count = __snd_rawmidi_transmit_peek(substream, buffer, count);
+		if (count <= 0)
+			result = count;
+		else
+			result = __snd_rawmidi_transmit_ack(substream, count);
+	}
+	spin_unlock_irqrestore(&runtime->lock, flags);
+	return result;
 }
+EXPORT_SYMBOL(snd_rawmidi_transmit);
 
 static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
 				      const unsigned char __user *userbuf,
@@ -1161,8 +1226,9 @@ static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
 	unsigned long flags;
 	long count1, result;
 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+	unsigned long appl_ptr;
 
-	if (snd_BUG_ON(!kernelbuf && !userbuf))
+	if (!kernelbuf && !userbuf)
 		return -EINVAL;
 	if (snd_BUG_ON(!runtime->buffer))
 		return -EINVAL;
@@ -1181,12 +1247,19 @@ static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
 			count1 = count;
 		if (count1 > (long)runtime->avail)
 			count1 = runtime->avail;
+
+		/* update runtime->appl_ptr before unlocking for userbuf */
+		appl_ptr = runtime->appl_ptr;
+		runtime->appl_ptr += count1;
+		runtime->appl_ptr %= runtime->buffer_size;
+		runtime->avail -= count1;
+
 		if (kernelbuf)
-			memcpy(runtime->buffer + runtime->appl_ptr,
+			memcpy(runtime->buffer + appl_ptr,
 			       kernelbuf + result, count1);
 		else if (userbuf) {
 			spin_unlock_irqrestore(&runtime->lock, flags);
-			if (copy_from_user(runtime->buffer + runtime->appl_ptr,
+			if (copy_from_user(runtime->buffer + appl_ptr,
 					   userbuf + result, count1)) {
 				spin_lock_irqsave(&runtime->lock, flags);
 				result = result > 0 ? result : -EFAULT;
@@ -1194,9 +1267,6 @@ static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
 			}
 			spin_lock_irqsave(&runtime->lock, flags);
 		}
-		runtime->appl_ptr += count1;
-		runtime->appl_ptr %= runtime->buffer_size;
-		runtime->avail -= count1;
 		result += count1;
 		count -= count1;
 	}
@@ -1213,6 +1283,7 @@ long snd_rawmidi_kernel_write(struct snd_rawmidi_substream *substream,
 {
 	return snd_rawmidi_kernel_write1(substream, NULL, buf, count);
 }
+EXPORT_SYMBOL(snd_rawmidi_kernel_write);
 
 static ssize_t snd_rawmidi_write(struct file *file, const char __user *buf,
 				 size_t count, loff_t *offset)
@@ -1492,6 +1563,7 @@ int snd_rawmidi_new(struct snd_card *card, char *id, int device,
 		*rrawmidi = rmidi;
 	return 0;
 }
+EXPORT_SYMBOL(snd_rawmidi_new);
 
 static void snd_rawmidi_free_substreams(struct snd_rawmidi_str *stream)
 {
@@ -1670,6 +1742,7 @@ void snd_rawmidi_set_ops(struct snd_rawmidi *rmidi, int stream,
 	list_for_each_entry(substream, &rmidi->streams[stream].substreams, list)
 		substream->ops = ops;
 }
+EXPORT_SYMBOL(snd_rawmidi_set_ops);
 
 /*
  *  ENTRY functions
@@ -1706,21 +1779,3 @@ static void __exit alsa_rawmidi_exit(void)
 
 module_init(alsa_rawmidi_init)
 module_exit(alsa_rawmidi_exit)
-
-EXPORT_SYMBOL(snd_rawmidi_output_params);
-EXPORT_SYMBOL(snd_rawmidi_input_params);
-EXPORT_SYMBOL(snd_rawmidi_drop_output);
-EXPORT_SYMBOL(snd_rawmidi_drain_output);
-EXPORT_SYMBOL(snd_rawmidi_drain_input);
-EXPORT_SYMBOL(snd_rawmidi_receive);
-EXPORT_SYMBOL(snd_rawmidi_transmit_empty);
-EXPORT_SYMBOL(snd_rawmidi_transmit_peek);
-EXPORT_SYMBOL(snd_rawmidi_transmit_ack);
-EXPORT_SYMBOL(snd_rawmidi_transmit);
-EXPORT_SYMBOL(snd_rawmidi_new);
-EXPORT_SYMBOL(snd_rawmidi_set_ops);
-EXPORT_SYMBOL(snd_rawmidi_info_select);
-EXPORT_SYMBOL(snd_rawmidi_kernel_open);
-EXPORT_SYMBOL(snd_rawmidi_kernel_release);
-EXPORT_SYMBOL(snd_rawmidi_kernel_read);
-EXPORT_SYMBOL(snd_rawmidi_kernel_write);
