@@ -32,7 +32,7 @@
 #include <linux/module.h>
 #include <trace/events/power.h>
 
-#include "power.h"
+#include "tuxonice.h"
 
 
 static int nocompress;
@@ -40,7 +40,7 @@ static int noresume;
 static int nohibernate;
 static int resume_wait;
 static unsigned int resume_delay;
-static char resume_file[256] = CONFIG_PM_STD_PARTITION;
+char resume_file[256] = CONFIG_PM_STD_PARTITION;
 dev_t swsusp_resume_device;
 sector_t swsusp_resume_block;
 __visible int in_suspend __nosavedata;
@@ -124,7 +124,7 @@ static int hibernation_test(int level) { return 0; }
  * platform_begin - Call platform to start hibernation.
  * @platform_mode: Whether or not to use the platform driver.
  */
-static int platform_begin(int platform_mode)
+int platform_begin(int platform_mode)
 {
 	return (platform_mode && hibernation_ops) ?
 		hibernation_ops->begin() : 0;
@@ -134,7 +134,7 @@ static int platform_begin(int platform_mode)
  * platform_end - Call platform to finish transition to the working state.
  * @platform_mode: Whether or not to use the platform driver.
  */
-static void platform_end(int platform_mode)
+void platform_end(int platform_mode)
 {
 	if (platform_mode && hibernation_ops)
 		hibernation_ops->end();
@@ -148,7 +148,7 @@ static void platform_end(int platform_mode)
  * if so configured, and return an error code if that fails.
  */
 
-static int platform_pre_snapshot(int platform_mode)
+int platform_pre_snapshot(int platform_mode)
 {
 	return (platform_mode && hibernation_ops) ?
 		hibernation_ops->pre_snapshot() : 0;
@@ -163,7 +163,7 @@ static int platform_pre_snapshot(int platform_mode)
  *
  * This routine is called on one CPU with interrupts disabled.
  */
-static void platform_leave(int platform_mode)
+void platform_leave(int platform_mode)
 {
 	if (platform_mode && hibernation_ops)
 		hibernation_ops->leave();
@@ -178,7 +178,7 @@ static void platform_leave(int platform_mode)
  *
  * This routine must be called after platform_prepare().
  */
-static void platform_finish(int platform_mode)
+void platform_finish(int platform_mode)
 {
 	if (platform_mode && hibernation_ops)
 		hibernation_ops->finish();
@@ -194,7 +194,7 @@ static void platform_finish(int platform_mode)
  * If the restore fails after this function has been called,
  * platform_restore_cleanup() must be called.
  */
-static int platform_pre_restore(int platform_mode)
+int platform_pre_restore(int platform_mode)
 {
 	return (platform_mode && hibernation_ops) ?
 		hibernation_ops->pre_restore() : 0;
@@ -211,7 +211,7 @@ static int platform_pre_restore(int platform_mode)
  * function must be called too, regardless of the result of
  * platform_pre_restore().
  */
-static void platform_restore_cleanup(int platform_mode)
+void platform_restore_cleanup(int platform_mode)
 {
 	if (platform_mode && hibernation_ops)
 		hibernation_ops->restore_cleanup();
@@ -221,7 +221,7 @@ static void platform_restore_cleanup(int platform_mode)
  * platform_recover - Recover from a failure to suspend devices.
  * @platform_mode: Whether or not to use the platform driver.
  */
-static void platform_recover(int platform_mode)
+void platform_recover(int platform_mode)
 {
 	if (platform_mode && hibernation_ops && hibernation_ops->recover)
 		hibernation_ops->recover();
@@ -649,6 +649,9 @@ int hibernate(void)
 {
 	int error;
 
+	if (test_action_state(TOI_REPLACE_SWSUSP))
+		return try_tuxonice_hibernate();
+
 	if (!hibernation_available()) {
 		pr_debug("PM: Hibernation not available.\n");
 		return -EPERM;
@@ -738,10 +741,18 @@ int hibernate(void)
  * attempts to recover gracefully and make the kernel return to the normal mode
  * of operation.
  */
-static int software_resume(void)
+int software_resume(void)
 {
 	int error;
 	unsigned int flags;
+
+	resume_attempted = 1;
+
+	/*
+	 * We can't know (until an image header - if any - is loaded), whether
+	 * we did override swsusp. We therefore ensure that both are tried.
+	 */
+	try_tuxonice_resume();
 
 	/*
 	 * If the user said "noresume".. bail out early.
@@ -1129,6 +1140,7 @@ static int __init hibernate_setup(char *str)
 static int __init noresume_setup(char *str)
 {
 	noresume = 1;
+	set_toi_state(TOI_NORESUME_SPECIFIED);
 	return 1;
 }
 
