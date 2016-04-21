@@ -2039,6 +2039,8 @@ EXPORT_SYMBOL sound/core/snd-pcm 0x00000000	snd_pcm_set_sync
 EXPORT_SYMBOL sound/core/snd-pcm 0x00000000	snd_pcm_stop
 EXPORT_SYMBOL sound/core/snd-pcm 0x00000000	snd_pcm_suspend
 EXPORT_SYMBOL sound/core/snd-pcm 0x00000000	snd_pcm_suspend_all
+EXPORT_SYMBOL sound/core/snd-rawmidi 0x00000000	__snd_rawmidi_transmit_ack
+EXPORT_SYMBOL sound/core/snd-rawmidi 0x00000000	__snd_rawmidi_transmit_peek
 EXPORT_SYMBOL sound/core/snd-rawmidi 0x00000000	snd_rawmidi_drain_input
 EXPORT_SYMBOL sound/core/snd-rawmidi 0x00000000	snd_rawmidi_drain_output
 EXPORT_SYMBOL sound/core/snd-rawmidi 0x00000000	snd_rawmidi_drop_output
@@ -5492,6 +5494,7 @@ EXPORT_SYMBOL_GPL crypto/af_alg 0x00000000	af_alg_free_sg
 EXPORT_SYMBOL_GPL crypto/af_alg 0x00000000	af_alg_make_sg
 EXPORT_SYMBOL_GPL crypto/af_alg 0x00000000	af_alg_register_type
 EXPORT_SYMBOL_GPL crypto/af_alg 0x00000000	af_alg_release
+EXPORT_SYMBOL_GPL crypto/af_alg 0x00000000	af_alg_release_parent
 EXPORT_SYMBOL_GPL crypto/af_alg 0x00000000	af_alg_unregister_type
 EXPORT_SYMBOL_GPL crypto/af_alg 0x00000000	af_alg_wait_for_completion
 EXPORT_SYMBOL_GPL crypto/async_tx/async_memcpy 0x00000000	async_memcpy
@@ -7283,6 +7286,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x00000000	__gpio_cansleep
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__gpio_get_value
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__gpio_set_value
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__gpio_to_irq
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	__hrtimer_get_remaining
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__i2c_board_list
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__i2c_board_lock
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__i2c_first_dynamic_bus_num
@@ -8035,7 +8039,6 @@ EXPORT_SYMBOL_GPL vmlinux 0x00000000	handle_nested_irq
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	handle_simple_irq
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	hrtimer_cancel
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	hrtimer_forward
-EXPORT_SYMBOL_GPL vmlinux 0x00000000	hrtimer_get_remaining
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	hrtimer_get_res
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	hrtimer_init
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	hrtimer_init_sleeper
@@ -8992,6 +8995,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x00000000	wakeup_source_destroy
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	wakeup_source_register
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	wakeup_source_remove
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	wakeup_source_unregister
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	wireless_nlevent_flush
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	work_busy
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	work_cpu
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	work_on_cpu
