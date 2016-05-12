@@ -1453,7 +1453,15 @@ static __initconst const u64 slm_hw_cache_event_ids
 };
 
 /*
- * Use from PMIs where the LBRs are already disabled.
+ * Used from PMIs where the LBRs are already disabled.
+ *
+ * This function could be called consecutively. It is required to remain in
+ * disabled state if called consecutively.
+ *
+ * During consecutive calls, the same disable value will be written to related
+ * registers, so the PMU state remains unchanged. hw.state in
+ * intel_bts_disable_local will remain PERF_HES_STOPPED too in consecutive
+ * calls.
  */
 static void __intel_pmu_disable_all(void)
 {
@@ -1880,7 +1888,10 @@ again:
 		goto again;
 
 done:
-	__intel_pmu_enable_all(0, true);
+	/* Only restore PMU state when it's active. See x86_pmu_disable(). */
+	if (cpuc->enabled)
+		__intel_pmu_enable_all(0, true);
+
 	/*
 	 * Only unmask the NMI after the overflow counters
 	 * have been reset. This avoids spurious NMIs on
@@ -3299,6 +3310,7 @@ __init int intel_pmu_init(void)
 		intel_perfmon_event_map[PERF_COUNT_HW_STALLED_CYCLES_BACKEND] =
 			X86_CONFIG(.event=0xb1, .umask=0x3f, .inv=1, .cmask=1);
 
+		intel_pmu_pebs_data_source_nhm();
 		x86_add_quirk(intel_nehalem_quirk);
 
 		pr_cont("Nehalem events, ");
@@ -3361,6 +3373,7 @@ __init int intel_pmu_init(void)
 		intel_perfmon_event_map[PERF_COUNT_HW_STALLED_CYCLES_BACKEND] =
 			X86_CONFIG(.event=0xb1, .umask=0x3f, .inv=1, .cmask=1);
 
+		intel_pmu_pebs_data_source_nhm();
 		pr_cont("Westmere events, ");
 		break;
 

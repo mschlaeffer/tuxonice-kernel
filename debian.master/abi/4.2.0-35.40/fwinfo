@@ -558,6 +558,7 @@ firmware:       radeon/bonaire_smc.bin
 firmware:       radeon/BONAIRE_smc.bin
 firmware:       radeon/BONAIRE_uvd.bin
 firmware:       radeon/BONAIRE_vce.bin
+firmware:       radeon/boniare_mc.bin
 firmware:       radeon/BTC_rlc.bin
 firmware:       radeon/CAICOS_mc.bin
 firmware:       radeon/CAICOS_me.bin

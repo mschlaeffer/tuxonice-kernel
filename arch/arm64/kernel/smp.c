@@ -52,7 +52,6 @@
 #include <asm/sections.h>
 #include <asm/tlbflush.h>
 #include <asm/ptrace.h>
-#include <asm/numa.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/ipi.h>
@@ -125,7 +124,6 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
 static void smp_store_cpu_info(unsigned int cpuid)
 {
 	store_cpu_topology(cpuid);
-	numa_store_cpu_info(cpuid);
 }
 
 /*
@@ -503,7 +501,6 @@ void __init of_parse_and_init_cpus(void)
 
 		pr_debug("cpu logical map 0x%llx\n", hwid);
 		cpu_logical_map(cpu_count) = hwid;
-		dt_numa_set_node_info(cpu_count, hwid, (void *)dn);
 next:
 		cpu_count++;
 	}
