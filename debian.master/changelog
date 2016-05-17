@@ -1,3 +1,15 @@
+linux (4.4.0-22.40) xenial; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * CVE-2016-3713 (LP: #1581201)
+    - SAUCE: KVM: MTRR: remove MSR 0x2f8
+
+  * CVE-2016-0758 (LP: #1581202)
+    - SAUCE: KEYS: Fix ASN.1 indefinite length object parsing
+
+ -- Kamal Mostafa <kamal@canonical.com>  Thu, 12 May 2016 13:38:45 -0700
+
 linux (4.4.0-22.39) xenial; urgency=low
 
   [ Kamal Mostafa ]
