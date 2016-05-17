@@ -1,3 +1,12 @@
+linux (3.19.0-59.66) vivid; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * CVE-2016-0758 (LP: #1581202)
+    - SAUCE: KEYS: Fix ASN.1 indefinite length object parsing
+
+ -- Kamal Mostafa <kamal@canonical.com>  Thu, 12 May 2016 14:41:38 -0700
+
 linux (3.19.0-59.65) vivid; urgency=low
 
   [ Kamal Mostafa ]
