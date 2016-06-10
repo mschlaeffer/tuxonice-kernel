@@ -1,3 +1,386 @@
+linux (4.2.0-38.45) wily; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * CVE-2016-1583 (LP: #1588871)
+    - ecryptfs: fix handling of directory opening
+    - SAUCE: proc: prevent stacking filesystems on top
+    - SAUCE: ecryptfs: forbid opening files without mmap handler
+    - SAUCE: sched: panic on corrupted stack end
+
+ -- Andy Whitcroft <apw@canonical.com>  Wed, 08 Jun 2016 22:10:39 +0100
+
+linux (4.2.0-37.43) wily; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * Release Tracking Bug
+    - LP: #1582765
+
+  [ Colin Ian King ]
+
+  * SAUCE: mm/mmap: fix oopsing on remap_file_pages
+    - LP: #1558120
+
+  [ Kamal Mostafa ]
+
+  * [Config] Drop ozwpan from the ABI
+
+  [ Luis Henriques ]
+
+  * [Config] CONFIG_USB_WPAN_HCD=n
+    - LP: #1463740
+    - CVE-2015-4004
+
+  [ Prarit Bhargava ]
+
+  * SAUCE: (no-up) ACPICA: Dispatcher: Update thread ID for recursive
+    method calls
+    - LP: #1577898
+
+  [ Tim Gardner ]
+
+  * [Config] CONFIG_AUFS_XATTR=y
+    - LP: #1557776
+
+  [ Upstream Kernel Changes ]
+
+  * usbnet: cleanup after bind() in probe()
+    - LP: #1567191
+    - CVE-2016-3951
+  * USB: usbip: fix potential out-of-bounds write
+    - LP: #1572666
+    - CVE-2016-3955
+  * x86/mm/32: Enable full randomization on i386 and X86_32
+    - LP: #1568523
+    - CVE-2016-3672
+  * net/mlx4_core: Implement pci_resume callback
+    - LP: #1574697
+  * net/mlx4_core: Avoid repeated calls to pci enable/disable
+    - LP: #1574697
+  * Input: gtco - fix crash on detecting device without endpoints
+    - LP: #1575706
+    - CVE-2016-2187
+  * tunnel: Clear IPCB(skb)->opt before dst_link_failure called
+    - LP: #1576829
+  * net: jme: fix suspend/resume on JMC260
+    - LP: #1576829
+  * net: qca_spi: clear IFF_TX_SKB_SHARING
+    - LP: #1576829
+  * sctp: lack the check for ports in sctp_v6_cmp_addr
+    - LP: #1576829
+  * qmi_wwan: add Sierra Wireless EM74xx device ID
+    - LP: #1576829
+  * cdc_ncm: toggle altsetting to force reset before setup
+    - LP: #1576829
+  * udp6: fix UDP/IPv6 encap resubmit path
+    - LP: #1576829
+  * net: validate variable length ll headers
+    - LP: #1576829
+  * ax25: add link layer header validation function
+    - LP: #1576829
+  * packet: validate variable length ll headers
+    - LP: #1576829
+  * sh_eth: fix NULL pointer dereference in sh_eth_ring_format()
+    - LP: #1576829
+  * macvtap: always pass ethernet header in linear
+    - LP: #1576829
+  * farsync: fix off-by-one bug in fst_add_one
+    - LP: #1576829
+  * qlge: Fix receive packets drop.
+    - LP: #1576829
+  * bonding: fix bond_get_stats()
+    - LP: #1576829
+  * xfrm: Fix crash observed during device unregistration and decryption
+    - LP: #1576829
+  * qmi_wwan: add "D-Link DWM-221 B1" device id
+    - LP: #1576829
+  * rtnl: fix msg size calculation in if_nlmsg_size()
+    - LP: #1576829
+  * tun, bpf: fix suspicious RCU usage in tun_{attach, detach}_filter
+    - LP: #1576829
+  * ipv4: l2tp: fix a potential issue in l2tp_ip_recv
+    - LP: #1576829
+  * ipv6: l2tp: fix a potential issue in l2tp_ip6_recv
+    - LP: #1576829
+  * ipv6: Count in extension headers in skb->network_header
+    - LP: #1576829
+  * iwlwifi: pcie: lower the debug level for RSA semaphore access
+    - LP: #1576829
+  * HID: usbhid: fix inconsistent reset/resume/reset-resume behavior
+    - LP: #1576829
+  * ARM: OMAP2+: hwmod: Fix updating of sysconfig register
+    - LP: #1576829
+  * ARM: mvebu: Correct unit address for linksys
+    - LP: #1576829
+  * drm/qxl: fix cursor position with non-zero hotspot
+    - LP: #1576829
+  * s390/pci: add extra padding to function measurement block
+    - LP: #1576829
+  * ALSA: usb-audio: Add a sample rate quirk for Phoenix Audio TMX320
+    - LP: #1576829
+  * dmaengine: hsu: correct use of channel status register
+    - LP: #1576829
+  * ALSA: usb-audio: Add a quirk for Plantronics BT300
+    - LP: #1576829
+  * assoc_array: don't call compare_object() on a node
+    - LP: #1576829
+  * kvm: x86: do not leak guest xcr0 into host interrupt handlers
+    - LP: #1576829
+  * netlink: don't send NETLINK_URELEASE for unbound sockets
+    - LP: #1576829
+  * ALSA: hda/realtek - Enable the ALC292 dock fixup on the Thinkpad T460s
+    - LP: #1576829
+  * ALSA: usb-audio: Skip volume controls triggers hangup on Dell USB Dock
+    - LP: #1576829
+  * nl80211: check netlink protocol in socket release notification
+    - LP: #1576829
+  * debugfs: Make automount point inodes permanently empty
+    - LP: #1576829
+  * ALSA: hda - Fix regression of monitor_present flag in eld proc file
+    - LP: #1576829
+  * dmaengine: dw: fix master selection
+    - LP: #1576829
+  * lib: lz4: fixed zram with lz4 on big endian machines
+    - LP: #1576829
+  * usb: xhci: applying XHCI_PME_STUCK_QUIRK to Intel BXT B0 host
+    - LP: #1576829
+  * xhci: resume USB 3 roothub first
+    - LP: #1576829
+  * usb: host: xhci: add a new quirk XHCI_NO_64BIT_SUPPORT
+    - LP: #1576829
+  * usb: xhci: fix wild pointers in xhci_mem_cleanup
+    - LP: #1576829
+  * xhci: fix 10 second timeout on removal of PCI hotpluggable xhci
+    controllers
+    - LP: #1576829
+  * USB: uas: Add a new NO_REPORT_LUNS quirk
+    - LP: #1576829
+  * usb: hcd: out of bounds access in for_each_companion
+    - LP: #1576829
+  * drm/radeon: fix initial connector audio value
+    - LP: #1576829
+  * drm/amdgpu: when suspending, if uvd/vce was running. need to cancel
+    delay work.
+    - LP: #1576829
+  * dm cache metadata: fix READ_LOCK macros and cleanup WRITE_LOCK macros
+    - LP: #1576829
+  * pinctrl: mediatek: correct debounce time unit in mtk_gpio_set_debounce
+    - LP: #1576829
+  * crypto: sha1-mb - use corrcet pointer while completing jobs
+    - LP: #1576829
+  * crypto: ccp - Prevent information leakage on export
+    - LP: #1576829
+  * dm cache metadata: fix cmd_read_lock() acquiring write lock
+    - LP: #1576829
+  * video: ARM CLCD: runtime check for Versatile
+    - LP: #1576829
+  * drm/i915/userptr: Hold mmref whilst calling get-user-pages
+    - LP: #1576829
+  * drm/i915: Use fw_domains_put_with_fifo() on HSW
+    - LP: #1576829
+  * ALSA: hda/realtek - Add ALC3234 headset mode for Optiplex 9020m
+    - LP: #1576829
+  * powerpc: scan_features() updates incorrect bits for REAL_LE
+    - LP: #1576829
+  * powerpc: Update cpu_user_features2 in scan_features()
+    - LP: #1576829
+  * powerpc: Update TM user feature bits in scan_features()
+    - LP: #1576829
+  * drm/radeon: add a quirk for a XFX R9 270X
+    - LP: #1576829
+  * usb: gadget: f_fs: Fix use-after-free
+    - LP: #1576829
+  * futex: Handle unlock_pi race gracefully
+    - LP: #1576829
+  * futex: Acknowledge a new waiter in counter before plist
+    - LP: #1576829
+  * asm-generic/futex: Re-enable preemption in
+    futex_atomic_cmpxchg_inatomic()
+    - LP: #1576829
+  * ALSA: pcxhr: Fix missing mutex unlock
+    - LP: #1576829
+  * drm/dp/mst: Validate port in drm_dp_payload_send_msg()
+    - LP: #1576829
+  * drm/amdgpu: use defines for CRTCs and AMFT blocks
+    - LP: #1576829
+  * drm/amdgpu: bump the afmt limit for CZ, ST, Polaris
+    - LP: #1576829
+  * drm/radeon: forbid mapping of userptr bo through radeon device file
+    - LP: #1576829
+  * amdgpu/uvd: add uvd fw version for amdgpu
+    - LP: #1576829
+  * drm: Loongson-3 doesn't fully support wc memory
+    - LP: #1576829
+  * x86/mm/xen: Suppress hugetlbfs in PV guests
+    - LP: #1576829
+  * x86 EDAC, sb_edac.c: Repair damage introduced when "fixing" channel
+    address
+    - LP: #1576829
+  * x86 EDAC, sb_edac.c: Take account of channel hashing when needed
+    - LP: #1576829
+  * s390/scm_blk: fix deadlock for requests != REQ_TYPE_FS
+    - LP: #1576829
+  * packet: fix heap info leak in PACKET_DIAG_MCLIST sock_diag interface
+    - LP: #1576829
+  * net: sched: do not requeue a NULL skb
+    - LP: #1576829
+  * bpf/verifier: reject invalid LD_ABS | BPF_DW instruction
+    - LP: #1576829
+  * pinctrl: single: Fix pcs_parse_bits_in_pinctrl_entry to use __ffs than
+    ffs
+    - LP: #1576829
+  * s390/spinlock: avoid yield to non existent cpu
+    - LP: #1576829
+  * net: bcmgenet: device stats are unsigned long
+    - LP: #1576829
+  * Input: pmic8xxx-pwrkey - fix algorithm for converting trigger delay
+    - LP: #1576829
+  * net: ethernet: davinci_emac: Fix Unbalanced pm_runtime_enable
+    - LP: #1576829
+  * net: ethernet: davinci_emac: Fix platform_data overwrite
+    - LP: #1576829
+  * atl2: Disable unimplemented scatter/gather feature
+    - LP: #1576829
+  * openvswitch: use flow protocol when recalculating ipv6 checksums
+    - LP: #1576829
+  * Linux 4.2.8-ckt9
+    - LP: #1576829
+  * PNP: Add Broadwell to Intel MCH size workaround
+    - LP: #1577748
+  * PNP: Add Haswell-ULT to Intel MCH size workaround
+    - LP: #1577748
+  * device core: add BUS_NOTIFY_DRIVER_NOT_BOUND notification
+    - LP: #1549354
+  * ACPI / LPSS: allow to use specific PM domain during ->probe()
+    - LP: #1549354
+  * fs/pnode.c: treat zero mnt_group_id-s as unequal
+    - LP: #1572316
+  * propogate_mnt: Handle the first propogated copy being a slave
+    - LP: #1572316
+  * drm: Balance error path for GEM handle allocation
+    - LP: #1579610
+  * net: fix infoleak in llc
+    - LP: #1578496
+    - CVE-2016-4485
+  * net: fix infoleak in rtnetlink
+    - LP: #1578497
+    - CVE-2016-4486
+  * ASoC: rt5640: Correct the digital interface data select
+    - LP: #1582758
+  * ASoC: dapm: Make sure we have a card when displaying component widgets
+    - LP: #1582758
+  * ath9k: ar5008_hw_cmn_spur_mitigate: add missing mask_m & mask_p
+    initialisation
+    - LP: #1582758
+  * iio: ak8975: Fix NULL pointer exception on early interrupt
+    - LP: #1582758
+  * iio: ak8975: fix maybe-uninitialized warning
+    - LP: #1582758
+  * i2c: cpm: Fix build break due to incompatible pointer types
+    - LP: #1582758
+  * i2c: exynos5: Fix possible ABBA deadlock by keeping I2C clock prepared
+    - LP: #1582758
+  * efi: Fix out-of-bounds read in variable_matches()
+    - LP: #1582758
+  * USB: serial: cp210x: add ID for Link ECU
+    - LP: #1582758
+  * USB: serial: cp210x: add Straizona Focusers device ids
+    - LP: #1582758
+  * [media] v4l2-dv-timings.h: fix polarity for 4k formats
+    - LP: #1582758
+  * ALSA: hda - Add dock support for ThinkPad X260
+    - LP: #1582758
+  * workqueue: fix ghost PENDING flag while doing MQ IO
+    - LP: #1582758
+  * drm/dp/mst: Get validated port ref in drm_dp_update_payload_part1()
+    - LP: #1582758
+  * drm/virtio: send vblank event after crtc updates
+    - LP: #1582758
+  * cxl: Keep IRQ mappings on context teardown
+    - LP: #1582758
+  * drm/i915: Fix system resume if PCI device remained enabled
+    - LP: #1582758
+  * drm/i915/ddi: Fix eDP VDD handling during booting and suspend/resume
+    - LP: #1582758
+  * drm/i915: Fix eDP low vswing for Broadwell
+    - LP: #1582758
+  * drm/i915: Make RPS EI/thresholds multiple of 25 on SNB-BDW
+    - LP: #1582758
+  * mac80211: fix statistics leak if dev_alloc_name() fails
+    - LP: #1582758
+  * drm/radeon: fix vertical bars appear on monitor (v2)
+    - LP: #1582758
+  * ARM: SoCFPGA: Fix secondary CPU startup in thumb2 kernel
+    - LP: #1582758
+  * x86/irq: Fix a race in x86_vector_free_irqs()
+    - LP: #1582758
+  * x86/apic: Handle zero vector gracefully in clear_vector_irq()
+    - LP: #1582758
+  * ARM: cpuidle: Pass on arm_cpuidle_suspend()'s return value
+    - LP: #1582758
+  * IB/security: Restrict use of the write() interface
+    - LP: #1582758
+  * mm/huge_memory: replace VM_NO_THP VM_BUG_ON with actual VMA check
+    - LP: #1582758
+  * mm: vmscan: reclaim highmem zone if buffer_heads is over limit
+    - LP: #1582758
+  * EDAC: i7core, sb_edac: Don't return NOTIFY_BAD from mce_decoder
+    callback
+    - LP: #1582758
+  * powerpc: Fix bad inline asm constraint in create_zero_mask()
+    - LP: #1582758
+  * Minimal fix-up of bad hashing behavior of hash_64()
+    - LP: #1582758
+  * drm/amdgpu: set metadata pointer to NULL after freeing.
+    - LP: #1582758
+  * tracing: Don't display trigger file for events that can't be enabled
+    - LP: #1582758
+  * drm/radeon: make sure vertical front porch is at least 1
+    - LP: #1582758
+  * drm/amdgpu: make sure vertical front porch is at least 1
+    - LP: #1582758
+  * MAINTAINERS: Remove asterisk from EFI directory names
+    - LP: #1582758
+  * ARC: Add missing io barriers to io{read,write}{16,32}be()
+    - LP: #1582758
+  * x86/sysfb_efi: Fix valid BAR address range check
+    - LP: #1582758
+  * writeback: Fix performance regression in wb_over_bg_thresh()
+    - LP: #1582758
+  * mm, cma: prevent nr_isolated_* counters from going negative
+    - LP: #1582758
+  * x86/tsc: Read all ratio bits from MSR_PLATFORM_INFO
+    - LP: #1582758
+  * parisc: fix a bug when syscall number of tracee is __NR_Linux_syscalls
+    - LP: #1582758
+  * jme: Do not enable NIC WoL functions on S0
+    - LP: #1582758
+  * jme: Fix device PM wakeup API usage
+    - LP: #1582758
+  * net/mlx4_en: fix spurious timestamping callbacks
+    - LP: #1582758
+  * batman-adv: Reduce refcnt of removed router when updating route
+    - LP: #1582758
+  * batman-adv: Check skb size before using encapsulated ETH+VLAN header
+    - LP: #1582758
+  * batman-adv: Fix broadcast/ogm queue limit on a removed interface
+    - LP: #1582758
+  * mm: update min_free_kbytes from khugepaged after core initialization
+    - LP: #1582758
+  * ARM: EXYNOS: Properly skip unitialized parent clock in power domain on
+    - LP: #1582758
+  * net/mlx5e: Fix MLX5E_100BASE_T define
+    - LP: #1582758
+  * cxgbi: fix uninitialized flowi6
+    - LP: #1582758
+  * RDMA/iw_cxgb4: Fix bar2 virt addr calculation for T4 chips
+    - LP: #1582758
+  * Linux 4.2.8-ckt10
+    - LP: #1582758
+
+ -- Kamal Mostafa <kamal@canonical.com>  Tue, 17 May 2016 07:52:57 -0700
+
 linux (4.2.0-36.42) wily; urgency=low
 
   [ Kamal Mostafa ]
