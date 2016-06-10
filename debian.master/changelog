@@ -1,3 +1,76 @@
+linux (3.2.0-104.145) precise; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * CVE-2016-1583 (LP: #1588871)
+    - SAUCE: proc: prevent stacking filesystems on top
+    - ecryptfs: fix handling of directory opening
+    - ecryptfs: don't reinvent the wheels, please - use struct completion
+    - SAUCE: ecryptfs: forbid opening files without mmap handler
+
+ -- Andy Whitcroft <apw@canonical.com>  Thu, 09 Jun 2016 10:45:14 +0100
+
+linux (3.2.0-103.143) precise; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * Release Tracking Bug
+    - LP: #1580658
+
+  [ Upstream Kernel Changes ]
+
+  * USB: usbip: fix potential out-of-bounds write
+    - LP: #1572666
+    - CVE-2016-3955
+  * x86/mm/32: Enable full randomization on i386 and X86_32
+    - LP: #1568523
+    - CVE-2016-3672
+  * ALSA: usb-audio: Fix NULL dereference in create_fixed_stream_quirk()
+    - LP: #1561409
+    - CVE-2016-2184
+  * ALSA: usb-audio: Add sanity checks for endpoint accesses
+    - LP: #1561409
+    - CVE-2016-2184
+  * Input: ati_remote2 - fix crashes on detecting device with invalid
+    descriptor
+    - LP: #1561410
+    - CVE-2016-2185
+  * Input: powermate - fix oops with malicious USB descriptors
+    - LP: #1561411
+    - CVE-2016-2186
+  * USB: iowarrior: fix oops with malicious USB descriptors
+    - LP: #1561414
+    - CVE-2016-2188
+  * USB: mct_u232: add sanity checking in probe
+    - LP: #1556877
+    - CVE-2016-3136
+  * USB: cypress_m8: add endpoint sanity check
+    - LP: #1556878
+    - CVE-2016-3137
+  * USB: cdc-acm: more sanity checking
+    - LP: #1556880
+    - CVE-2016-3138
+  * USB: digi_acceleport: do sanity checking for the number of ports
+    - LP: #1556888
+    - CVE-2016-3140
+  * ipv4: Don't do expensive useless work during inetdev destroy.
+    - LP: #1558847
+    - CVE-2016-3156
+  * x86/iopl/64: Properly context-switch IOPL on Xen PV
+    - LP: #1561388
+    - CVE-2016-3157
+  * Input: gtco - fix crash on detecting device without endpoints
+    - LP: #1575706
+    - CVE-2016-2187
+  * net: fix infoleak in llc
+    - LP: #1578496
+    - CVE-2016-4485
+  * net: fix infoleak in rtnetlink
+    - LP: #1578497
+    - CVE-2016-4486
+
+ -- Kamal Mostafa <kamal@canonical.com>  Wed, 11 May 2016 08:55:53 -0700
+
 linux (3.2.0-102.142) precise; urgency=low
 
   [ Kamal Mostafa ]
