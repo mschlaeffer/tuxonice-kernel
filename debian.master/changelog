@@ -1,3 +1,142 @@
+linux (3.13.0-91.138) trusty; urgency=medium
+
+  [ Luis Henriques ]
+
+  * Release Tracking Bug
+    - LP: #1595991
+
+  [ Upstream Kernel Changes ]
+
+  * netfilter: x_tables: validate e->target_offset early
+    - LP: #1555338
+    - CVE-2016-3134
+  * netfilter: x_tables: make sure e->next_offset covers remaining blob
+    size
+    - LP: #1555338
+    - CVE-2016-3134
+  * netfilter: x_tables: fix unconditional helper
+    - LP: #1555338
+    - CVE-2016-3134
+  * netfilter: x_tables: don't move to non-existent next rule
+    - LP: #1595350
+  * netfilter: x_tables: validate targets of jumps
+    - LP: #1595350
+  * netfilter: x_tables: add and use xt_check_entry_offsets
+    - LP: #1595350
+  * netfilter: x_tables: kill check_entry helper
+    - LP: #1595350
+  * netfilter: x_tables: assert minimum target size
+    - LP: #1595350
+  * netfilter: x_tables: add compat version of xt_check_entry_offsets
+    - LP: #1595350
+  * netfilter: x_tables: check standard target size too
+    - LP: #1595350
+  * netfilter: x_tables: check for bogus target offset
+    - LP: #1595350
+  * netfilter: x_tables: validate all offsets and sizes in a rule
+    - LP: #1595350
+  * netfilter: x_tables: don't reject valid target size on some
+    architectures
+    - LP: #1595350
+  * netfilter: arp_tables: simplify translate_compat_table args
+    - LP: #1595350
+  * netfilter: ip_tables: simplify translate_compat_table args
+    - LP: #1595350
+  * netfilter: ip6_tables: simplify translate_compat_table args
+    - LP: #1595350
+  * netfilter: x_tables: xt_compat_match_from_user doesn't need a retval
+    - LP: #1595350
+  * netfilter: x_tables: do compat validation via translate_table
+    - LP: #1595350
+  * netfilter: x_tables: introduce and use xt_copy_counters_from_user
+    - LP: #1595350
+
+ -- Luis Henriques <luis.henriques@canonical.com>  Fri, 24 Jun 2016 16:19:03 +0100
+
+linux (3.13.0-90.137) trusty; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * Release Tracking Bug
+    - LP: #1595693
+
+  [ Serge Hallyn ]
+
+  * SAUCE: add a sysctl to disable unprivileged user namespace unsharing
+    - LP: #1555338, #1595350
+
+ -- Kamal Mostafa <kamal@canonical.com>  Thu, 23 Jun 2016 13:10:53 -0700
+
+linux (3.13.0-89.136) trusty; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * Release Tracking Bug
+    - LP: #1591315
+
+  [ Kamal Mostafa ]
+
+  * [debian] getabis: Only git add $abidir if running in local repo
+    - LP: #1584890
+  * [debian] getabis: Fix inconsistent compiler versions check
+    - LP: #1584890
+
+  [ Stefan Bader ]
+
+  * SAUCE: powerpc/powernv: Fix incomplete backport of 8117ac6
+    - LP: #1589910
+
+  [ Tim Gardner ]
+
+  * [Config] Remove arc4 from nic-modules
+    - LP: #1582991
+
+  [ Upstream Kernel Changes ]
+
+  * KVM: x86: move steal time initialization to vcpu entry time
+    - LP: #1494350
+  * lpfc: Fix premature release of rpi bit in bitmask
+    - LP: #1580560
+  * lpfc: Correct loss of target discovery after cable swap.
+    - LP: #1580560
+  * mm/balloon_compaction: redesign ballooned pages management
+    - LP: #1572562
+  * mm/balloon_compaction: fix deflation when compaction is disabled
+    - LP: #1572562
+  * bridge: Fix the way to find old local fdb entries in br_fdb_changeaddr
+    - LP: #1581585
+  * bridge: notify user space after fdb update
+    - LP: #1581585
+  * ALSA: timer: Fix leak in SNDRV_TIMER_IOCTL_PARAMS
+    - LP: #1580379
+    - CVE-2016-4569
+  * ALSA: timer: Fix leak in events via snd_timer_user_ccallback
+    - LP: #1581866
+    - CVE-2016-4578
+  * ALSA: timer: Fix leak in events via snd_timer_user_tinterrupt
+    - LP: #1581866
+    - CVE-2016-4578
+  * net: fix a kernel infoleak in x25 module
+    - LP: #1585366
+    - CVE-2016-4580
+  * get_rock_ridge_filename(): handle malformed NM entries
+    - LP: #1583962
+    - CVE-2016-4913
+  * netfilter: Set /proc/net entries owner to root in namespace
+    - LP: #1584953
+  * USB: usbfs: fix potential infoleak in devio
+    - LP: #1578493
+    - CVE-2016-4482
+  * IB/security: Restrict use of the write() interface
+    - LP: #1580372
+    - CVE-2016-4565
+  * netlink: autosize skb lengthes
+    - LP: #1568969
+  * xfs: allow inode allocations in post-growfs disk space
+    - LP: #1560142
+
+ -- Kamal Mostafa <kamal@canonical.com>  Fri, 10 Jun 2016 11:38:36 -0700
+
 linux (3.13.0-88.135) trusty; urgency=low
 
   [ Kamal Mostafa ]
