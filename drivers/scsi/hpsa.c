@@ -744,7 +744,6 @@ static struct device_attribute *hpsa_sdev_attrs[] = {
 	&dev_attr_lunid,
 	&dev_attr_unique_id,
 	&dev_attr_hp_ssd_smart_path_enabled,
-	&dev_attr_lockup_detected,
 	NULL,
 };
 
@@ -756,6 +755,7 @@ static struct device_attribute *hpsa_shost_attrs[] = {
 	&dev_attr_resettable,
 	&dev_attr_hp_ssd_smart_path_status,
 	&dev_attr_raid_offload_debug,
+	&dev_attr_lockup_detected,
 	NULL,
 };
 
