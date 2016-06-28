@@ -1,3 +1,200 @@
+linux (3.19.0-64.72) vivid; urgency=low
+
+  [ Luis Henriques ]
+
+  * Release Tracking Bug
+    - LP: #1595976
+
+  [ Upstream Kernel Changes ]
+
+  * netfilter: x_tables: validate e->target_offset early
+    - LP: #1555338
+    - CVE-2016-3134
+  * netfilter: x_tables: make sure e->next_offset covers remaining blob
+    size
+    - LP: #1555338
+    - CVE-2016-3134
+  * netfilter: x_tables: fix unconditional helper
+    - LP: #1555338
+    - CVE-2016-3134
+  * netfilter: x_tables: don't move to non-existent next rule
+    - LP: #1595350
+  * netfilter: x_tables: validate targets of jumps
+    - LP: #1595350
+  * netfilter: x_tables: add and use xt_check_entry_offsets
+    - LP: #1595350
+  * netfilter: x_tables: kill check_entry helper
+    - LP: #1595350
+  * netfilter: x_tables: assert minimum target size
+    - LP: #1595350
+  * netfilter: x_tables: add compat version of xt_check_entry_offsets
+    - LP: #1595350
+  * netfilter: x_tables: check standard target size too
+    - LP: #1595350
+  * netfilter: x_tables: check for bogus target offset
+    - LP: #1595350
+  * netfilter: x_tables: validate all offsets and sizes in a rule
+    - LP: #1595350
+  * netfilter: x_tables: don't reject valid target size on some
+    architectures
+    - LP: #1595350
+  * netfilter: arp_tables: simplify translate_compat_table args
+    - LP: #1595350
+  * netfilter: ip_tables: simplify translate_compat_table args
+    - LP: #1595350
+  * netfilter: ip6_tables: simplify translate_compat_table args
+    - LP: #1595350
+  * netfilter: x_tables: xt_compat_match_from_user doesn't need a retval
+    - LP: #1595350
+  * netfilter: x_tables: do compat validation via translate_table
+    - LP: #1595350
+  * netfilter: x_tables: introduce and use xt_copy_counters_from_user
+    - LP: #1595350
+
+ -- Luis Henriques <luis.henriques@canonical.com>  Fri, 24 Jun 2016 15:39:13 +0100
+
+linux (3.19.0-63.71) vivid; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * Release Tracking Bug
+    - LP: #1595723
+
+  [ Serge Hallyn ]
+
+  * SAUCE: add a sysctl to disable unprivileged user namespace unsharing
+    - LP: #1555338, #1595350
+
+ -- Kamal Mostafa <kamal@canonical.com>  Thu, 23 Jun 2016 14:17:46 -0700
+
+linux (3.19.0-62.70) vivid; urgency=low
+
+  [ Kamal Mostafa ]
+
+  * Release Tracking Bug
+    - LP: #1591307
+
+  [ Kamal Mostafa ]
+
+  * [debian] getabis: Only git add $abidir if running in local repo
+    - LP: #1584890
+  * [debian] getabis: Fix inconsistent compiler versions check
+    - LP: #1584890
+
+  [ Tim Gardner ]
+
+  * [Config] Remove arc4 from nic-modules
+    - LP: #1582991
+
+  [ Upstream Kernel Changes ]
+
+  * Revert "usb: hub: do not clear BOS field during reset device"
+    - LP: #1582864
+  * ALSA: timer: Fix leak in SNDRV_TIMER_IOCTL_PARAMS
+    - LP: #1580379
+    - CVE-2016-4569
+  * ALSA: timer: Fix leak in events via snd_timer_user_ccallback
+    - LP: #1581866
+    - CVE-2016-4578
+  * ALSA: timer: Fix leak in events via snd_timer_user_tinterrupt
+    - LP: #1581866
+    - CVE-2016-4578
+  * net: fix a kernel infoleak in x25 module
+    - LP: #1585366
+    - CVE-2016-4580
+  * get_rock_ridge_filename(): handle malformed NM entries
+    - LP: #1583962
+    - CVE-2016-4913
+  * tipc: check nl sock before parsing nested attributes
+    - LP: #1585365
+    - CVE-2016-4951
+  * netfilter: Set /proc/net entries owner to root in namespace
+    - LP: #1584953
+  * USB: usbfs: fix potential infoleak in devio
+    - LP: #1578493
+    - CVE-2016-4482
+  * USB: leave LPM alone if possible when binding/unbinding interface
+    drivers
+    - LP: #1577024
+  * compiler-gcc: integrate the various compiler-gcc[345].h files
+    - LP: #1587557
+  * fix backport "IB/security: restrict use of the write() interface"
+    - LP: #1587557
+  * x86: LLVMLinux: Fix "incomplete type const struct x86cpu_device_id"
+    - LP: #1587557
+  * regulator: s2mps11: Fix invalid selector mask and voltages for buck9
+    - LP: #1587557
+  * regmap: spmi: Fix regmap_spmi_ext_read in multi-byte case
+    - LP: #1587557
+  * atomic_open(): fix the handling of create_error
+    - LP: #1587557
+  * crypto: hash - Fix page length clamping in hash walk
+    - LP: #1587557
+  * drm/radeon: fix PLL sharing on DCE6.1 (v2)
+    - LP: #1587557
+  * ALSA: hda - Fix white noise on Asus UX501VW headset
+    - LP: #1587557
+  * Input: max8997-haptic - fix NULL pointer dereference
+    - LP: #1587557
+  * drm/i915: Bail out of pipe config compute loop on LPT
+    - LP: #1587557
+  * ALSA: hda - Fix subwoofer pin on ASUS N751 and N551
+    - LP: #1587557
+  * tools lib traceevent: Free filter tokens in process_filter()
+    - LP: #1587557
+  * tools lib traceevent: Do not reassign parg after collapse_tree()
+    - LP: #1587557
+  * workqueue: fix rebind bound workers warning
+    - LP: #1587557
+  * ocfs2: fix posix_acl_create deadlock
+    - LP: #1587557
+  * nf_conntrack: avoid kernel pointer value leak in slab name
+    - LP: #1587557
+  * net: fec: only clear a queue's work bit if the queue was emptied
+    - LP: #1587557
+  * net/mlx4_en: Fix endianness bug in IPV6 csum calculation
+    - LP: #1587557
+  * macvtap: segmented packet is consumed
+    - LP: #1587557
+  * tcp: refresh skb timestamp at retransmit time
+    - LP: #1587557
+  * arm64: bpf: jit JMP_JSET_{X,K}
+    - LP: #1587557
+  * decnet: Do not build routes to devices without decnet private data.
+    - LP: #1587557
+  * route: do not cache fib route info on local routes with oif
+    - LP: #1587557
+  * net: use skb_postpush_rcsum instead of own implementations
+    - LP: #1587557
+  * vlan: pull on __vlan_insert_tag error path and fix csum correction
+    - LP: #1587557
+  * ipv4/fib: don't warn when primary address is missing if in_dev is dead
+    - LP: #1587557
+  * bpf: fix double-fdput in replace_map_fd_with_map_ptr()
+    - LP: #1587557
+  * net_sched: introduce qdisc_replace() helper
+    - LP: #1587557
+  * net_sched: update hierarchical backlog too
+    - LP: #1587557
+  * sch_htb: update backlog as well
+    - LP: #1587557
+  * sch_dsmark: update backlog as well
+    - LP: #1587557
+  * netem: Segment GSO packets on enqueue
+    - LP: #1587557
+  * VSOCK: do not disconnect socket when peer has shutdown SEND only
+    - LP: #1587557
+  * net: bridge: fix old ioctl unlocked net device walk
+    - LP: #1587557
+  * Linux 3.19.8-ckt22
+    - LP: #1587557
+  * usb: core: hub: hub_port_init lock controller instead of bus
+    - LP: #1437492
+  * i915_bpo: Check live status before reading edid
+    - LP: #1588375
+
+ -- Kamal Mostafa <kamal@canonical.com>  Fri, 10 Jun 2016 11:14:35 -0700
+
 linux (3.19.0-61.69) vivid; urgency=low
 
   [ Kamal Mostafa ]
