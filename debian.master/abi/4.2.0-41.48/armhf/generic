@@ -5289,6 +5289,7 @@ EXPORT_SYMBOL net/netfilter/x_tables 0x960d5d2e	xt_unregister_matches
 EXPORT_SYMBOL net/netfilter/x_tables 0xc2f217cd	xt_unregister_target
 EXPORT_SYMBOL net/netfilter/x_tables 0xd1a21986	xt_free_table_info
 EXPORT_SYMBOL net/netfilter/x_tables 0xd303c421	xt_find_match
+EXPORT_SYMBOL net/netfilter/x_tables 0xd87ae60d	xt_check_entry_offsets
 EXPORT_SYMBOL net/nfc/hci/hci 0x01bc1148	nfc_hci_recv_frame
 EXPORT_SYMBOL net/nfc/hci/hci 0x2d44c579	nfc_hci_target_discovered
 EXPORT_SYMBOL net/nfc/hci/hci 0x2dc695a9	nfc_hci_set_clientdata
@@ -13886,6 +13887,7 @@ EXPORT_SYMBOL_GPL net/netfilter/nft_reject 0xe8cdab4e	nft_reject_icmpv6_code
 EXPORT_SYMBOL_GPL net/netfilter/x_tables 0x006abaf2	xt_check_target
 EXPORT_SYMBOL_GPL net/netfilter/x_tables 0x0be972af	xt_request_find_match
 EXPORT_SYMBOL_GPL net/netfilter/x_tables 0x18fa64d1	xt_unregister_table
+EXPORT_SYMBOL_GPL net/netfilter/x_tables 0x24c8e482	xt_copy_counters_from_user
 EXPORT_SYMBOL_GPL net/netfilter/x_tables 0x40728a63	xt_find_revision
 EXPORT_SYMBOL_GPL net/netfilter/x_tables 0x6845e37f	xt_proto_init
 EXPORT_SYMBOL_GPL net/netfilter/x_tables 0x770233d0	xt_proto_fini
