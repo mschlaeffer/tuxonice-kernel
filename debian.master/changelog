@@ -1,3 +1,71 @@
+linux (3.19.0-65.73) vivid; urgency=low
+
+  [ Ben Romer ]
+
+  * Release Tracking Bug
+    - LP: #1596631
+
+  [ Josh Boyer ]
+
+  * SAUCE: UEFI: acpi: Ignore acpi_rsdp kernel parameter when module
+    loading is restricted
+    - LP: #1566221
+  * SAUCE: UEFI: efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
+    - LP: #1566221
+  * SAUCE: UEFI MODSIGN: Import certificates from UEFI Secure Boot
+    - LP: #1571691
+  * SAUCE: UEFI: efi: Disable secure boot if shim is in insecure mode
+    - LP: #1571691
+
+  [ Matthew Garrett ]
+
+  * SAUCE: UEFI: Add secure_modules() call
+    - LP: #1566221
+  * SAUCE: UEFI: PCI: Lock down BAR access when module security is enabled
+    - LP: #1566221
+  * SAUCE: UEFI: x86: Lock down IO port access when module security is
+    enabled
+    - LP: #1566221
+  * SAUCE: UEFI: ACPI: Limit access to custom_method
+    - LP: #1566221
+  * SAUCE: UEFI: asus-wmi: Restrict debugfs interface when module loading
+    is restricted
+    - LP: #1566221
+  * SAUCE: UEFI: Restrict /dev/mem and /dev/kmem when module loading is
+    restricted
+    - LP: #1566221
+  * SAUCE: UEFI: kexec: Disable at runtime if the kernel enforces module
+    loading restrictions
+    - LP: #1566221
+  * SAUCE: UEFI: x86: Restrict MSR access when module loading is restricted
+    - LP: #1566221
+  * SAUCE: UEFI: Add option to automatically enforce module signatures when
+    in Secure Boot mode
+    - LP: #1566221
+
+  [ Stefan Bader ]
+
+  * [Config] Add pm80xx scsi driver to d-i
+    - LP: #1595628
+
+  [ Tim Gardner ]
+
+  * [Config] CONFIG_EFI_SECURE_BOOT_SIG_ENFORCE=y
+  * SAUCE: UEFI: Display MOKSBState when disabled
+    - LP: #1571691
+  * SAUCE: UEFI: Add secure boot and MOK SB State disabled sysctl
+    - LP: #1593075
+
+  [ Upstream Kernel Changes ]
+
+  * HID: core: prevent out-of-bound readings
+    - LP: #1579190
+  * mm: migrate dirty page without clear_page_dirty_for_io etc
+    - LP: #1581865
+    - CVE-2016-3070
+
+ --  Benjamin M Romer <benjamin.romer@canonical.com>  Mon, 27 Jun 2016 12:37:48 -0400
+
 linux (3.19.0-64.72) vivid; urgency=low
 
   [ Luis Henriques ]
