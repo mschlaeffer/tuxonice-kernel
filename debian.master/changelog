@@ -1,3 +1,43 @@
+linux (3.2.0-107.148) precise; urgency=low
+
+  [ Seth Forshee ]
+
+  * Release Tracking Bug
+    - LP: #1604099
+
+  * CVE-2016-5243 (LP: #1589036)
+    - tipc: fix an infoleak in tipc_nl_compat_link_dump
+
+  * qeth: delete napi struct when removing a qeth device (LP: #1601831)
+    - qeth: delete napi struct when removing a qeth device
+
+  * linux: Homogenize changelog format across releases (LP: #1599562)
+    - Revert "UBUNTU: [debian] BugLink: close LP: bugs only for Launchpad urls"
+    - [Debian] git-ubuntu-log -- switch to bug order
+    - [Debian] git-ubuntu-log -- fix empty section formatting
+    - [Debian] git-ubuntu-log -- output should be utf-8
+    - [Debian] git-ubuntu-log -- handle invalid or private bugs
+    - [Debian] git-ubuntu-log -- wrap long bug and commit titles
+    - [Debian] git-ubuntu-log -- ensure we get the last commit
+    - [Debian] git-ubuntu-log -- prevent bug references being split
+    - [Debian] git-ubuntu-log -- git log output is UTF-8
+
+  * CVE-2016-3961 (LP: #1571020)
+    - hugetlb: ensure hugepage access is denied if hugepages are not supported
+    - mm: hugetlb: allow hugepages_supported to be architecture specific
+    - s390/hugetlb: add hugepages_supported define
+    - x86/mm/xen: Suppress hugetlbfs in PV guests
+
+  * Linux netfilter IPT_SO_SET_REPLACE memory corruption (LP: #1555338)
+    - netfilter: x_tables: validate e->target_offset early
+    - netfilter: x_tables: make sure e->next_offset covers remaining blob size
+    - netfilter: x_tables: fix unconditional helper
+
+  * Miscellaneous upstream changes
+    - KEYS: potential uninitialized variable
+
+ -- Seth Forshee <seth.forshee@canonical.com>  Mon, 18 Jul 2016 12:57:54 -0500
+
 linux (3.2.0-106.147) precise; urgency=low
 
   [ Kamal Mostafa ]
