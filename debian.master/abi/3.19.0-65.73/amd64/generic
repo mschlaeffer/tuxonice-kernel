@@ -6476,6 +6476,7 @@ EXPORT_SYMBOL vmlinux 0x12dfeb12	vprintk_emit
 EXPORT_SYMBOL vmlinux 0x1305d532	ucs2_strncmp
 EXPORT_SYMBOL vmlinux 0x130c2279	bdev_stack_limits
 EXPORT_SYMBOL vmlinux 0x1318353f	md_check_no_bitmap
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
 EXPORT_SYMBOL vmlinux 0x13315729	flex_array_alloc
@@ -6623,6 +6624,7 @@ EXPORT_SYMBOL vmlinux 0x1bdce046	scsicam_bios_param
 EXPORT_SYMBOL vmlinux 0x1bf726b5	uart_suspend_port
 EXPORT_SYMBOL vmlinux 0x1bf74939	tty_insert_flip_string_fixed_flag
 EXPORT_SYMBOL vmlinux 0x1c23c7f9	blk_execute_rq
+EXPORT_SYMBOL vmlinux 0x1c2538e0	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x1c65f913	pci_choose_state
 EXPORT_SYMBOL vmlinux 0x1c708ea0	get_cached_acl
 EXPORT_SYMBOL vmlinux 0x1c88f379	skb_abort_seq_read
@@ -7253,6 +7255,7 @@ EXPORT_SYMBOL vmlinux 0x41482d8b	strndup_user
 EXPORT_SYMBOL vmlinux 0x414bc71b	padata_unregister_cpumask_notifier
 EXPORT_SYMBOL vmlinux 0x4188d439	neigh_rand_reach_time
 EXPORT_SYMBOL vmlinux 0x41a049ce	netdev_notify_peers
+EXPORT_SYMBOL vmlinux 0x41dbca98	migrate_page
 EXPORT_SYMBOL vmlinux 0x41dde523	pci_biosrom_size
 EXPORT_SYMBOL vmlinux 0x41fd23ba	jbd2_journal_check_available_features
 EXPORT_SYMBOL vmlinux 0x420035bd	netif_rx_ni
@@ -7990,7 +7993,6 @@ EXPORT_SYMBOL vmlinux 0x6b767b02	sk_ns_capable
 EXPORT_SYMBOL vmlinux 0x6b813e9b	tcp_prot
 EXPORT_SYMBOL vmlinux 0x6b824d45	blk_pre_runtime_suspend
 EXPORT_SYMBOL vmlinux 0x6b900b86	tcf_hash_new_index
-EXPORT_SYMBOL vmlinux 0x6ba51010	migrate_page
 EXPORT_SYMBOL vmlinux 0x6ba5adca	__getblk_gfp
 EXPORT_SYMBOL vmlinux 0x6ba7412a	loop_register_transfer
 EXPORT_SYMBOL vmlinux 0x6bc3fbc0	__unregister_chrdev
@@ -8490,7 +8492,6 @@ EXPORT_SYMBOL vmlinux 0x87b551e0	set_trace_device
 EXPORT_SYMBOL vmlinux 0x87c58a96	smp_call_function_many
 EXPORT_SYMBOL vmlinux 0x87dc469a	mempool_create_node
 EXPORT_SYMBOL vmlinux 0x87e95795	devm_gpio_free
-EXPORT_SYMBOL vmlinux 0x87ec717f	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x8807bfef	mb_cache_entry_insert
 EXPORT_SYMBOL vmlinux 0x8816b3dd	dm_get_device
 EXPORT_SYMBOL vmlinux 0x881a3eca	nd_get_link

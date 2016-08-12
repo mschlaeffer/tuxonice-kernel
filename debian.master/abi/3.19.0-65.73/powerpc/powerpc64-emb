@@ -6144,6 +6144,7 @@ EXPORT_SYMBOL vmlinux 0x12ec85a9	seq_pad
 EXPORT_SYMBOL vmlinux 0x12f75d04	inet_add_protocol
 EXPORT_SYMBOL vmlinux 0x13027e23	tcp_timewait_state_process
 EXPORT_SYMBOL vmlinux 0x130995e1	rtnl_unicast
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x131b0811	max8925_reg_write
 EXPORT_SYMBOL vmlinux 0x13215eac	mem_section
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
@@ -6699,6 +6700,7 @@ EXPORT_SYMBOL vmlinux 0x36a3cfea	dev_open
 EXPORT_SYMBOL vmlinux 0x36ad64a9	inode_needs_sync
 EXPORT_SYMBOL vmlinux 0x36b0e732	try_wait_for_completion
 EXPORT_SYMBOL vmlinux 0x36bd681b	groups_alloc
+EXPORT_SYMBOL vmlinux 0x36f00309	migrate_page
 EXPORT_SYMBOL vmlinux 0x3703f28a	neigh_app_ns
 EXPORT_SYMBOL vmlinux 0x370d2195	sock_alloc_send_pskb
 EXPORT_SYMBOL vmlinux 0x371d2130	check_legacy_ioport
@@ -7630,7 +7632,6 @@ EXPORT_SYMBOL vmlinux 0x709abd2a	skb_free_datagram_locked
 EXPORT_SYMBOL vmlinux 0x70a7a710	dev_get_flags
 EXPORT_SYMBOL vmlinux 0x70afdcb7	find_get_pages_contig
 EXPORT_SYMBOL vmlinux 0x70c909ad	jbd2_journal_free_reserved
-EXPORT_SYMBOL vmlinux 0x70cd8944	migrate_page
 EXPORT_SYMBOL vmlinux 0x70d053fd	try_to_del_timer_sync
 EXPORT_SYMBOL vmlinux 0x70d5b4c7	bio_get_nr_vecs
 EXPORT_SYMBOL vmlinux 0x70f18412	free_netdev
@@ -8151,7 +8152,6 @@ EXPORT_SYMBOL vmlinux 0x903dd76f	fsl_lbc_ctrl_dev
 EXPORT_SYMBOL vmlinux 0x905e29ca	wait_on_page_bit
 EXPORT_SYMBOL vmlinux 0x9068e29d	devfreq_remove_device
 EXPORT_SYMBOL vmlinux 0x906a9145	unregister_filesystem
-EXPORT_SYMBOL vmlinux 0x90740087	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x907d12cf	mmc_erase_group_aligned
 EXPORT_SYMBOL vmlinux 0x90a4f79a	tcp_md5_do_del
 EXPORT_SYMBOL vmlinux 0x90d6dee5	__remove_inode_hash
@@ -9563,6 +9563,7 @@ EXPORT_SYMBOL vmlinux 0xe7474bab	eth_header
 EXPORT_SYMBOL vmlinux 0xe748af78	__netlink_kernel_create
 EXPORT_SYMBOL vmlinux 0xe7541c78	i2c_put_adapter
 EXPORT_SYMBOL vmlinux 0xe76828ff	scsi_ioctl
+EXPORT_SYMBOL vmlinux 0xe7719272	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0xe779b63f	mount_single
 EXPORT_SYMBOL vmlinux 0xe7a664c4	nf_hooks
 EXPORT_SYMBOL vmlinux 0xe7a81967	audit_log_secctx

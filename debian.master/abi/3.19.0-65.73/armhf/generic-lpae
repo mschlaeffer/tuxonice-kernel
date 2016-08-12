@@ -5929,6 +5929,7 @@ EXPORT_SYMBOL vmlinux 0x12a38747	usleep_range
 EXPORT_SYMBOL vmlinux 0x12c55df5	scsi_print_sense_hdr
 EXPORT_SYMBOL vmlinux 0x12da5bb2	__kmalloc
 EXPORT_SYMBOL vmlinux 0x12f58bc1	__register_chrdev
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x131a6eaa	mmc_wait_for_app_cmd
 EXPORT_SYMBOL vmlinux 0x13238825	vlan_vid_del
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
@@ -6441,6 +6442,7 @@ EXPORT_SYMBOL vmlinux 0x31683780	kset_unregister
 EXPORT_SYMBOL vmlinux 0x31688586	netdev_alert
 EXPORT_SYMBOL vmlinux 0x3174bd79	bitmap_clear
 EXPORT_SYMBOL vmlinux 0x317766cf	scsi_host_put
+EXPORT_SYMBOL vmlinux 0x31830783	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x318fec00	nand_bch_correct_data
 EXPORT_SYMBOL vmlinux 0x31905bae	unlock_new_inode
 EXPORT_SYMBOL vmlinux 0x3191f109	__krealloc
@@ -6610,7 +6612,6 @@ EXPORT_SYMBOL vmlinux 0x3a25b953	fixed_size_llseek
 EXPORT_SYMBOL vmlinux 0x3a2c4180	netlink_broadcast
 EXPORT_SYMBOL vmlinux 0x3a4e165b	blk_queue_stack_limits
 EXPORT_SYMBOL vmlinux 0x3a84d6c0	devm_devfreq_remove_device
-EXPORT_SYMBOL vmlinux 0x3a862aa0	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x3a953f2a	__netlink_ns_capable
 EXPORT_SYMBOL vmlinux 0x3a9b6fb9	blk_unregister_region
 EXPORT_SYMBOL vmlinux 0x3af54ede	key_payload_reserve
@@ -7226,7 +7227,6 @@ EXPORT_SYMBOL vmlinux 0x5c9b737c	dev_get_by_index_rcu
 EXPORT_SYMBOL vmlinux 0x5c9c7f2b	udp_lib_unhash
 EXPORT_SYMBOL vmlinux 0x5c9de8b3	snd_pcm_new_internal
 EXPORT_SYMBOL vmlinux 0x5cbc0c4e	blk_alloc_queue
-EXPORT_SYMBOL vmlinux 0x5cc3753d	migrate_page
 EXPORT_SYMBOL vmlinux 0x5cc578e9	xfrm_init_replay
 EXPORT_SYMBOL vmlinux 0x5cd26a96	netif_rx
 EXPORT_SYMBOL vmlinux 0x5ce8ef02	synchronize_hardirq
@@ -9520,6 +9520,7 @@ EXPORT_SYMBOL vmlinux 0xe2d5255a	strcmp
 EXPORT_SYMBOL vmlinux 0xe2e8065e	memdup_user
 EXPORT_SYMBOL vmlinux 0xe2f5a19e	pm8606_osc_disable
 EXPORT_SYMBOL vmlinux 0xe2fae716	kmemdup
+EXPORT_SYMBOL vmlinux 0xe2fdbf29	migrate_page
 EXPORT_SYMBOL vmlinux 0xe305bbc5	rwsem_wake
 EXPORT_SYMBOL vmlinux 0xe329f041	__genl_register_family
 EXPORT_SYMBOL vmlinux 0xe340aeb2	dquot_initialize

@@ -6048,7 +6048,6 @@ EXPORT_SYMBOL vmlinux 0x0d10ee43	neigh_compat_output
 EXPORT_SYMBOL vmlinux 0x0d375c58	nf_unregister_hook
 EXPORT_SYMBOL vmlinux 0x0d500728	delete_from_page_cache
 EXPORT_SYMBOL vmlinux 0x0d542439	__ipv6_addr_type
-EXPORT_SYMBOL vmlinux 0x0d5b4027	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x0d61eeee	__bitmap_subset
 EXPORT_SYMBOL vmlinux 0x0d9525dd	ipv6_chk_addr
 EXPORT_SYMBOL vmlinux 0x0da10ec3	security_sock_graft
@@ -6129,6 +6128,7 @@ EXPORT_SYMBOL vmlinux 0x12da5bb2	__kmalloc
 EXPORT_SYMBOL vmlinux 0x12e5ef0c	rtas_set_power_level
 EXPORT_SYMBOL vmlinux 0x12f1f3d5	sock_no_recvmsg
 EXPORT_SYMBOL vmlinux 0x13015200	macio_request_resources
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
 EXPORT_SYMBOL vmlinux 0x136aff69	phy_start_interrupts
@@ -7992,6 +7992,7 @@ EXPORT_SYMBOL vmlinux 0x81db6ebb	xz_dec_reset
 EXPORT_SYMBOL vmlinux 0x81f53f94	phy_stop
 EXPORT_SYMBOL vmlinux 0x82072614	tasklet_kill
 EXPORT_SYMBOL vmlinux 0x820f487d	devm_backlight_device_register
+EXPORT_SYMBOL vmlinux 0x821a6125	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x822c5a8c	fence_add_callback
 EXPORT_SYMBOL vmlinux 0x824af37d	devm_iounmap
 EXPORT_SYMBOL vmlinux 0x825f4237	swiotlb_sync_single_for_cpu
@@ -9043,7 +9044,6 @@ EXPORT_SYMBOL vmlinux 0xc5718627	sg_copy_to_buffer
 EXPORT_SYMBOL vmlinux 0xc575da24	sync_inodes_sb
 EXPORT_SYMBOL vmlinux 0xc5846414	xfrm_init_state
 EXPORT_SYMBOL vmlinux 0xc588149d	phy_connect
-EXPORT_SYMBOL vmlinux 0xc5990d75	migrate_page
 EXPORT_SYMBOL vmlinux 0xc599a772	security_xfrm_state_delete
 EXPORT_SYMBOL vmlinux 0xc59a6dd3	blk_init_queue_node
 EXPORT_SYMBOL vmlinux 0xc5a37a54	arp_send
@@ -9125,6 +9125,7 @@ EXPORT_SYMBOL vmlinux 0xc8db12b0	tty_unlock
 EXPORT_SYMBOL vmlinux 0xc8ed41bb	flock_lock_file_wait
 EXPORT_SYMBOL vmlinux 0xc8fc6c80	ilookup
 EXPORT_SYMBOL vmlinux 0xc9061dbc	blk_mq_unique_tag
+EXPORT_SYMBOL vmlinux 0xc908db19	migrate_page
 EXPORT_SYMBOL vmlinux 0xc911b9d5	eth_get_headlen
 EXPORT_SYMBOL vmlinux 0xc9180060	mmc_hw_reset
 EXPORT_SYMBOL vmlinux 0xc9291c4e	netpoll_send_udp

@@ -6625,6 +6625,7 @@ EXPORT_SYMBOL vmlinux 0x12bb217f	dev_add_pack
 EXPORT_SYMBOL vmlinux 0x12d15344	sk_stream_wait_close
 EXPORT_SYMBOL vmlinux 0x12d3f376	inet_frags_fini
 EXPORT_SYMBOL vmlinux 0x12da5bb2	__kmalloc
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x131d212c	blk_stop_queue
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
@@ -7586,7 +7587,6 @@ EXPORT_SYMBOL vmlinux 0x4cdb3178	ns_to_timeval
 EXPORT_SYMBOL vmlinux 0x4cf79c9d	netdev_master_upper_dev_link_private
 EXPORT_SYMBOL vmlinux 0x4d15fbb2	__scsi_print_sense
 EXPORT_SYMBOL vmlinux 0x4d1f0615	tcp_v4_destroy_sock
-EXPORT_SYMBOL vmlinux 0x4d213444	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x4d287529	scsi_verify_blk_ioctl
 EXPORT_SYMBOL vmlinux 0x4d315bad	sock_kfree_s
 EXPORT_SYMBOL vmlinux 0x4d3c153f	sigprocmask
@@ -7674,7 +7674,6 @@ EXPORT_SYMBOL vmlinux 0x52006d56	acpi_walk_resources
 EXPORT_SYMBOL vmlinux 0x52026cdf	security_sb_parse_opts_str
 EXPORT_SYMBOL vmlinux 0x5206459c	proc_dointvec_ms_jiffies
 EXPORT_SYMBOL vmlinux 0x52095e19	acpi_get_data
-EXPORT_SYMBOL vmlinux 0x520d0951	migrate_page
 EXPORT_SYMBOL vmlinux 0x521b36b5	qdisc_put_rtab
 EXPORT_SYMBOL vmlinux 0x5241f4be	inet6_del_offload
 EXPORT_SYMBOL vmlinux 0x52428cc8	parent_mem_cgroup
@@ -8736,6 +8735,7 @@ EXPORT_SYMBOL vmlinux 0x8d6b2ce1	radix_tree_delete_item
 EXPORT_SYMBOL vmlinux 0x8d6f81b4	__div64_32
 EXPORT_SYMBOL vmlinux 0x8d72495b	__getnstimeofday64
 EXPORT_SYMBOL vmlinux 0x8d73278e	hex_asc_upper
+EXPORT_SYMBOL vmlinux 0x8d837f68	migrate_page
 EXPORT_SYMBOL vmlinux 0x8d8d96c6	acpi_get_sleep_type_data
 EXPORT_SYMBOL vmlinux 0x8d9456f4	tc_classify_compat
 EXPORT_SYMBOL vmlinux 0x8da1a3cb	acpi_remove_interface
@@ -9881,6 +9881,7 @@ EXPORT_SYMBOL vmlinux 0xce966173	seq_open
 EXPORT_SYMBOL vmlinux 0xce9b5d9c	writeback_inodes_sb_nr
 EXPORT_SYMBOL vmlinux 0xceab0311	strchrnul
 EXPORT_SYMBOL vmlinux 0xceb67188	skb_push
+EXPORT_SYMBOL vmlinux 0xcedcec4a	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0xcedee1fd	xfrm_prepare_input
 EXPORT_SYMBOL vmlinux 0xcee9875e	mount_pseudo
 EXPORT_SYMBOL vmlinux 0xcef51982	kstrtou16

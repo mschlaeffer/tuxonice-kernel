@@ -5986,6 +5986,7 @@ EXPORT_SYMBOL vmlinux 0x12a38747	usleep_range
 EXPORT_SYMBOL vmlinux 0x12d83d8b	cleancache_register_ops
 EXPORT_SYMBOL vmlinux 0x12da5bb2	__kmalloc
 EXPORT_SYMBOL vmlinux 0x13071a36	fbcon_set_bitops
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x132574d7	key_link
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
@@ -6599,7 +6600,6 @@ EXPORT_SYMBOL vmlinux 0x345cfc67	neigh_connected_output
 EXPORT_SYMBOL vmlinux 0x3465caa3	cpu_maps_update_begin
 EXPORT_SYMBOL vmlinux 0x346ccf5a	skb_copy_and_csum_datagram_msg
 EXPORT_SYMBOL vmlinux 0x347013de	nla_validate
-EXPORT_SYMBOL vmlinux 0x34908aa3	migrate_page
 EXPORT_SYMBOL vmlinux 0x349cba85	strchr
 EXPORT_SYMBOL vmlinux 0x349f3449	lock_two_nondirectories
 EXPORT_SYMBOL vmlinux 0x34b80187	__netdev_alloc_skb
@@ -6969,7 +6969,6 @@ EXPORT_SYMBOL vmlinux 0x49045426	icmp_err_convert
 EXPORT_SYMBOL vmlinux 0x49058822	truncate_inode_pages_final
 EXPORT_SYMBOL vmlinux 0x4907f3f4	dquot_reclaim_space_nodirty
 EXPORT_SYMBOL vmlinux 0x490d3ce1	__secpath_destroy
-EXPORT_SYMBOL vmlinux 0x49185c06	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x4918ea05	jbd2_log_wait_commit
 EXPORT_SYMBOL vmlinux 0x491eb1e4	netlink_kernel_release
 EXPORT_SYMBOL vmlinux 0x492ca19a	kernel_sendmsg
@@ -6980,6 +6979,7 @@ EXPORT_SYMBOL vmlinux 0x495c96f8	posix_acl_init
 EXPORT_SYMBOL vmlinux 0x49603fb8	security_sb_copy_data
 EXPORT_SYMBOL vmlinux 0x49743b57	downgrade_write
 EXPORT_SYMBOL vmlinux 0x49887fd0	arp_xmit
+EXPORT_SYMBOL vmlinux 0x4993e971	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x499cb58c	prepare_to_wait
 EXPORT_SYMBOL vmlinux 0x49aa6a05	__splice_from_pipe
 EXPORT_SYMBOL vmlinux 0x49b07aec	tcp_select_initial_window
@@ -8513,6 +8513,7 @@ EXPORT_SYMBOL vmlinux 0xa31bdf07	vme_master_set
 EXPORT_SYMBOL vmlinux 0xa31e44ba	edma_free_channel
 EXPORT_SYMBOL vmlinux 0xa32814f0	dentry_path_raw
 EXPORT_SYMBOL vmlinux 0xa336feb7	nand_manuf_ids
+EXPORT_SYMBOL vmlinux 0xa352b599	migrate_page
 EXPORT_SYMBOL vmlinux 0xa35444e4	dispc_write_irqenable
 EXPORT_SYMBOL vmlinux 0xa35b4104	dentry_update_name_case
 EXPORT_SYMBOL vmlinux 0xa362004f	cdev_del

@@ -870,9 +870,6 @@ int i915_driver_load(struct drm_device *dev, unsigned long flags)
 
 	intel_uncore_init(dev);
 
-	/* Load CSR Firmware for SKL */
-	intel_csr_ucode_init(dev);
-
 	ret = i915_gem_gtt_init(dev);
 	if (ret)
 		goto out_freecsr;
@@ -993,6 +990,9 @@ int i915_driver_load(struct drm_device *dev, unsigned long flags)
 	intel_power_domains_init(dev_priv);
 
 	ret = i915_load_modeset_init(dev);
+
+	intel_csr_ucode_init(dev);
+
 	if (ret < 0) {
 		DRM_ERROR("failed to init modeset\n");
 		goto out_power_well;

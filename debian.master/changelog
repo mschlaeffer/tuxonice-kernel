@@ -1,3 +1,73 @@
+linux (3.19.0-66.74) vivid; urgency=low
+
+  [ Seth Forshee ]
+
+  * Release Tracking Bug
+    - LP: #1604153
+
+  * CVE-2016-1237
+    - posix_acl: Add set_posix_acl
+    - nfsd: check permissions when setting ACLs
+
+  * changelog: add CVEs as first class citizens (LP: #1604344)
+    - use CVE numbers in changelog
+
+  * CVE-2016-5243 (LP: #1589036)
+    - tipc: fix an infoleak in tipc_nl_compat_link_dump
+
+  * CVE-2016-4470
+    - KEYS: potential uninitialized variable
+
+  * CVE-2016-4794 (LP: #1581871)
+    - percpu: fix synchronization between chunk->map_extend_work and chunk
+      destruction
+    - percpu: fix synchronization between synchronous map extension and chunk
+      destruction
+
+  * qeth: delete napi struct when removing a qeth device (LP: #1601831)
+    - qeth: delete napi struct when removing a qeth device
+
+  * arm64: statically link rtc-efi (LP: #1583738)
+    - [Config] Link rtc-efi statically on arm64
+
+  * linux: Homogenize changelog format across releases (LP: #1599562)
+    - Revert "UBUNTU: [debian] BugLink: close LP: bugs only for Launchpad urls"
+    - [Debian] git-ubuntu-log -- switch to bug order
+    - [Debian] git-ubuntu-log -- fix empty section formatting
+    - [Debian] git-ubuntu-log -- output should be utf-8
+    - [Debian] git-ubuntu-log -- handle invalid or private bugs
+    - [Debian] git-ubuntu-log -- wrap long bug and commit titles
+    - [Debian] git-ubuntu-log -- ensure we get the last commit
+    - [Debian] git-ubuntu-log -- prevent bug references being split
+    - [Debian] git-ubuntu-log -- git log output is UTF-8
+
+  * exercising ptys causes a kernel oops (LP: #1586418)
+    - devpts: fix null pointer dereference on failed memory allocation
+
+  * the kernel hangs when reboot or shutdown on a lenovo baytrail-m based
+    machine (LP: #1597564)
+    - usb: xhci: Makefile: move xhci-pci and xhci-plat-hcd after xhci-hcd
+
+  * [i915_bpo][SKL] Display core init/uninit updates (LP: #1595803)
+    - SAUCE: i915_bpo: drm/i915: Extract a intel_power_well_enable() function
+    - SAUCE: i915_bpo: drm/i915: Extract a intel_power_well_disable() function
+    - SAUCE: i915_bpo: drm/i915/skl: Making DC6 entry is the last call in suspend
+      flow.
+    - SAUCE: i915_bpo: drm/i915: Kill intel_runtime_pm_disable()
+    - SAUCE: i915_bpo: drm/i915/gen9: csr_init after runtime pm enable
+    - SAUCE: i915_bpo: drm/i915: use correct power domain for csr loading
+    - SAUCE: i915_bpo: drm/i915/gen9: Don't try to load garbage dmc firmware on
+      resume
+    - SAUCE: i915_bpo: drm/i915/skl: Removed assert for csr-fw-loading check
+      during disabling dc6
+    - SAUCE: i915_bpo: drm/i915: fix the power well ID for always on wells
+    - SAUCE: i915_bpo: drm/i915: fix lookup_power_well for power wells without any
+      domain
+    - SAUCE: i915_bpo: drm/i915: Make turning on/off PW1 and Misc I/O part of the
+      init/fini sequences
+
+ -- Seth Forshee <seth.forshee@canonical.com>  Tue, 19 Jul 2016 09:07:26 -0500
+
 linux (3.19.0-65.73) vivid; urgency=low
 
   [ Ben Romer ]

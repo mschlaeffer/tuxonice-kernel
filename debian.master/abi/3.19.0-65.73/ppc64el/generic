@@ -6034,7 +6034,6 @@ EXPORT_SYMBOL vmlinux 0x107e5878	zlib_inflateEnd
 EXPORT_SYMBOL vmlinux 0x108fbbb5	xfrm_state_lookup_byaddr
 EXPORT_SYMBOL vmlinux 0x10950ee1	radix_tree_tag_clear
 EXPORT_SYMBOL vmlinux 0x10b1162e	blk_mq_free_tag_set
-EXPORT_SYMBOL vmlinux 0x10c8d1b1	migrate_page
 EXPORT_SYMBOL vmlinux 0x10ee20bb	default_blu
 EXPORT_SYMBOL vmlinux 0x10ffe9f9	jbd2_journal_check_available_features
 EXPORT_SYMBOL vmlinux 0x1101d78b	of_find_property
@@ -6075,6 +6074,7 @@ EXPORT_SYMBOL vmlinux 0x12e5ef0c	rtas_set_power_level
 EXPORT_SYMBOL vmlinux 0x12f9841f	neigh_parms_release
 EXPORT_SYMBOL vmlinux 0x13044919	kernel_bind
 EXPORT_SYMBOL vmlinux 0x1315a350	of_find_backlight_by_node
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x132e904c	fb_blank
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
@@ -6166,7 +6166,6 @@ EXPORT_SYMBOL vmlinux 0x17d7a565	sock_no_listen
 EXPORT_SYMBOL vmlinux 0x17e28473	fsl_upm_run_pattern
 EXPORT_SYMBOL vmlinux 0x17ecd0ff	ftrace_print_hex_seq
 EXPORT_SYMBOL vmlinux 0x17f341a0	i8042_lock_chip
-EXPORT_SYMBOL vmlinux 0x17f5e8f5	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x17f970db	i2c_smbus_read_i2c_block_data
 EXPORT_SYMBOL vmlinux 0x180a3989	__neigh_create
 EXPORT_SYMBOL vmlinux 0x1815d0b4	__cleancache_init_shared_fs
@@ -7492,6 +7491,7 @@ EXPORT_SYMBOL vmlinux 0x66617041	__nla_put
 EXPORT_SYMBOL vmlinux 0x66754be3	gen_new_estimator
 EXPORT_SYMBOL vmlinux 0x669cf230	skb_insert
 EXPORT_SYMBOL vmlinux 0x66b274e9	inet6_add_protocol
+EXPORT_SYMBOL vmlinux 0x66b81d88	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x66d75d2f	mount_nodev
 EXPORT_SYMBOL vmlinux 0x66dda252	sock_no_getname
 EXPORT_SYMBOL vmlinux 0x66e12cb5	set_security_override
@@ -7932,6 +7932,7 @@ EXPORT_SYMBOL vmlinux 0x822b7360	register_console
 EXPORT_SYMBOL vmlinux 0x822c5a8c	fence_add_callback
 EXPORT_SYMBOL vmlinux 0x82458f7f	radix_tree_delete_item
 EXPORT_SYMBOL vmlinux 0x824e1ea3	alloc_etherdev_mqs
+EXPORT_SYMBOL vmlinux 0x825d67d6	migrate_page
 EXPORT_SYMBOL vmlinux 0x826ba210	vme_dma_list_exec
 EXPORT_SYMBOL vmlinux 0x826d1f02	follow_down_one
 EXPORT_SYMBOL vmlinux 0x82701365	int_to_scsilun

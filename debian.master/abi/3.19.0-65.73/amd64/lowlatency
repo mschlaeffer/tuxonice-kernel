@@ -6312,7 +6312,6 @@ EXPORT_SYMBOL vmlinux 0x0865089f	pci_bus_size_bridges
 EXPORT_SYMBOL vmlinux 0x08739335	__ww_mutex_lock
 EXPORT_SYMBOL vmlinux 0x0897287b	acpi_disable_all_gpes
 EXPORT_SYMBOL vmlinux 0x08d967f9	igrab
-EXPORT_SYMBOL vmlinux 0x08e383c4	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x08e8b1a5	mipi_dsi_dcs_set_page_address
 EXPORT_SYMBOL vmlinux 0x08ea69e7	mipi_dsi_packet_format_is_long
 EXPORT_SYMBOL vmlinux 0x08f64aa4	_raw_spin_unlock_irqrestore
@@ -6491,6 +6490,7 @@ EXPORT_SYMBOL vmlinux 0x12f7145c	pci_prepare_to_sleep
 EXPORT_SYMBOL vmlinux 0x1305d532	ucs2_strncmp
 EXPORT_SYMBOL vmlinux 0x1308ca3c	__hw_addr_unsync_dev
 EXPORT_SYMBOL vmlinux 0x13172566	kernel_sock_shutdown
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
 EXPORT_SYMBOL vmlinux 0x13315729	flex_array_alloc
@@ -7470,7 +7470,6 @@ EXPORT_SYMBOL vmlinux 0x4d3ee2c6	mmc_fixup_device
 EXPORT_SYMBOL vmlinux 0x4d4a0589	tcp_close
 EXPORT_SYMBOL vmlinux 0x4d4e2217	kernel_recvmsg
 EXPORT_SYMBOL vmlinux 0x4d555f14	devfreq_recommended_opp
-EXPORT_SYMBOL vmlinux 0x4d5f2dbd	migrate_page
 EXPORT_SYMBOL vmlinux 0x4d62c804	page_put_link
 EXPORT_SYMBOL vmlinux 0x4d7ac286	devm_gpiod_put
 EXPORT_SYMBOL vmlinux 0x4d80d49a	PDE_DATA
@@ -9964,6 +9963,7 @@ EXPORT_SYMBOL vmlinux 0xdcb0349b	sys_close
 EXPORT_SYMBOL vmlinux 0xdcb598ba	netdev_crit
 EXPORT_SYMBOL vmlinux 0xdce01718	__dev_get_by_index
 EXPORT_SYMBOL vmlinux 0xdcf5b2dc	kblockd_schedule_delayed_work
+EXPORT_SYMBOL vmlinux 0xdcfd4bb8	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0xdd0114ce	request_key_with_auxdata
 EXPORT_SYMBOL vmlinux 0xdd2a031c	mb_cache_entry_release
 EXPORT_SYMBOL vmlinux 0xdd358aad	__skb_warn_lro_forwarding
@@ -10365,6 +10365,7 @@ EXPORT_SYMBOL vmlinux 0xf396cd21	tcp_parse_md5sig_option
 EXPORT_SYMBOL vmlinux 0xf3986b06	acpi_os_map_generic_address
 EXPORT_SYMBOL vmlinux 0xf3a777c7	key_invalidate
 EXPORT_SYMBOL vmlinux 0xf3cc10b1	jbd2_journal_get_create_access
+EXPORT_SYMBOL vmlinux 0xf3d7bbb5	migrate_page
 EXPORT_SYMBOL vmlinux 0xf3e6402e	__bitmap_equal
 EXPORT_SYMBOL vmlinux 0xf4203345	inode_add_rsv_space
 EXPORT_SYMBOL vmlinux 0xf426aaf9	dentry_unhash

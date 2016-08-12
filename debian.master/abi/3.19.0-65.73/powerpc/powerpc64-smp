@@ -6167,6 +6167,7 @@ EXPORT_SYMBOL vmlinux 0x12dbd444	dquot_drop
 EXPORT_SYMBOL vmlinux 0x12dfeb12	vprintk_emit
 EXPORT_SYMBOL vmlinux 0x12e5ef0c	rtas_set_power_level
 EXPORT_SYMBOL vmlinux 0x1311a397	skb_append_datato_frags
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x13215eac	mem_section
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x13259d6c	mount_nodev
@@ -6831,6 +6832,7 @@ EXPORT_SYMBOL vmlinux 0x3aae9cf1	xfrm_find_acq
 EXPORT_SYMBOL vmlinux 0x3abb3a44	of_get_ddr_timings
 EXPORT_SYMBOL vmlinux 0x3ac53f7d	pci_dev_driver
 EXPORT_SYMBOL vmlinux 0x3ac98b37	tcp_setsockopt
+EXPORT_SYMBOL vmlinux 0x3acc7f1f	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x3ad3a49a	mmc_set_blockcount
 EXPORT_SYMBOL vmlinux 0x3ad80e47	pid_task
 EXPORT_SYMBOL vmlinux 0x3af13ed2	d_instantiate
@@ -6870,7 +6872,6 @@ EXPORT_SYMBOL vmlinux 0x3d845f6b	scsi_change_queue_depth
 EXPORT_SYMBOL vmlinux 0x3dc02a4e	flex_array_free_parts
 EXPORT_SYMBOL vmlinux 0x3dcaca23	pci_write_vpd
 EXPORT_SYMBOL vmlinux 0x3dcb88a0	irq_set_handler_data
-EXPORT_SYMBOL vmlinux 0x3de3408a	migrate_page
 EXPORT_SYMBOL vmlinux 0x3de89cef	param_ops_long
 EXPORT_SYMBOL vmlinux 0x3dfc897c	seq_hlist_start_head
 EXPORT_SYMBOL vmlinux 0x3e1e16f7	__napi_schedule_irqoff
@@ -7926,6 +7927,7 @@ EXPORT_SYMBOL vmlinux 0x79f0170a	fddi_change_mtu
 EXPORT_SYMBOL vmlinux 0x79fb4023	sock_init_data
 EXPORT_SYMBOL vmlinux 0x7a0e8f4f	vlan_vid_del
 EXPORT_SYMBOL vmlinux 0x7a27c184	ewma_init
+EXPORT_SYMBOL vmlinux 0x7a297fdb	migrate_page
 EXPORT_SYMBOL vmlinux 0x7a2a5a00	pci_stop_and_remove_bus_device
 EXPORT_SYMBOL vmlinux 0x7a4497db	kzfree
 EXPORT_SYMBOL vmlinux 0x7a5d8053	submit_bio
@@ -9196,7 +9198,6 @@ EXPORT_SYMBOL vmlinux 0xc310b981	strnstr
 EXPORT_SYMBOL vmlinux 0xc314c3d2	__cputime_jiffies_factor
 EXPORT_SYMBOL vmlinux 0xc323f9e4	register_console
 EXPORT_SYMBOL vmlinux 0xc3272656	agp_alloc_page_array
-EXPORT_SYMBOL vmlinux 0xc33ef241	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0xc35bcabc	tty_unregister_driver
 EXPORT_SYMBOL vmlinux 0xc36d2439	blk_mq_abort_requeue_list
 EXPORT_SYMBOL vmlinux 0xc3784b01	pci_release_regions

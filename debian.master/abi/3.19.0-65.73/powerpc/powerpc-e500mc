@@ -6105,7 +6105,6 @@ EXPORT_SYMBOL vmlinux 0x0f9ded17	bioset_integrity_free
 EXPORT_SYMBOL vmlinux 0x0faef0ed	__tasklet_schedule
 EXPORT_SYMBOL vmlinux 0x0fb2f8a4	mktime64
 EXPORT_SYMBOL vmlinux 0x0fc5fe3b	of_graph_parse_endpoint
-EXPORT_SYMBOL vmlinux 0x0fd00746	migrate_page
 EXPORT_SYMBOL vmlinux 0x0fd4e475	security_path_unlink
 EXPORT_SYMBOL vmlinux 0x1003970e	file_update_time
 EXPORT_SYMBOL vmlinux 0x101a39fd	con_is_bound
@@ -6155,6 +6154,7 @@ EXPORT_SYMBOL vmlinux 0x12f970b8	vme_dma_list_free
 EXPORT_SYMBOL vmlinux 0x130f520d	kfree_skb_partial
 EXPORT_SYMBOL vmlinux 0x1317ddea	tty_register_device
 EXPORT_SYMBOL vmlinux 0x1317f6c7	sock_diag_put_filterinfo
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x13253870	pagevec_lookup
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
@@ -6387,7 +6387,6 @@ EXPORT_SYMBOL vmlinux 0x2276db98	kstrtoint
 EXPORT_SYMBOL vmlinux 0x2278e94b	slhc_remember
 EXPORT_SYMBOL vmlinux 0x22b325d5	kd_mksound
 EXPORT_SYMBOL vmlinux 0x22d41b57	eth_header
-EXPORT_SYMBOL vmlinux 0x22d5ef87	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x22dfdd06	radix_tree_tag_set
 EXPORT_SYMBOL vmlinux 0x22e98390	pci_restore_state
 EXPORT_SYMBOL vmlinux 0x22efe831	tcp_init_cgroup
@@ -9017,6 +9016,7 @@ EXPORT_SYMBOL vmlinux 0xc43afe6f	qdisc_warn_nonwc
 EXPORT_SYMBOL vmlinux 0xc454276b	pci_enable_msi_range
 EXPORT_SYMBOL vmlinux 0xc454567a	tso_build_hdr
 EXPORT_SYMBOL vmlinux 0xc455d75c	ip_defrag
+EXPORT_SYMBOL vmlinux 0xc45706e3	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0xc45755de	find_next_zero_bit_le
 EXPORT_SYMBOL vmlinux 0xc4708199	cpm_muram_addr
 EXPORT_SYMBOL vmlinux 0xc47570e3	inet_rtx_syn_ack
@@ -9418,6 +9418,7 @@ EXPORT_SYMBOL vmlinux 0xdd0a2ba2	strlcat
 EXPORT_SYMBOL vmlinux 0xdd1f4615	mmc_request_done
 EXPORT_SYMBOL vmlinux 0xdd27fa87	memchr
 EXPORT_SYMBOL vmlinux 0xdd4b0790	dev_set_group
+EXPORT_SYMBOL vmlinux 0xdd4d1e5e	migrate_page
 EXPORT_SYMBOL vmlinux 0xdd55153e	skb_find_text
 EXPORT_SYMBOL vmlinux 0xdd57167a	generic_file_direct_write
 EXPORT_SYMBOL vmlinux 0xdd843c79	vfs_rename

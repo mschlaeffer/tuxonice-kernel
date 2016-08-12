@@ -2532,8 +2532,6 @@ void intel_ddi_pll_init(struct drm_device *dev)
 		dev_priv->skl_boot_cdclk = cdclk_freq;
 		if (!(I915_READ(LCPLL1_CTL) & LCPLL_PLL_ENABLE))
 			DRM_ERROR("LCPLL1 is disabled\n");
-		else
-			intel_display_power_get(dev_priv, POWER_DOMAIN_PLLS);
 	} else if (IS_BROXTON(dev)) {
 		broxton_init_cdclk(dev);
 		broxton_ddi_phy_init(dev);

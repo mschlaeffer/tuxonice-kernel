@@ -6037,6 +6037,7 @@ EXPORT_SYMBOL vmlinux 0x12e1938a	up_write
 EXPORT_SYMBOL vmlinux 0x130175cf	of_parse_phandle
 EXPORT_SYMBOL vmlinux 0x1305d532	ucs2_strncmp
 EXPORT_SYMBOL vmlinux 0x130c7183	uart_get_divisor
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
 EXPORT_SYMBOL vmlinux 0x13315729	flex_array_alloc
@@ -7004,7 +7005,6 @@ EXPORT_SYMBOL vmlinux 0x4f583e18	may_umount
 EXPORT_SYMBOL vmlinux 0x4f5f97dd	tcp_splice_read
 EXPORT_SYMBOL vmlinux 0x4f68e5c9	do_gettimeofday
 EXPORT_SYMBOL vmlinux 0x4f6905c9	dquot_disable
-EXPORT_SYMBOL vmlinux 0x4f6f8d14	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x4fc4c2a6	call_usermodehelper_setup
 EXPORT_SYMBOL vmlinux 0x50097088	security_tun_dev_free_security
 EXPORT_SYMBOL vmlinux 0x501201bf	pm860x_page_bulk_read
@@ -7350,7 +7350,6 @@ EXPORT_SYMBOL vmlinux 0x64999478	congestion_wait
 EXPORT_SYMBOL vmlinux 0x64a4b84d	cpu_rmap_update
 EXPORT_SYMBOL vmlinux 0x64ba49d9	seq_pad
 EXPORT_SYMBOL vmlinux 0x64bbc288	string_unescape
-EXPORT_SYMBOL vmlinux 0x64becbb9	migrate_page
 EXPORT_SYMBOL vmlinux 0x64c9a3de	of_io_request_and_map
 EXPORT_SYMBOL vmlinux 0x64cdd567	flush_signals
 EXPORT_SYMBOL vmlinux 0x64d367ac	serio_unregister_port
@@ -7383,6 +7382,7 @@ EXPORT_SYMBOL vmlinux 0x668d0cca	redraw_screen
 EXPORT_SYMBOL vmlinux 0x66c022e1	ip_mc_inc_group
 EXPORT_SYMBOL vmlinux 0x66d344fa	pci_disable_link_state
 EXPORT_SYMBOL vmlinux 0x66dfdf35	pci_bus_read_config_word
+EXPORT_SYMBOL vmlinux 0x66e67a0c	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0x66ff45d2	update_time
 EXPORT_SYMBOL vmlinux 0x670c6dad	pcie_port_service_register
 EXPORT_SYMBOL vmlinux 0x67276286	gen_new_estimator
@@ -7788,6 +7788,7 @@ EXPORT_SYMBOL vmlinux 0x7ecb001b	__per_cpu_offset
 EXPORT_SYMBOL vmlinux 0x7ee6d93a	nsecs_to_jiffies64
 EXPORT_SYMBOL vmlinux 0x7f01a2f7	invalidate_partition
 EXPORT_SYMBOL vmlinux 0x7f1876da	pm8606_osc_disable
+EXPORT_SYMBOL vmlinux 0x7f1e2335	migrate_page
 EXPORT_SYMBOL vmlinux 0x7f24de73	jiffies_to_usecs
 EXPORT_SYMBOL vmlinux 0x7f3dbdff	pci_scan_single_device
 EXPORT_SYMBOL vmlinux 0x7f41f6ae	tso_start

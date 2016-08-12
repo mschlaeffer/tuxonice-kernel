@@ -68,6 +68,22 @@
 bool intel_display_power_well_is_enabled(struct drm_i915_private *dev_priv,
 				    int power_well_id);
 
+static void intel_power_well_enable(struct drm_i915_private *dev_priv,
+		struct i915_power_well *power_well)
+{
+	DRM_DEBUG_KMS("enabling %s\n", power_well->name);
+	power_well->ops->enable(dev_priv, power_well);
+	power_well->hw_enabled = true;
+}
+
+static void intel_power_well_disable(struct drm_i915_private *dev_priv,
+				     struct i915_power_well *power_well)
+{
+	DRM_DEBUG_KMS("disabling %s\n", power_well->name);
+	power_well->hw_enabled = false;
+	power_well->ops->disable(dev_priv, power_well);
+}
+
 /*
  * We should only use the power well if we explicitly asked the hardware to
  * enable it, so check if it's enabled and also check if we've requested it to
@@ -529,12 +545,11 @@ static void assert_can_disable_dc6(struct drm_i915_private *dev_priv)
 	if (dev_priv->power_domains.initializing)
 		return;
 
-	assert_csr_loaded(dev_priv);
 	WARN(!(I915_READ(DC_STATE_EN) & DC_STATE_EN_UPTO_DC6),
 		"DC6 already programmed to be disabled.\n");
 }
 
-static void skl_enable_dc6(struct drm_i915_private *dev_priv)
+void skl_enable_dc6(struct drm_i915_private *dev_priv)
 {
 	uint32_t val;
 
@@ -551,7 +566,7 @@ static void skl_enable_dc6(struct drm_i915_private *dev_priv)
 	POSTING_READ(DC_STATE_EN);
 }
 
-static void skl_disable_dc6(struct drm_i915_private *dev_priv)
+void skl_disable_dc6(struct drm_i915_private *dev_priv)
 {
 	uint32_t val;
 
@@ -609,13 +624,13 @@ static void skl_set_power_well(struct drm_i915_private *dev_priv,
 	if (enable) {
 		if (!enable_requested) {
 			WARN((tmp & state_mask) &&
-				!I915_READ(HSW_PWR_WELL_BIOS),
-				"Invalid for power well status to be enabled, unless done by the BIOS, \
-				when request is to disable!\n");
-			if ((GEN9_ENABLE_DC5(dev) || SKL_ENABLE_DC6(dev)) &&
-				power_well->data == SKL_DISP_PW_2) {
+					!I915_READ(HSW_PWR_WELL_BIOS),
+					"Invalid for power well status to be enabled, unless done by the BIOS, \
+					when request is to disable!\n");
+			if (power_well->data == SKL_DISP_PW_2) {
+				if (GEN9_ENABLE_DC5(dev))
+					gen9_disable_dc5(dev_priv);
 				if (SKL_ENABLE_DC6(dev)) {
-					skl_disable_dc6(dev_priv);
 					/*
 					 * DDI buffer programming unnecessary during driver-load/resume
 					 * as it's already done during modeset initialization then.
@@ -623,8 +638,6 @@ static void skl_set_power_well(struct drm_i915_private *dev_priv,
 					 */
 					if (!dev_priv->power_domains.initializing)
 						intel_prepare_ddi(dev);
-				} else {
-					gen9_disable_dc5(dev_priv);
 				}
 			}
 			I915_WRITE(HSW_PWR_WELL_DRIVER, tmp | req_mask);
@@ -644,7 +657,7 @@ static void skl_set_power_well(struct drm_i915_private *dev_priv,
 			POSTING_READ(HSW_PWR_WELL_DRIVER);
 			DRM_DEBUG_KMS("Disabling %s\n", power_well->name);
 
-			if ((GEN9_ENABLE_DC5(dev) || SKL_ENABLE_DC6(dev)) &&
+			if (GEN9_ENABLE_DC5(dev)  &&
 				power_well->data == SKL_DISP_PW_2) {
 				enum csr_state state;
 				/* TODO: wait for a completion event or
@@ -657,10 +670,7 @@ static void skl_set_power_well(struct drm_i915_private *dev_priv,
 					DRM_ERROR("CSR firmware not ready (%d)\n",
 							state);
 				else
-					if (SKL_ENABLE_DC6(dev))
-						skl_enable_dc6(dev_priv);
-					else
-						gen9_enable_dc5(dev_priv);
+					gen9_enable_dc5(dev_priv);
 			}
 		}
 	}
@@ -1119,11 +1129,8 @@ void intel_display_power_get(struct drm_i915_private *dev_priv,
 	mutex_lock(&power_domains->lock);
 
 	for_each_power_well(i, power_well, BIT(domain), power_domains) {
-		if (!power_well->count++) {
-			DRM_DEBUG_KMS("enabling %s\n", power_well->name);
-			power_well->ops->enable(dev_priv, power_well);
-			power_well->hw_enabled = true;
-		}
+		if (!power_well->count++)
+			intel_power_well_enable(dev_priv, power_well);
 	}
 
 	power_domains->domain_use_count[domain]++;
@@ -1157,11 +1164,8 @@ void intel_display_power_put(struct drm_i915_private *dev_priv,
 	for_each_power_well_rev(i, power_well, BIT(domain), power_domains) {
 		WARN_ON(!power_well->count);
 
-		if (!--power_well->count && i915.disable_power_well) {
-			DRM_DEBUG_KMS("disabling %s\n", power_well->name);
-			power_well->hw_enabled = false;
-			power_well->ops->disable(dev_priv, power_well);
-		}
+		if (!--power_well->count && i915.disable_power_well)
+			intel_power_well_disable(dev_priv, power_well);
 	}
 
 	mutex_unlock(&power_domains->lock);
@@ -1349,6 +1353,7 @@ static struct i915_power_well vlv_power_wells[] = {
 		.always_on = 1,
 		.domains = VLV_ALWAYS_ON_POWER_DOMAINS,
 		.ops = &i9xx_always_on_power_well_ops,
+		.data = PUNIT_POWER_WELL_ALWAYS_ON,
 	},
 	{
 		.name = "display",
@@ -1436,10 +1441,12 @@ static struct i915_power_well *lookup_power_well(struct drm_i915_private *dev_pr
 						 int power_well_id)
 {
 	struct i915_power_domains *power_domains = &dev_priv->power_domains;
-	struct i915_power_well *power_well;
 	int i;
 
-	for_each_power_well(i, power_well, POWER_DOMAIN_MASK, power_domains) {
+	for(i = 0; i < power_domains->power_well_count; i++) {
+		struct i915_power_well *power_well;
+
+		power_well = &power_domains->power_wells[i];
 		if (power_well->data == power_well_id)
 			return power_well;
 	}
@@ -1465,6 +1472,7 @@ static struct i915_power_well skl_power_wells[] = {
 		.always_on = 1,
 		.domains = SKL_DISPLAY_ALWAYS_ON_POWER_DOMAINS,
 		.ops = &i9xx_always_on_power_well_ops,
+		.data = SKL_DISP_PW_ALWAYS_ON,
 	},
 	{
 		.name = "power well 1",
@@ -1509,6 +1517,34 @@ static struct i915_power_well skl_power_wells[] = {
 		.data = SKL_DISP_PW_DDI_D,
 	},
 };
+
+void skl_pw1_misc_io_init(struct drm_i915_private *dev_priv)
+{
+	struct i915_power_well *well;
+
+	if (!IS_SKYLAKE(dev_priv))
+		return;
+
+	well = lookup_power_well(dev_priv, SKL_DISP_PW_1);
+	intel_power_well_enable(dev_priv, well);
+
+	well = lookup_power_well(dev_priv, SKL_DISP_PW_MISC_IO);
+	intel_power_well_enable(dev_priv, well);
+}
+
+void skl_pw1_misc_io_fini(struct drm_i915_private *dev_priv)
+{
+	struct i915_power_well *well;
+
+	if (!IS_SKYLAKE(dev_priv))
+		return;
+
+	well = lookup_power_well(dev_priv, SKL_DISP_PW_1);
+	intel_power_well_disable(dev_priv, well);
+
+	well = lookup_power_well(dev_priv, SKL_DISP_PW_MISC_IO);
+	intel_power_well_disable(dev_priv, well);
+}
 
 static struct i915_power_well bxt_power_wells[] = {
 	{
@@ -1590,22 +1626,6 @@ int intel_power_domains_init(struct drm_i915_private *dev_priv)
 	return 0;
 }
 
-static void intel_runtime_pm_disable(struct drm_i915_private *dev_priv)
-{
-	struct drm_device *dev = dev_priv->dev;
-	struct device *device = &dev->pdev->dev;
-
-	if (!HAS_RUNTIME_PM(dev))
-		return;
-
-	if (!intel_enable_rc6(dev))
-		return;
-
-	/* Make sure we're not suspended first. */
-	pm_runtime_get_sync(device);
-	pm_runtime_disable(device);
-}
-
 /**
  * intel_power_domains_fini - finalizes the power domain structures
  * @dev_priv: i915 device instance
@@ -1616,8 +1636,6 @@ static void intel_runtime_pm_disable(struct drm_i915_private *dev_priv)
  */
 void intel_power_domains_fini(struct drm_i915_private *dev_priv)
 {
-	intel_runtime_pm_disable(dev_priv);
-
 	/* The i915.ko module is still not prepared to be loaded when
 	 * the power well is not enabled, so just enable it in case
 	 * we're going to unload/reload. */

@@ -6606,7 +6606,6 @@ EXPORT_SYMBOL vmlinux 0x12358ef4	gen_pool_add_virt
 EXPORT_SYMBOL vmlinux 0x124111cc	rwsem_wake
 EXPORT_SYMBOL vmlinux 0x124a4dd2	in_dev_finish_destroy
 EXPORT_SYMBOL vmlinux 0x125c7778	__nla_put_nohdr
-EXPORT_SYMBOL vmlinux 0x127c7bee	migrate_page
 EXPORT_SYMBOL vmlinux 0x128a5cf9	complete_all
 EXPORT_SYMBOL vmlinux 0x128a732c	pci_bus_read_dev_vendor_id
 EXPORT_SYMBOL vmlinux 0x128c94d7	ipv6_setsockopt
@@ -6618,12 +6617,14 @@ EXPORT_SYMBOL vmlinux 0x12bd1cb1	dump_skip
 EXPORT_SYMBOL vmlinux 0x12da5bb2	__kmalloc
 EXPORT_SYMBOL vmlinux 0x12ddd23f	mem_map
 EXPORT_SYMBOL vmlinux 0x12f0ab8a	uart_resume_port
+EXPORT_SYMBOL vmlinux 0x1319449d	secure_modules
 EXPORT_SYMBOL vmlinux 0x1321226e	wireless_send_event
 EXPORT_SYMBOL vmlinux 0x1323bb04	netdev_class_remove_file_ns
 EXPORT_SYMBOL vmlinux 0x13243d4b	wl1251_get_platform_data
 EXPORT_SYMBOL vmlinux 0x13305f59	swiotlb_sync_single_for_device
 EXPORT_SYMBOL vmlinux 0x13307fde	vsscanf
 EXPORT_SYMBOL vmlinux 0x13315729	flex_array_alloc
+EXPORT_SYMBOL vmlinux 0x135ef417	migrate_page
 EXPORT_SYMBOL vmlinux 0x137dd679	i2c_transfer
 EXPORT_SYMBOL vmlinux 0x138d954a	setup_new_exec
 EXPORT_SYMBOL vmlinux 0x13a82c47	sockfd_lookup
@@ -9904,6 +9905,7 @@ EXPORT_SYMBOL vmlinux 0xd1fa2ac0	blk_get_request
 EXPORT_SYMBOL vmlinux 0xd208827c	vme_register_bridge
 EXPORT_SYMBOL vmlinux 0xd220cf8a	jiffies_to_timespec
 EXPORT_SYMBOL vmlinux 0xd2329de3	wait_for_completion_killable_timeout
+EXPORT_SYMBOL vmlinux 0xd248e8ba	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0xd251d7b0	security_socket_getpeersec_dgram
 EXPORT_SYMBOL vmlinux 0xd2555f19	jiffies_64_to_clock_t
 EXPORT_SYMBOL vmlinux 0xd25a69ee	pci_release_regions
@@ -10350,7 +10352,6 @@ EXPORT_SYMBOL vmlinux 0xeb4b9fbf	inode_get_bytes
 EXPORT_SYMBOL vmlinux 0xeb4bb68f	truncate_pagecache_range
 EXPORT_SYMBOL vmlinux 0xeb55a931	__kfifo_max_r
 EXPORT_SYMBOL vmlinux 0xeb883fcf	forget_all_cached_acls
-EXPORT_SYMBOL vmlinux 0xeb8b73b3	buffer_migrate_page
 EXPORT_SYMBOL vmlinux 0xeb91be7f	sock_edemux
 EXPORT_SYMBOL vmlinux 0xebc02517	xfrm4_rcv_cb
 EXPORT_SYMBOL vmlinux 0xebf3c4d0	set_device_ro
