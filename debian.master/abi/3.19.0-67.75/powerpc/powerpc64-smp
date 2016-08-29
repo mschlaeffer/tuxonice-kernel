@@ -9929,6 +9929,7 @@ EXPORT_SYMBOL vmlinux 0xeeb5bd3b	__tracepoint_kfree
 EXPORT_SYMBOL vmlinux 0xeeec26a7	queue_delayed_work_on
 EXPORT_SYMBOL vmlinux 0xeef161aa	groups_free
 EXPORT_SYMBOL vmlinux 0xeefd1161	pci_lost_interrupt
+EXPORT_SYMBOL vmlinux 0xef08f3bf	set_posix_acl
 EXPORT_SYMBOL vmlinux 0xef0a9c94	input_mt_sync_frame
 EXPORT_SYMBOL vmlinux 0xef0bdde3	scsi_remove_target
 EXPORT_SYMBOL vmlinux 0xef0dadb9	unlock_two_nondirectories

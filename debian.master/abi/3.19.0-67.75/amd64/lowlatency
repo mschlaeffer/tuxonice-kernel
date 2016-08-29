@@ -6448,6 +6448,7 @@ EXPORT_SYMBOL vmlinux 0x10bea96d	proc_symlink
 EXPORT_SYMBOL vmlinux 0x10c516c3	agp3_generic_tlbflush
 EXPORT_SYMBOL vmlinux 0x10ee20bb	default_blu
 EXPORT_SYMBOL vmlinux 0x1100ec90	inetpeer_invalidate_tree
+EXPORT_SYMBOL vmlinux 0x11021961	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x11074e0a	generic_splice_sendpage
 EXPORT_SYMBOL vmlinux 0x11089ac7	_ctype
 EXPORT_SYMBOL vmlinux 0x110cdf64	tcf_action_exec

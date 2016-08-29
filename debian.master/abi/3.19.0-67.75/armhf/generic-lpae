@@ -7880,6 +7880,7 @@ EXPORT_SYMBOL vmlinux 0x8256b402	sock_create_kern
 EXPORT_SYMBOL vmlinux 0x82611a5f	bio_endio
 EXPORT_SYMBOL vmlinux 0x82701365	int_to_scsilun
 EXPORT_SYMBOL vmlinux 0x828062b1	__frontswap_init
+EXPORT_SYMBOL vmlinux 0x829b21e7	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x829c88ca	blk_pre_runtime_suspend
 EXPORT_SYMBOL vmlinux 0x82acfb70	blk_iopoll_sched
 EXPORT_SYMBOL vmlinux 0x82b89c6b	sock_get_timestamp

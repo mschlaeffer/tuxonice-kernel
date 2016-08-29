@@ -7592,6 +7592,7 @@ EXPORT_SYMBOL vmlinux 0x4c91ee93	netlink_broadcast
 EXPORT_SYMBOL vmlinux 0x4cb6dbed	input_inject_event
 EXPORT_SYMBOL vmlinux 0x4cdb3178	ns_to_timeval
 EXPORT_SYMBOL vmlinux 0x4d0e99a2	eth_change_mtu
+EXPORT_SYMBOL vmlinux 0x4d3bdcc0	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x4d3c153f	sigprocmask
 EXPORT_SYMBOL vmlinux 0x4d45d89e	udp_memory_allocated
 EXPORT_SYMBOL vmlinux 0x4d4d1393	dev_get_flags

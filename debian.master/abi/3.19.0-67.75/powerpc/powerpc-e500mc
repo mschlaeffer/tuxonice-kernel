@@ -8198,6 +8198,7 @@ EXPORT_SYMBOL vmlinux 0x9296bb42	skb_realloc_headroom
 EXPORT_SYMBOL vmlinux 0x92a9c60c	time_to_tm
 EXPORT_SYMBOL vmlinux 0x92b7bc30	inet_ioctl
 EXPORT_SYMBOL vmlinux 0x92bc220b	lockref_get
+EXPORT_SYMBOL vmlinux 0x92c00963	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x92e8d1ec	__scm_send
 EXPORT_SYMBOL vmlinux 0x92fa5abb	vme_lm_detach
 EXPORT_SYMBOL vmlinux 0x9305f8e6	cpufreq_get

@@ -1,3 +1,42 @@
+linux (3.19.0-68.76) vivid; urgency=low
+
+  [ Stefan Bader ]
+
+  * Release Tracking Bug
+    - LP: #1612550
+
+  * CVE-2016-5696
+    - tcp: make challenge acks less predictable
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Fri, 12 Aug 2016 10:31:41 +0200
+
+linux (3.19.0-67.75) vivid; urgency=low
+
+  [ Stefan Bader ]
+
+  * Release Tracking Bug
+    - LP: #1611250
+
+  * CVE-2016-5828
+    - powerpc/tm: Always reclaim in start_thread() for exec() class syscalls
+
+  * CVE-2016-5829
+    - HID: hiddev: validate num_values for HIDIOCGUSAGES, HIDIOCSUSAGES commands
+
+  * CVE-2016-5400
+    - media: fix airspy usb probe error path
+
+  * changelog: add CVEs as first class citizens (LP: #1604344)
+    - avoid duplicate CVE numbers in changelog
+
+  * CVE-2016-5728
+    - misc: mic: Fix for double fetch security bug in VOP driver
+
+  * CVE-2016-5244 (LP: #1589041)
+    - rds: fix an infoleak in rds_inc_info_copy
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Tue, 09 Aug 2016 09:41:16 +0200
+
 linux (3.19.0-66.74) vivid; urgency=low
 
   [ Seth Forshee ]

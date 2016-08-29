@@ -8664,6 +8664,7 @@ EXPORT_SYMBOL vmlinux 0xaf281b8b	new_sync_read
 EXPORT_SYMBOL vmlinux 0xaf2d872c	prepare_to_wait
 EXPORT_SYMBOL vmlinux 0xaf3dd7dc	scsi_logging_level
 EXPORT_SYMBOL vmlinux 0xaf41127d	param_set_bint
+EXPORT_SYMBOL vmlinux 0xaf586eba	set_posix_acl
 EXPORT_SYMBOL vmlinux 0xaf58d135	skb_copy_datagram_from_iter
 EXPORT_SYMBOL vmlinux 0xaf6ae696	kstrndup
 EXPORT_SYMBOL vmlinux 0xaf80c5ef	vfs_unlink

@@ -8195,6 +8195,7 @@ EXPORT_SYMBOL vmlinux 0x99cdc86b	sysctl_tcp_reordering
 EXPORT_SYMBOL vmlinux 0x99d3a43c	dm_table_get_size
 EXPORT_SYMBOL vmlinux 0x99d83055	netif_set_real_num_rx_queues
 EXPORT_SYMBOL vmlinux 0x99d8d9fc	phy_stop_interrupts
+EXPORT_SYMBOL vmlinux 0x99edd243	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x9a0ef208	unregister_cdrom
 EXPORT_SYMBOL vmlinux 0x9a17ff63	md_write_end
 EXPORT_SYMBOL vmlinux 0x9a1dfd65	strpbrk

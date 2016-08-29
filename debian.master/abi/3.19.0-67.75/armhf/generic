@@ -6292,6 +6292,7 @@ EXPORT_SYMBOL vmlinux 0x24127964	mark_page_accessed
 EXPORT_SYMBOL vmlinux 0x24212d86	__frontswap_invalidate_page
 EXPORT_SYMBOL vmlinux 0x2426834f	md_flush_request
 EXPORT_SYMBOL vmlinux 0x24428be5	strncpy_from_user
+EXPORT_SYMBOL vmlinux 0x244fbb2d	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x2458809b	scsi_init_io
 EXPORT_SYMBOL vmlinux 0x2459bbcc	console_set_on_cmdline
 EXPORT_SYMBOL vmlinux 0x245bc5df	ptp_clock_register

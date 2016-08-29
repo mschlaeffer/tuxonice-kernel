@@ -8084,6 +8084,7 @@ EXPORT_SYMBOL vmlinux 0x88c48e02	inet_del_protocol
 EXPORT_SYMBOL vmlinux 0x88d7e7bb	blk_dump_rq_flags
 EXPORT_SYMBOL vmlinux 0x891fbb10	mempool_destroy
 EXPORT_SYMBOL vmlinux 0x8953f8ff	__tracepoint_kmem_cache_alloc
+EXPORT_SYMBOL vmlinux 0x89699a19	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x89797060	_raw_read_lock
 EXPORT_SYMBOL vmlinux 0x8985269d	ppp_input
 EXPORT_SYMBOL vmlinux 0x89973ad9	serial8250_register_8250_port

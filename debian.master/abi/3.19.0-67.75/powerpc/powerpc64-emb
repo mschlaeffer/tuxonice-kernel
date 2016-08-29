@@ -7372,6 +7372,7 @@ EXPORT_SYMBOL vmlinux 0x61b7b126	simple_strtoull
 EXPORT_SYMBOL vmlinux 0x61b9382b	clear_inode
 EXPORT_SYMBOL vmlinux 0x61c6b72e	eth_mac_addr
 EXPORT_SYMBOL vmlinux 0x61dcc83a	skb_realloc_headroom
+EXPORT_SYMBOL vmlinux 0x61ea0986	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x61ea6c4c	__sync_dirty_buffer
 EXPORT_SYMBOL vmlinux 0x61eef2c9	_insb
 EXPORT_SYMBOL vmlinux 0x62071490	sock_dequeue_err_skb

@@ -7482,6 +7482,7 @@ EXPORT_SYMBOL vmlinux 0x468bcda6	cpumask_set_cpu_local_first
 EXPORT_SYMBOL vmlinux 0x4694f3dd	bitmap_close_sync
 EXPORT_SYMBOL vmlinux 0x469df95b	generic_file_splice_read
 EXPORT_SYMBOL vmlinux 0x46ab71ca	release_firmware
+EXPORT_SYMBOL vmlinux 0x46fc587c	set_posix_acl
 EXPORT_SYMBOL vmlinux 0x46feb099	dm_read_arg
 EXPORT_SYMBOL vmlinux 0x470c922a	locks_init_lock
 EXPORT_SYMBOL vmlinux 0x47300fd1	uart_unregister_driver
