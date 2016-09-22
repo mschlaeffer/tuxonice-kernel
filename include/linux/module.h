@@ -190,12 +190,6 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
 
 struct notifier_block;
 
-#ifdef CONFIG_MODULE_SIG
-extern void enforce_signed_modules(void);
-#else
-static inline void enforce_signed_modules(void) {};
-#endif
-
 #ifdef CONFIG_MODULES
 
 extern int modules_disabled; /* for sysctl */
@@ -518,8 +512,6 @@ int unregister_module_notifier(struct notifier_block * nb);
 
 extern void print_modules(void);
 
-extern bool secure_modules(void);
-
 #else /* !CONFIG_MODULES... */
 
 /* Given an address, look for it in the exception tables. */
@@ -629,11 +621,6 @@ static inline int unregister_module_notifier(struct notifier_block * nb)
 
 static inline void print_modules(void)
 {
-}
-
-static inline bool secure_modules(void)
-{
-	return false;
 }
 #endif /* CONFIG_MODULES */
 
