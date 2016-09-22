@@ -1,3 +1,21 @@
+linux (3.19.0-69.77) vivid; urgency=low
+
+  [ Tim Gardner ]
+
+  * Release Tracking Bug
+    - LP: #1618167
+
+  * MacBookPro11,4 fails to poweroff or suspend (LP: #1587714)
+    - SAUCE: PCI: Workaround to enable poweroff on Mac Pro 11
+
+  * xfrm: ipsec crash when updating spd thresholds (LP: #1613787)
+    - xfrm: Ignore socket policies when rebuilding hash tables
+
+  * CVE-2016-3841
+    - ipv6: add complete rcu protection around np->opt
+
+ -- Kamal Mostafa <kamal@canonical.com>  Tue, 16 Aug 2016 10:19:30 -0700
+
 linux (3.19.0-68.76) vivid; urgency=low
 
   [ Stefan Bader ]
