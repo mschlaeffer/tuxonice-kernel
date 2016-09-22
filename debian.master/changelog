@@ -1,3 +1,18 @@
+linux (3.2.0-110.151) precise; urgency=low
+
+  [ Tim Gardner ]
+
+  * Release Tracking Bug
+    - LP: #1618039
+
+  * MacBookPro11,4 fails to poweroff or suspend (LP: #1587714)
+    - SAUCE: PCI: Workaround to enable poweroff on Mac Pro 11
+
+  * CVE-2016-3857
+    - arm: oabi compat: add missing access checks
+
+ -- Kamal Mostafa <kamal@canonical.com>  Fri, 19 Aug 2016 10:15:33 -0700
+
 linux (3.2.0-109.150) precise; urgency=low
 
   [ Stefan Bader ]
