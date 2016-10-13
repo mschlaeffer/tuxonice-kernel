@@ -1,3 +1,37 @@
+linux (3.19.0-71.79) vivid; urgency=low
+
+  * Fix GRO recursion overflow for tunneling protocols (LP: #1631287)
+    - tunnels: Don't apply GRO to multiple layers of encapsulation.
+    - gro: Allow tunnel stacking in the case of FOU/GUE
+
+  * CVE-2016-7039
+    - SAUCE: net: add recursion limit to GRO
+
+ -- Seth Forshee <seth.forshee@canonical.com>  Fri, 07 Oct 2016 20:11:52 -0500
+
+linux (3.19.0-70.78) vivid; urgency=low
+
+  [ Joseph Salisbury ]
+
+  * Release Tracking Bug
+    - LP: #1625788
+
+  * CVE-2016-6136
+    - audit: fix a double fetch in audit_log_single_execve_arg()
+
+  * CVE-2016-6480
+    - aacraid: Check size values after double-fetch from user
+
+  * CVE-2016-6828
+    - tcp: fix use after free in tcp_xmit_retransmit_queue()
+
+  * lsattr 32bit does not work on 64bit kernel (Inappropriate ioctl error)
+    (LP: #1619918)
+    - btrfs: bugfix: handle FS_IOC32_{GETFLAGS, SETFLAGS, GETVERSION} in
+      btrfs_ioctl
+
+ -- Joseph Salisbury <joseph.salisbury@canonical.com>  Tue, 20 Sep 2016 15:59:16 -0400
+
 linux (3.19.0-69.77) vivid; urgency=low
 
   [ Tim Gardner ]
