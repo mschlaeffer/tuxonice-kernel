@@ -2724,7 +2724,6 @@ EXPORT_SYMBOL vmlinux 0x00000000	check_disk_change
 EXPORT_SYMBOL vmlinux 0x00000000	check_disk_size_change
 EXPORT_SYMBOL vmlinux 0x00000000	clear_bdi_congested
 EXPORT_SYMBOL vmlinux 0x00000000	clear_page_dirty_for_io
-EXPORT_SYMBOL vmlinux 0x00000000	clip_tbl_hook
 EXPORT_SYMBOL vmlinux 0x00000000	clk_add_alias
 EXPORT_SYMBOL vmlinux 0x00000000	clk_get
 EXPORT_SYMBOL vmlinux 0x00000000	clk_get_sys
@@ -4059,6 +4058,9 @@ EXPORT_SYMBOL vmlinux 0x00000000	neigh_lookup
 EXPORT_SYMBOL vmlinux 0x00000000	neigh_lookup_nodev
 EXPORT_SYMBOL vmlinux 0x00000000	neigh_parms_alloc
 EXPORT_SYMBOL vmlinux 0x00000000	neigh_parms_release
+EXPORT_SYMBOL vmlinux 0x00000000	neigh_proc_dointvec
+EXPORT_SYMBOL vmlinux 0x00000000	neigh_proc_dointvec_jiffies
+EXPORT_SYMBOL vmlinux 0x00000000	neigh_proc_dointvec_ms_jiffies
 EXPORT_SYMBOL vmlinux 0x00000000	neigh_rand_reach_time
 EXPORT_SYMBOL vmlinux 0x00000000	neigh_resolve_output
 EXPORT_SYMBOL vmlinux 0x00000000	neigh_seq_next
