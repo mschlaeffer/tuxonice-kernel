@@ -1,3 +1,10 @@
+linux (3.13.0-100.147) trusty; urgency=low
+
+  * CVE-2016-5195
+    - SAUCE: mm: remove gup_flags FOLL_WRITE games from __get_user_pages()
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Tue, 18 Oct 2016 10:27:42 +0200
+
 linux (3.13.0-98.145) trusty; urgency=low
 
   * Fix GRO recursion overflow for tunneling protocols (LP: #1631287)
