@@ -1,3 +1,10 @@
+linux (3.2.0-113.155) precise; urgency=low
+
+  * CVE-2016-5195
+    - SAUCE: mm: remove gup_flags FOLL_WRITE games from __get_user_pages()
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Tue, 18 Oct 2016 10:32:41 +0200
+
 linux (3.2.0-111.153) precise; urgency=low
 
   [ Kamal Mostafa ]
