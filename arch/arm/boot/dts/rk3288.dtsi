@@ -279,6 +279,8 @@
 		#io-channel-cells = <1>;
 		clocks = <&cru SCLK_SARADC>, <&cru PCLK_SARADC>;
 		clock-names = "saradc", "apb_pclk";
+		resets = <&cru SRST_SARADC>;
+		reset-names = "saradc-apb";
 		status = "disabled";
 	};
 
@@ -825,6 +827,11 @@
 			clocks = <&cru SCLK_EDP_24M>;
 			clock-names = "24m";
 			#phy-cells = <0>;
+			status = "disabled";
+		};
+
+		io_domains: io-domains {
+			compatible = "rockchip,rk3288-io-voltage-domain";
 			status = "disabled";
 		};
 	};

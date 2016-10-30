@@ -270,7 +270,7 @@ bool shmem_charge(struct inode *inode, long pages)
 		info->alloced -= pages;
 		shmem_recalc_inode(inode);
 		spin_unlock_irqrestore(&info->lock, flags);
-
+		shmem_unacct_blocks(info->flags, pages);
 		return false;
 	}
 	percpu_counter_add(&sbinfo->used_blocks, pages);
@@ -291,6 +291,7 @@ void shmem_uncharge(struct inode *inode, long pages)
 
 	if (sbinfo->max_blocks)
 		percpu_counter_sub(&sbinfo->used_blocks, pages);
+	shmem_unacct_blocks(info->flags, pages);
 }
 
 /*
@@ -575,9 +576,9 @@ static int shmem_add_to_page_cache(struct page *page,
 	if (!error) {
 		mapping->nrpages += nr;
 		if (PageTransHuge(page))
-			__inc_zone_page_state(page, NR_SHMEM_THPS);
-		__mod_zone_page_state(page_zone(page), NR_FILE_PAGES, nr);
-		__mod_zone_page_state(page_zone(page), NR_SHMEM, nr);
+			__inc_node_page_state(page, NR_SHMEM_THPS);
+		__mod_node_page_state(page_pgdat(page), NR_FILE_PAGES, nr);
+		__mod_node_page_state(page_pgdat(page), NR_SHMEM, nr);
 		spin_unlock_irq(&mapping->tree_lock);
 	} else {
 		page->mapping = NULL;
@@ -601,8 +602,8 @@ static void shmem_delete_from_page_cache(struct page *page, void *radswap)
 	error = shmem_radix_tree_replace(mapping, page->index, page, radswap);
 	page->mapping = NULL;
 	mapping->nrpages--;
-	__dec_zone_page_state(page, NR_FILE_PAGES);
-	__dec_zone_page_state(page, NR_SHMEM);
+	__dec_node_page_state(page, NR_FILE_PAGES);
+	__dec_node_page_state(page, NR_SHMEM);
 	spin_unlock_irq(&mapping->tree_lock);
 	put_page(page);
 	BUG_ON(error);
@@ -1362,13 +1363,14 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
 	struct vm_area_struct pvma;
 	struct inode *inode = &info->vfs_inode;
 	struct address_space *mapping = inode->i_mapping;
-	pgoff_t idx, hindex = round_down(index, HPAGE_PMD_NR);
+	pgoff_t idx, hindex;
 	void __rcu **results;
 	struct page *page;
 
 	if (!IS_ENABLED(CONFIG_TRANSPARENT_HUGE_PAGECACHE))
 		return NULL;
 
+	hindex = round_down(index, HPAGE_PMD_NR);
 	rcu_read_lock();
 	if (radix_tree_gang_lookup_slot(&mapping->page_tree, &results, &idx,
 				hindex, 1) && idx < hindex + HPAGE_PMD_NR) {
@@ -1493,8 +1495,8 @@ static int shmem_replace_page(struct page **pagep, gfp_t gfp,
 	error = shmem_radix_tree_replace(swap_mapping, swap_index, oldpage,
 								   newpage);
 	if (!error) {
-		__inc_zone_page_state(newpage, NR_FILE_PAGES);
-		__dec_zone_page_state(oldpage, NR_FILE_PAGES);
+		__inc_node_page_state(newpage, NR_FILE_PAGES);
+		__dec_node_page_state(oldpage, NR_FILE_PAGES);
 	}
 	spin_unlock_irq(&swap_mapping->tree_lock);
 
@@ -1979,7 +1981,7 @@ unsigned long shmem_get_unmapped_area(struct file *file,
 				return addr;
 			sb = shm_mnt->mnt_sb;
 		}
-		if (SHMEM_SB(sb)->huge != SHMEM_HUGE_NEVER)
+		if (SHMEM_SB(sb)->huge == SHMEM_HUGE_NEVER)
 			return addr;
 	}
 
@@ -3976,7 +3978,9 @@ static ssize_t shmem_enabled_store(struct kobject *kobj,
 
 struct kobj_attribute shmem_enabled_attr =
 	__ATTR(shmem_enabled, 0644, shmem_enabled_show, shmem_enabled_store);
+#endif /* CONFIG_TRANSPARENT_HUGE_PAGECACHE && CONFIG_SYSFS */
 
+#ifdef CONFIG_TRANSPARENT_HUGE_PAGECACHE
 bool shmem_huge_enabled(struct vm_area_struct *vma)
 {
 	struct inode *inode = file_inode(vma->vm_file);
@@ -4007,7 +4011,7 @@ bool shmem_huge_enabled(struct vm_area_struct *vma)
 			return false;
 	}
 }
-#endif /* CONFIG_TRANSPARENT_HUGE_PAGECACHE && CONFIG_SYSFS */
+#endif /* CONFIG_TRANSPARENT_HUGE_PAGECACHE */
 
 #else /* !CONFIG_SHMEM */
 

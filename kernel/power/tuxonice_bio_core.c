@@ -410,7 +410,7 @@ static int submit(int writing, struct block_device *dev, sector_t first_block,
                 bio->bi_error = 0;
                 toi_end_bio(bio);
         } else
-                submit_bio(writing | REQ_SYNC, bio);
+                submit_bio(bio);
 
         return 0;
 }
