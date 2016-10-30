@@ -253,6 +253,34 @@ struct perf_evsel *perf_evsel__new_idx(struct perf_event_attr *attr, int idx)
 	return evsel;
 }
 
+struct perf_evsel *perf_evsel__new_cycles(void)
+{
+	struct perf_event_attr attr = {
+		.type	= PERF_TYPE_HARDWARE,
+		.config	= PERF_COUNT_HW_CPU_CYCLES,
+	};
+	struct perf_evsel *evsel;
+
+	event_attr_init(&attr);
+
+	perf_event_attr__set_max_precise_ip(&attr);
+
+	evsel = perf_evsel__new(&attr);
+	if (evsel == NULL)
+		goto out;
+
+	/* use asprintf() because free(evsel) assumes name is allocated */
+	if (asprintf(&evsel->name, "cycles%.*s",
+		     attr.precise_ip ? attr.precise_ip + 1 : 0, ":ppp") < 0)
+		goto error_free;
+out:
+	return evsel;
+error_free:
+	perf_evsel__delete(evsel);
+	evsel = NULL;
+	goto out;
+}
+
 /*
  * Returns pointer with encoded error via <linux/err.h> interface.
  */
@@ -479,17 +507,17 @@ static int __perf_evsel__hw_cache_name(u64 config, char *bf, size_t size)
 	u8 op, result, type = (config >>  0) & 0xff;
 	const char *err = "unknown-ext-hardware-cache-type";
 
-	if (type > PERF_COUNT_HW_CACHE_MAX)
+	if (type >= PERF_COUNT_HW_CACHE_MAX)
 		goto out_err;
 
 	op = (config >>  8) & 0xff;
 	err = "unknown-ext-hardware-cache-op";
-	if (op > PERF_COUNT_HW_CACHE_OP_MAX)
+	if (op >= PERF_COUNT_HW_CACHE_OP_MAX)
 		goto out_err;
 
 	result = (config >> 16) & 0xff;
 	err = "unknown-ext-hardware-cache-result";
-	if (result > PERF_COUNT_HW_CACHE_RESULT_MAX)
+	if (result >= PERF_COUNT_HW_CACHE_RESULT_MAX)
 		goto out_err;
 
 	err = "invalid-cache";
@@ -854,7 +882,7 @@ void perf_evsel__config(struct perf_evsel *evsel, struct record_opts *opts,
 		perf_evsel__set_sample_bit(evsel, REGS_INTR);
 	}
 
-	if (target__has_cpu(&opts->target))
+	if (target__has_cpu(&opts->target) || opts->sample_cpu)
 		perf_evsel__set_sample_bit(evsel, CPU);
 
 	if (opts->period)

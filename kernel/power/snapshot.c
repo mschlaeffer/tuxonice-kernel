@@ -883,9 +883,9 @@ static bool memory_bm_pfn_present(struct memory_bitmap *bm, int index, unsigned 
  */
 static bool rtree_next_node(struct memory_bitmap *bm, int index)
 {
-	bm->cur[index].node = list_entry(bm->cur[index].node->list.next,
-				  struct rtree_node, list);
-	if (&bm->cur[index].node->list != &bm->cur[index].zone->leaves) {
+	if (!list_is_last(&bm->cur[index].node->list, &bm->cur[index].zone->leaves)) {
+		bm->cur[index].node = list_entry(bm->cur[index].node->list.next,
+					  struct rtree_node, list);
 		bm->cur[index].node_pfn += BM_BITS_PER_BLOCK;
 		bm->cur[index].node_bit  = 0;
 		touch_softlockup_watchdog();
@@ -893,9 +893,9 @@ static bool rtree_next_node(struct memory_bitmap *bm, int index)
 	}
 
 	/* No more nodes, goto next zone */
-	bm->cur[index].zone = list_entry(bm->cur[index].zone->list.next,
+	if (!list_is_last(&bm->cur[index].zone->list, &bm->zones)) {
+		bm->cur[index].zone = list_entry(bm->cur[index].zone->list.next,
 				  struct mem_zone_bm_rtree, list);
-	if (&bm->cur[index].zone->list != &bm->zones) {
 		bm->cur[index].node = list_entry(bm->cur[index].zone->leaves.next,
 					  struct rtree_node, list);
 		bm->cur[index].node_pfn = 0;
@@ -1662,11 +1662,11 @@ static unsigned long minimum_image_size(unsigned long saveable)
 	unsigned long size;
 
 	size = global_page_state(NR_SLAB_RECLAIMABLE)
-		+ global_page_state(NR_ACTIVE_ANON)
-		+ global_page_state(NR_INACTIVE_ANON)
-		+ global_page_state(NR_ACTIVE_FILE)
-		+ global_page_state(NR_INACTIVE_FILE)
-		- global_page_state(NR_FILE_MAPPED);
+		+ global_node_page_state(NR_ACTIVE_ANON)
+		+ global_node_page_state(NR_INACTIVE_ANON)
+		+ global_node_page_state(NR_ACTIVE_FILE)
+		+ global_node_page_state(NR_INACTIVE_FILE)
+		- global_node_page_state(NR_FILE_MAPPED);
 
 	return saveable <= size ? 0 : saveable - size;
 }
