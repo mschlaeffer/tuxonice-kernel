@@ -1,3 +1,10 @@
+linux (4.8.0-26.28) yakkety; urgency=low
+
+  * CVE-2016-5195
+    - SAUCE: mm: remove gup_flags FOLL_WRITE games from __get_user_pages()
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Mon, 17 Oct 2016 13:04:09 +0200
+
 linux (4.8.0-22.24) yakkety; urgency=low
 
   * CVE-2016-7039 (LP: #1631287)
