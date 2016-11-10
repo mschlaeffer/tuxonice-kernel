@@ -1,3 +1,23 @@
+linux (3.19.0-74.82) vivid; urgency=low
+
+  [ Seth Forshee ]
+
+  * Release Tracking Bug
+    - LP: #1635424
+
+  * proc_keys_show crash when reading /proc/keys (LP: #1634496)
+    - SAUCE: KEYS: ensure xbuf is large enough to fix buffer overflow in
+      proc_keys_show (LP: #1634496)
+
+  * CVE-2015-7833
+    - usbvision: revert commit 588afcc1
+
+  * CVE-2015-7837
+    - SAUCE: (no-up) kexec/uefi: copy secure_boot flag in boot params across kexec
+      reboot
+
+ -- Seth Forshee <seth.forshee@canonical.com>  Thu, 20 Oct 2016 16:26:38 -0500
+
 linux (3.19.0-73.81) vivid; urgency=low
 
   * CVE-2016-5195
