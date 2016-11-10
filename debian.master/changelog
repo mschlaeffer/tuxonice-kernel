@@ -1,3 +1,36 @@
+linux (3.2.0-115.157) precise; urgency=low
+
+  [ Seth Forshee ]
+
+  * Release Tracking Bug
+    - LP: #1636537
+
+  * CVE-2016-5195
+    - Revert "UBUNTU:SAUCE: mm: remove gup_flags FOLL_WRITE games from
+      __get_user_pages()"
+    - mm, gup: close FOLL MAP_PRIVATE race
+
+ -- Seth Forshee <seth.forshee@canonical.com>  Tue, 25 Oct 2016 09:58:32 -0500
+
+linux (3.2.0-114.156) precise; urgency=low
+
+  [ Seth Forshee ]
+
+  * Release Tracking Bug
+    - LP: #1635436
+
+  * proc_keys_show crash when reading /proc/keys (LP: #1634496)
+    - SAUCE: KEYS: ensure xbuf is large enough to fix buffer overflow in
+      proc_keys_show (LP: #1634496)
+
+  * CVE-2016-7117
+    - net: Fix use after free in the recvmmsg exit path
+
+  * CVE-2015-7833
+    - usbvision: revert commit 588afcc1
+
+ -- Seth Forshee <seth.forshee@canonical.com>  Thu, 20 Oct 2016 17:11:29 -0500
+
 linux (3.2.0-113.155) precise; urgency=low
 
   * CVE-2016-5195
