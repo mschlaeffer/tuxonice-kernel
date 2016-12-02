@@ -61,7 +61,8 @@
 #include <linux/devfs_fs_kernel.h>
 #endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4,3,0))
-#define bio_endio(bio, errors) bio_endio(bio)
+#define bio_endio(bio, errors)	\
+	do { bio->bi_error = errors; bio_endio(bio); } while (0)
 #endif
 
 /* driver */
@@ -8311,6 +8312,10 @@ static int ssd_make_request(struct request_queue *q, struct bio *bio)
 		goto out;
 	}
 
+#endif
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4,3,0))
+	blk_queue_split(q, &bio, q->bio_split);
 #endif
 
 	if (0 == atomic_read(&dev->in_sendq)) {
