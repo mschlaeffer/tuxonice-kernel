@@ -59,6 +59,7 @@ drivers/misc/vmw_balloon.ko
 drivers/misc/vmw_vmci/vmw_vmci.ko
 drivers/net/caif/caif_virtio.ko
 drivers/net/mii.ko
+drivers/net/ethernet/broadcom/tg3.ko
 drivers/net/ethernet/8390/8390.ko
 drivers/net/ethernet/realtek/8139too.ko
 drivers/net/ethernet/realtek/8139cp.ko
@@ -89,12 +90,14 @@ drivers/net/vmxnet3/vmxnet3.ko
 drivers/net/vxlan.ko
 drivers/net/xen-netback/*
 drivers/net/xen-netfront.ko
+drivers/net/ipvlan/*
 drivers/platform/x86/pvpanic.ko
 drivers/parport/parport.ko
 drivers/parport/parport_pc.ko
 drivers/pps/pps_core.ko
 drivers/ptp/ptp.ko
 drivers/net/ethernet/dec/tulip/*
+drivers/net/ethernet/mellanox/*
 drivers/scsi/BusLogic.ko
 drivers/scsi/device_handler/scsi_dh_emc.ko
 drivers/scsi/device_handler/scsi_dh_alua.ko
