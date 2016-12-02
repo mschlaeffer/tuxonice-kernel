@@ -1,3 +1,19 @@
+linux (3.2.0-116.158) precise; urgency=low
+
+  [ Luis Henriques ]
+
+  * Release Tracking Bug
+    - LP: #1640549
+
+  *  xen:balloon errors in 14.04 beta (LP: #1304001)
+    - xen/balloon: cancel ballooning if adding new memory failed
+    - xen/balloon: Don't continue ballooning when BP_ECANCELED is encountered
+
+  * CVE-2016-7425
+    - scsi: arcmsr: Buffer overflow in arcmsr_iop_message_xfer()
+
+ -- Luis Henriques <luis.henriques@canonical.com>  Wed, 09 Nov 2016 17:09:27 +0000
+
 linux (3.2.0-115.157) precise; urgency=low
 
   [ Seth Forshee ]
