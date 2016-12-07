@@ -409,8 +409,10 @@ static int submit(int writing, struct block_device *dev, sector_t first_block,
                 /* Fake having done the hard work */
                 bio->bi_error = 0;
                 toi_end_bio(bio);
-        } else
-                submit_bio(bio);
+        } else {
+		bio_set_op_attrs(bio, (writing ? REQ_OP_WRITE : REQ_OP_READ), REQ_SYNC);
+		submit_bio(bio);
+	}
 
         return 0;
 }
