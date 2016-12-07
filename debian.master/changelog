@@ -1,3 +1,10 @@
+linux (3.2.0-118.161) precise; urgency=low
+
+  * CVE-2016-8655 (LP: #1646318)
+    - packet: fix race condition in packet_set_ring
+
+ -- Brad Figg <brad.figg@canonical.com>  Thu, 01 Dec 2016 16:19:55 -0800
+
 linux (3.2.0-116.158) precise; urgency=low
 
   [ Luis Henriques ]
