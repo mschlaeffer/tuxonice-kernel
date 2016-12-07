@@ -1,3 +1,10 @@
+linux (3.19.0-77.85) vivid; urgency=low
+
+  * CVE-2016-8655 (LP: #1646318)
+    - packet: fix race condition in packet_set_ring
+
+ -- Brad Figg <brad.figg@canonical.com>  Thu, 01 Dec 2016 12:10:11 -0800
+
 linux (3.19.0-75.83) vivid; urgency=low
 
   [ Luis Henriques ]
