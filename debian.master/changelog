@@ -1,3 +1,10 @@
+linux (4.4.0-53.74) xenial; urgency=low
+
+  * CVE-2016-8655 (LP: #1646318)
+    - packet: fix race condition in packet_set_ring
+
+ -- Brad Figg <brad.figg@canonical.com>  Thu, 01 Dec 2016 10:54:01 -0800
+
 linux (4.4.0-51.72) xenial; urgency=low
 
   [ Luis Henriques ]
