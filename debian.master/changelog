@@ -1,3 +1,18 @@
+linux (3.2.0-119.162) precise; urgency=low
+
+  [ Luis Henriques ]
+
+  * Release Tracking Bug
+    - LP: #1647713
+
+  * CVE-2016-7916
+    - proc: prevent accessing /proc/<PID>/environ until it's ready
+
+  * [Hyper-V] do not lose pending heartbeat vmbus packets (LP: #1632786)
+    - hv: do not lose pending heartbeat vmbus packets
+
+ -- Luis Henriques <luis.henriques@canonical.com>  Tue, 06 Dec 2016 13:30:22 +0000
+
 linux (3.2.0-118.161) precise; urgency=low
 
   * CVE-2016-8655 (LP: #1646318)
