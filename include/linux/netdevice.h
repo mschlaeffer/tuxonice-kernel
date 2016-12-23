@@ -2077,7 +2077,7 @@ static inline struct sk_buff **call_gro_receive(gro_receive_t cb,
 						struct sk_buff **head,
 						struct sk_buff *skb)
 {
-	if (gro_recursion_inc_test(skb)) {
+	if (unlikely(gro_recursion_inc_test(skb))) {
 		NAPI_GRO_CB(skb)->flush |= 1;
 		return NULL;
 	}
@@ -2129,6 +2129,22 @@ struct udp_offload {
 	u8			 ipproto;
 	struct udp_offload_callbacks callbacks;
 };
+
+typedef struct sk_buff **(*gro_receive_udp_t)(struct sk_buff **,
+					      struct sk_buff *,
+					      struct udp_offload *);
+static inline struct sk_buff **call_gro_receive_udp(gro_receive_udp_t cb,
+						    struct sk_buff **head,
+						    struct sk_buff *skb,
+						    struct udp_offload *uoff)
+{
+	if (unlikely(gro_recursion_inc_test(skb))) {
+		NAPI_GRO_CB(skb)->flush |= 1;
+		return NULL;
+	}
+
+	return cb(head, skb, uoff);
+}
 
 /* often modified stats are per cpu, other are shared (netdev->stats) */
 struct pcpu_sw_netstats {
