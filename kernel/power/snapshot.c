@@ -562,12 +562,12 @@ void memory_bm_position_reset(struct memory_bitmap *bm)
     int index;
 
     for (index = 0; index < BM_POSITION_SLOTS; index++) {
-	bm->cur[index].zone = list_entry(bm->zones.next, struct mem_zone_bm_rtree,
-				  list);
-	bm->cur[index].node = list_entry(bm->cur[index].zone->leaves.next,
-				  struct rtree_node, list);
-	bm->cur[index].node_pfn = 0;
-	bm->cur[index].node_bit = 0;
+      bm->cur[index].zone = list_entry(bm->zones.next, struct mem_zone_bm_rtree,
+          list);
+      bm->cur[index].node = list_entry(bm->cur[index].zone->leaves.next,
+          struct rtree_node, list);
+      bm->cur[index].node_pfn = 0;
+      bm->cur[index].node_bit = 0;
     }
 }
 
@@ -703,7 +703,7 @@ static int memory_bm_create(struct memory_bitmap *bm, gfp_t gfp_mask,
 	}
 
 	bm->p_list = ca.chain;
-        memory_bm_position_reset(bm);
+	memory_bm_position_reset(bm);
  Exit:
 	free_mem_extents(&mem_extents);
 	return error;
@@ -745,16 +745,6 @@ int memory_bm_find_bit(struct memory_bitmap *bm, int index,
 	struct mem_zone_bm_rtree *curr, *zone;
 	struct rtree_node *node;
 	int i, block_nr;
-
-        if (!bm->cur[index].zone) {
-            // Reset
-            bm->cur[index].zone = list_entry(bm->zones.next, struct mem_zone_bm_rtree,
-                    list);
-            bm->cur[index].node = list_entry(bm->cur[index].zone->leaves.next,
-                    struct rtree_node, list);
-            bm->cur[index].node_pfn = 0;
-            bm->cur[index].node_bit = 0;
-        }
 
 	zone = bm->cur[index].zone;
 
@@ -883,9 +873,9 @@ static bool memory_bm_pfn_present(struct memory_bitmap *bm, int index, unsigned 
  */
 static bool rtree_next_node(struct memory_bitmap *bm, int index)
 {
-	bm->cur[index].node = list_entry(bm->cur[index].node->list.next,
-				  struct rtree_node, list);
-	if (&bm->cur[index].node->list != &bm->cur[index].zone->leaves) {
+	if (!list_is_last(&bm->cur[index].node->list, &bm->cur[index].zone->leaves)) {
+		bm->cur[index].node = list_entry(bm->cur[index].node->list.next,
+					  struct rtree_node, list);
 		bm->cur[index].node_pfn += BM_BITS_PER_BLOCK;
 		bm->cur[index].node_bit  = 0;
 		touch_softlockup_watchdog();
@@ -893,9 +883,9 @@ static bool rtree_next_node(struct memory_bitmap *bm, int index)
 	}
 
 	/* No more nodes, goto next zone */
-	bm->cur[index].zone = list_entry(bm->cur[index].zone->list.next,
+	if (!list_is_last(&bm->cur[index].zone->list, &bm->zones)) {
+		bm->cur[index].zone = list_entry(bm->cur[index].zone->list.next,
 				  struct mem_zone_bm_rtree, list);
-	if (&bm->cur[index].zone->list != &bm->zones) {
 		bm->cur[index].node = list_entry(bm->cur[index].zone->leaves.next,
 					  struct rtree_node, list);
 		bm->cur[index].node_pfn = 0;
@@ -1662,11 +1652,11 @@ static unsigned long minimum_image_size(unsigned long saveable)
 	unsigned long size;
 
 	size = global_page_state(NR_SLAB_RECLAIMABLE)
-		+ global_page_state(NR_ACTIVE_ANON)
-		+ global_page_state(NR_INACTIVE_ANON)
-		+ global_page_state(NR_ACTIVE_FILE)
-		+ global_page_state(NR_INACTIVE_FILE)
-		- global_page_state(NR_FILE_MAPPED);
+		+ global_node_page_state(NR_ACTIVE_ANON)
+		+ global_node_page_state(NR_INACTIVE_ANON)
+		+ global_node_page_state(NR_ACTIVE_FILE)
+		+ global_node_page_state(NR_INACTIVE_FILE)
+		- global_node_page_state(NR_FILE_MAPPED);
 
 	return saveable <= size ? 0 : saveable - size;
 }
@@ -2146,7 +2136,7 @@ static void duplicate_memory_bitmap(struct memory_bitmap *dst,
 	unsigned long pfn;
 
 	memory_bm_position_reset(src);
-	pfn = memory_bm_next_pfn(src);
+	pfn = memory_bm_next_pfn(src, 0);
 	while (pfn != BM_END_OF_MAP) {
 		memory_bm_set_bit(dst, 0, pfn);
 		pfn = memory_bm_next_pfn(src, 0);
@@ -2164,7 +2154,7 @@ static void mark_unsafe_pages(struct memory_bitmap *bm)
 	unsigned long pfn;
 
 	/* Clear the "free"/"unsafe" bit for all PFNs */
-	memory_bm_position_reset(free_pages_map, 0);
+	memory_bm_position_reset(free_pages_map);
 	pfn = memory_bm_next_pfn(free_pages_map, 0);
 	while (pfn != BM_END_OF_MAP) {
 		memory_bm_clear_current(free_pages_map, 0);

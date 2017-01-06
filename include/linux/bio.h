@@ -73,7 +73,8 @@ static inline bool bio_has_data(struct bio *bio)
 {
 	if (bio &&
 	    bio->bi_iter.bi_size &&
-	    bio_op(bio) != REQ_OP_DISCARD)
+	    bio_op(bio) != REQ_OP_DISCARD &&
+	    bio_op(bio) != REQ_OP_SECURE_ERASE)
 		return true;
 
 	return false;
@@ -81,7 +82,9 @@ static inline bool bio_has_data(struct bio *bio)
 
 static inline bool bio_no_advance_iter(struct bio *bio)
 {
-	return bio_op(bio) == REQ_OP_DISCARD || bio_op(bio) == REQ_OP_WRITE_SAME;
+	return bio_op(bio) == REQ_OP_DISCARD ||
+	       bio_op(bio) == REQ_OP_SECURE_ERASE ||
+	       bio_op(bio) == REQ_OP_WRITE_SAME;
 }
 
 static inline bool bio_is_rw(struct bio *bio)
@@ -97,7 +100,7 @@ static inline bool bio_is_rw(struct bio *bio)
 
 static inline bool bio_mergeable(struct bio *bio)
 {
-	if (bio->bi_rw & REQ_NOMERGE_FLAGS)
+	if (bio->bi_opf & REQ_NOMERGE_FLAGS)
 		return false;
 
 	return true;
@@ -199,6 +202,9 @@ static inline unsigned bio_segments(struct bio *bio)
 	 */
 
 	if (bio_op(bio) == REQ_OP_DISCARD)
+		return 1;
+
+	if (bio_op(bio) == REQ_OP_SECURE_ERASE)
 		return 1;
 
 	if (bio_op(bio) == REQ_OP_WRITE_SAME)
@@ -320,7 +326,7 @@ struct bio_integrity_payload {
 
 static inline struct bio_integrity_payload *bio_integrity(struct bio *bio)
 {
-	if (bio->bi_rw & REQ_INTEGRITY)
+	if (bio->bi_opf & REQ_INTEGRITY)
 		return bio->bi_integrity;
 
 	return NULL;
@@ -472,11 +478,14 @@ extern unsigned int bvec_nr_vecs(unsigned short idx);
 int bio_associate_blkcg(struct bio *bio, struct cgroup_subsys_state *blkcg_css);
 int bio_associate_current(struct bio *bio);
 void bio_disassociate_task(struct bio *bio);
+void bio_clone_blkcg_association(struct bio *dst, struct bio *src);
 #else	/* CONFIG_BLK_CGROUP */
 static inline int bio_associate_blkcg(struct bio *bio,
 			struct cgroup_subsys_state *blkcg_css) { return 0; }
 static inline int bio_associate_current(struct bio *bio) { return -ENOENT; }
 static inline void bio_disassociate_task(struct bio *bio) { }
+static inline void bio_clone_blkcg_association(struct bio *dst,
+			struct bio *src) { }
 #endif	/* CONFIG_BLK_CGROUP */
 
 #ifdef CONFIG_HIGHMEM

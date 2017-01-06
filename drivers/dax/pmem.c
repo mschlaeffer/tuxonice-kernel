@@ -44,7 +44,6 @@ static void dax_pmem_percpu_exit(void *data)
 
 	dev_dbg(dax_pmem->dev, "%s\n", __func__);
 	percpu_ref_exit(ref);
-	wait_for_completion(&dax_pmem->cmp);
 }
 
 static void dax_pmem_percpu_kill(void *data)
@@ -54,6 +53,7 @@ static void dax_pmem_percpu_kill(void *data)
 
 	dev_dbg(dax_pmem->dev, "%s\n", __func__);
 	percpu_ref_kill(ref);
+	wait_for_completion(&dax_pmem->cmp);
 }
 
 static int dax_pmem_probe(struct device *dev)
@@ -77,7 +77,9 @@ static int dax_pmem_probe(struct device *dev)
 	nsio = to_nd_namespace_io(&ndns->dev);
 
 	/* parse the 'pfn' info block via ->rw_bytes */
-	devm_nsio_enable(dev, nsio);
+	rc = devm_nsio_enable(dev, nsio);
+	if (rc)
+		return rc;
 	altmap = nvdimm_setup_pfn(nd_pfn, &res, &__altmap);
 	if (IS_ERR(altmap))
 		return PTR_ERR(altmap);
@@ -102,21 +104,22 @@ static int dax_pmem_probe(struct device *dev)
 	if (rc)
 		return rc;
 
-	rc = devm_add_action(dev, dax_pmem_percpu_exit, &dax_pmem->ref);
-	if (rc) {
-		dax_pmem_percpu_exit(&dax_pmem->ref);
+	rc = devm_add_action_or_reset(dev, dax_pmem_percpu_exit,
+							&dax_pmem->ref);
+	if (rc)
 		return rc;
-	}
 
 	addr = devm_memremap_pages(dev, &res, &dax_pmem->ref, altmap);
 	if (IS_ERR(addr))
 		return PTR_ERR(addr);
 
-	rc = devm_add_action(dev, dax_pmem_percpu_kill, &dax_pmem->ref);
-	if (rc) {
-		dax_pmem_percpu_kill(&dax_pmem->ref);
+	rc = devm_add_action_or_reset(dev, dax_pmem_percpu_kill,
+							&dax_pmem->ref);
+	if (rc)
 		return rc;
-	}
+
+	/* adjust the dax_region resource to the start of data */
+	res.start += le64_to_cpu(pfn_sb->dataoff);
 
 	nd_region = to_nd_region(dev->parent);
 	dax_region = alloc_dax_region(dev, nd_region->id, &res,

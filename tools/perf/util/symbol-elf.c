@@ -837,7 +837,8 @@ int dso__load_sym(struct dso *dso, struct map *map,
 	sec = syms_ss->symtab;
 	shdr = syms_ss->symshdr;
 
-	if (elf_section_by_name(elf, &ehdr, &tshdr, ".text", NULL))
+	if (elf_section_by_name(runtime_ss->elf, &runtime_ss->ehdr, &tshdr,
+				".text", NULL))
 		dso->text_offset = tshdr.sh_addr - tshdr.sh_offset;
 
 	if (runtime_ss->opdsec)
@@ -1112,9 +1113,8 @@ new_symbol:
 	 * For misannotated, zeroed, ASM function sizes.
 	 */
 	if (nr > 0) {
-		if (!symbol_conf.allow_aliases)
-			symbols__fixup_duplicate(&dso->symbols[map->type]);
 		symbols__fixup_end(&dso->symbols[map->type]);
+		symbols__fixup_duplicate(&dso->symbols[map->type]);
 		if (kmap) {
 			/*
 			 * We need to fixup this here too because we create new

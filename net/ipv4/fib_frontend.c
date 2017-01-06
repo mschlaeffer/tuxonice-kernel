@@ -157,7 +157,7 @@ static void fib_replace_table(struct net *net, struct fib_table *old,
 
 int fib_unmerge(struct net *net)
 {
-	struct fib_table *old, *new;
+	struct fib_table *old, *new, *main_table;
 
 	/* attempt to fetch local table if it has been allocated */
 	old = fib_get_table(net, RT_TABLE_LOCAL);
@@ -168,11 +168,21 @@ int fib_unmerge(struct net *net)
 	if (!new)
 		return -ENOMEM;
 
+	/* table is already unmerged */
+	if (new == old)
+		return 0;
+
 	/* replace merged table with clean table */
-	if (new != old) {
-		fib_replace_table(net, old, new);
-		fib_free_table(old);
-	}
+	fib_replace_table(net, old, new);
+	fib_free_table(old);
+
+	/* attempt to fetch main table if it has been allocated */
+	main_table = fib_get_table(net, RT_TABLE_MAIN);
+	if (!main_table)
+		return 0;
+
+	/* flush local entries from main table */
+	fib_table_flush_external(main_table);
 
 	return 0;
 }
@@ -509,6 +519,7 @@ static int rtentry_to_fib_config(struct net *net, int cmd, struct rtentry *rt,
 		if (!dev)
 			return -ENODEV;
 		cfg->fc_oif = dev->ifindex;
+		cfg->fc_table = l3mdev_fib_table(dev);
 		if (colon) {
 			struct in_ifaddr *ifa;
 			struct in_device *in_dev = __in_dev_get_rtnl(dev);
@@ -1027,7 +1038,7 @@ no_promotions:
 			 * First of all, we scan fib_info list searching
 			 * for stray nexthop entries, then ignite fib_flush.
 			 */
-			if (fib_sync_down_addr(dev_net(dev), ifa->ifa_local))
+			if (fib_sync_down_addr(dev, ifa->ifa_local))
 				fib_flush(dev_net(dev));
 		}
 	}

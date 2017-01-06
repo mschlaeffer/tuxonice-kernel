@@ -778,7 +778,7 @@ static void notify_shutdown(struct cxlflash_cfg *cfg, bool wait)
 {
 	struct afu *afu = cfg->afu;
 	struct device *dev = &cfg->dev->dev;
-	struct sisl_global_map __iomem *global = &afu->afu_map->global;
+	struct sisl_global_map __iomem *global;
 	struct dev_dependent_vals *ddv;
 	u64 reg, status;
 	int i, retry_cnt = 0;
@@ -786,6 +786,14 @@ static void notify_shutdown(struct cxlflash_cfg *cfg, bool wait)
 	ddv = (struct dev_dependent_vals *)cfg->dev_id->driver_data;
 	if (!(ddv->flags & CXLFLASH_NOTIFY_SHUTDOWN))
 		return;
+
+	if (!afu || !afu->afu_map) {
+		dev_dbg(dev, "%s: The problem state area is not mapped\n",
+			__func__);
+		return;
+	}
+
+	global = &afu->afu_map->global;
 
 	/* Notify AFU */
 	for (i = 0; i < NUM_FC_PORTS; i++) {
@@ -815,17 +823,6 @@ static void notify_shutdown(struct cxlflash_cfg *cfg, bool wait)
 }
 
 /**
- * cxlflash_shutdown() - shutdown handler
- * @pdev:	PCI device associated with the host.
- */
-static void cxlflash_shutdown(struct pci_dev *pdev)
-{
-	struct cxlflash_cfg *cfg = pci_get_drvdata(pdev);
-
-	notify_shutdown(cfg, false);
-}
-
-/**
  * cxlflash_remove() - PCI entry point to tear down host
  * @pdev:	PCI device associated with the host.
  *
@@ -835,6 +832,11 @@ static void cxlflash_remove(struct pci_dev *pdev)
 {
 	struct cxlflash_cfg *cfg = pci_get_drvdata(pdev);
 	ulong lock_flags;
+
+	if (!pci_is_enabled(pdev)) {
+		pr_debug("%s: Device is disabled\n", __func__);
+		return;
+	}
 
 	/* If a Task Management Function is active, wait for it to complete
 	 * before continuing with remove.
@@ -2677,7 +2679,7 @@ static struct pci_driver cxlflash_driver = {
 	.id_table = cxlflash_pci_table,
 	.probe = cxlflash_probe,
 	.remove = cxlflash_remove,
-	.shutdown = cxlflash_shutdown,
+	.shutdown = cxlflash_remove,
 	.err_handler = &cxlflash_err_handler,
 };
 

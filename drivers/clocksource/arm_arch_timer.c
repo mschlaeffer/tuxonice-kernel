@@ -8,6 +8,9 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+
+#define pr_fmt(fmt)	"arm_arch_timer: " fmt
+
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
@@ -370,14 +373,33 @@ static bool arch_timer_has_nonsecure_ppi(void)
 		arch_timer_ppi[PHYS_NONSECURE_PPI]);
 }
 
-static int arch_timer_setup(struct clock_event_device *clk)
+static u32 check_ppi_trigger(int irq)
 {
+	u32 flags = irq_get_trigger_type(irq);
+
+	if (flags != IRQF_TRIGGER_HIGH && flags != IRQF_TRIGGER_LOW) {
+		pr_warn("WARNING: Invalid trigger for IRQ%d, assuming level low\n", irq);
+		pr_warn("WARNING: Please fix your firmware\n");
+		flags = IRQF_TRIGGER_LOW;
+	}
+
+	return flags;
+}
+
+static int arch_timer_starting_cpu(unsigned int cpu)
+{
+	struct clock_event_device *clk = this_cpu_ptr(arch_timer_evt);
+	u32 flags;
+
 	__arch_timer_setup(ARCH_CP15_TIMER, clk);
 
-	enable_percpu_irq(arch_timer_ppi[arch_timer_uses_ppi], 0);
+	flags = check_ppi_trigger(arch_timer_ppi[arch_timer_uses_ppi]);
+	enable_percpu_irq(arch_timer_ppi[arch_timer_uses_ppi], flags);
 
-	if (arch_timer_has_nonsecure_ppi())
-		enable_percpu_irq(arch_timer_ppi[PHYS_NONSECURE_PPI], 0);
+	if (arch_timer_has_nonsecure_ppi()) {
+		flags = check_ppi_trigger(arch_timer_ppi[PHYS_NONSECURE_PPI]);
+		enable_percpu_irq(arch_timer_ppi[PHYS_NONSECURE_PPI], flags);
+	}
 
 	arch_counter_set_user_access();
 	if (evtstrm_enable)
@@ -527,28 +549,13 @@ static void arch_timer_stop(struct clock_event_device *clk)
 	clk->set_state_shutdown(clk);
 }
 
-static int arch_timer_cpu_notify(struct notifier_block *self,
-					   unsigned long action, void *hcpu)
+static int arch_timer_dying_cpu(unsigned int cpu)
 {
-	/*
-	 * Grab cpu pointer in each case to avoid spurious
-	 * preemptible warnings
-	 */
-	switch (action & ~CPU_TASKS_FROZEN) {
-	case CPU_STARTING:
-		arch_timer_setup(this_cpu_ptr(arch_timer_evt));
-		break;
-	case CPU_DYING:
-		arch_timer_stop(this_cpu_ptr(arch_timer_evt));
-		break;
-	}
+	struct clock_event_device *clk = this_cpu_ptr(arch_timer_evt);
 
-	return NOTIFY_OK;
+	arch_timer_stop(clk);
+	return 0;
 }
-
-static struct notifier_block arch_timer_cpu_nb = {
-	.notifier_call = arch_timer_cpu_notify,
-};
 
 #ifdef CONFIG_CPU_PM
 static unsigned int saved_cntkctl;
@@ -570,10 +577,20 @@ static int __init arch_timer_cpu_pm_init(void)
 {
 	return cpu_pm_register_notifier(&arch_timer_cpu_pm_notifier);
 }
+
+static void __init arch_timer_cpu_pm_deinit(void)
+{
+	WARN_ON(cpu_pm_unregister_notifier(&arch_timer_cpu_pm_notifier));
+}
+
 #else
 static int __init arch_timer_cpu_pm_init(void)
 {
 	return 0;
+}
+
+static void __init arch_timer_cpu_pm_deinit(void)
+{
 }
 #endif
 
@@ -621,22 +638,23 @@ static int __init arch_timer_register(void)
 		goto out_free;
 	}
 
-	err = register_cpu_notifier(&arch_timer_cpu_nb);
-	if (err)
-		goto out_free_irq;
-
 	err = arch_timer_cpu_pm_init();
 	if (err)
 		goto out_unreg_notify;
 
-	/* Immediately configure the timer on the boot CPU */
-	arch_timer_setup(this_cpu_ptr(arch_timer_evt));
 
+	/* Register and immediately configure the timer on the boot CPU */
+	err = cpuhp_setup_state(CPUHP_AP_ARM_ARCH_TIMER_STARTING,
+				"AP_ARM_ARCH_TIMER_STARTING",
+				arch_timer_starting_cpu, arch_timer_dying_cpu);
+	if (err)
+		goto out_unreg_cpupm;
 	return 0;
 
+out_unreg_cpupm:
+	arch_timer_cpu_pm_deinit();
+
 out_unreg_notify:
-	unregister_cpu_notifier(&arch_timer_cpu_nb);
-out_free_irq:
 	free_percpu_irq(arch_timer_ppi[arch_timer_uses_ppi], arch_timer_evt);
 	if (arch_timer_has_nonsecure_ppi())
 		free_percpu_irq(arch_timer_ppi[PHYS_NONSECURE_PPI],

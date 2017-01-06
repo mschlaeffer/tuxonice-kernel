@@ -4,7 +4,9 @@
 static inline bool mmc_req_is_special(struct request *req)
 {
 	return req &&
-		(req_op(req) == REQ_OP_FLUSH || req_op(req) == REQ_OP_DISCARD);
+		(req_op(req) == REQ_OP_FLUSH ||
+		 req_op(req) == REQ_OP_DISCARD ||
+		 req_op(req) == REQ_OP_SECURE_ERASE);
 }
 
 struct request;
@@ -29,7 +31,7 @@ enum mmc_packed_type {
 
 struct mmc_packed {
 	struct list_head	list;
-	u32			cmd_hdr[1024];
+	__le32			cmd_hdr[1024];
 	unsigned int		blocks;
 	u8			nr_entries;
 	u8			retries;

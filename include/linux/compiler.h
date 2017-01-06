@@ -17,7 +17,6 @@
 # define __release(x)	__context__(x,-1)
 # define __cond_lock(x,c)	((c) ? ({ __acquire(x); 1; }) : 0)
 # define __percpu	__attribute__((noderef, address_space(3)))
-# define __pmem		__attribute__((noderef, address_space(5)))
 #ifdef CONFIG_SPARSE_RCU_POINTER
 # define __rcu		__attribute__((noderef, address_space(4)))
 #else /* CONFIG_SPARSE_RCU_POINTER */
@@ -45,7 +44,6 @@ extern void __chk_io_ptr(const volatile void __iomem *);
 # define __cond_lock(x,c) (c)
 # define __percpu
 # define __rcu
-# define __pmem
 # define __private
 # define ACCESS_PRIVATE(p, member) ((p)->member)
 #endif /* __CHECKER__ */
@@ -529,13 +527,14 @@ static __always_inline void __write_once_size(volatile void *p, void *res, int s
  * object's lifetime is managed by something other than RCU.  That
  * "something other" might be reference counting or simple immortality.
  *
- * The seemingly unused void * variable is to validate @p is indeed a pointer
- * type. All pointer types silently cast to void *.
+ * The seemingly unused variable ___typecheck_p validates that @p is
+ * indeed a pointer type by using a pointer to typeof(*p) as the type.
+ * Taking a pointer to typeof(*p) again is needed in case p is void *.
  */
 #define lockless_dereference(p) \
 ({ \
 	typeof(p) _________p1 = READ_ONCE(p); \
-	__maybe_unused const void * const _________p2 = _________p1; \
+	typeof(*(p)) *___typecheck_p __maybe_unused; \
 	smp_read_barrier_depends(); /* Dependency order vs. p above. */ \
 	(_________p1); \
 })

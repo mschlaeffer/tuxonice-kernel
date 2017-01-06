@@ -871,6 +871,13 @@ static int stmmac_init_phy(struct net_device *dev)
 		return -ENODEV;
 	}
 
+	/* stmmac_adjust_link will change this to PHY_IGNORE_INTERRUPT to avoid
+	 * subsequent PHY polling, make sure we force a link transition if
+	 * we have a UP/DOWN/UP transition
+	 */
+	if (phydev->is_pseudo_fixed_link)
+		phydev->irq = PHY_POLL;
+
 	pr_debug("stmmac_init_phy:  %s: attached to PHY (UID 0x%x)"
 		 " Link = %d\n", dev->name, phydev->phy_id, phydev->link);
 
@@ -3397,6 +3404,7 @@ int stmmac_dvr_remove(struct device *dev)
 	stmmac_set_mac(priv->ioaddr, false);
 	netif_carrier_off(ndev);
 	unregister_netdev(ndev);
+	of_node_put(priv->plat->phy_node);
 	if (priv->stmmac_rst)
 		reset_control_assert(priv->stmmac_rst);
 	clk_disable_unprepare(priv->pclk);

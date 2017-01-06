@@ -172,6 +172,7 @@ out_cancel:
 	host_ui->xattr_cnt -= 1;
 	host_ui->xattr_size -= CALC_DENT_SIZE(nm->len);
 	host_ui->xattr_size -= CALC_XATTR_BYTES(size);
+	host_ui->xattr_names -= nm->len;
 	mutex_unlock(&host_ui->ui_mutex);
 out_free:
 	make_bad_inode(inode);
@@ -476,6 +477,7 @@ out_cancel:
 	host_ui->xattr_cnt += 1;
 	host_ui->xattr_size += CALC_DENT_SIZE(nm->len);
 	host_ui->xattr_size += CALC_XATTR_BYTES(ui->data_len);
+	host_ui->xattr_names += nm->len;
 	mutex_unlock(&host_ui->ui_mutex);
 	ubifs_release_budget(c, &req);
 	make_bad_inode(inode);
@@ -575,7 +577,8 @@ static int ubifs_xattr_get(const struct xattr_handler *handler,
 	dbg_gen("xattr '%s', ino %lu ('%pd'), buf size %zd", name,
 		inode->i_ino, dentry, size);
 
-	return  __ubifs_getxattr(inode, name, buffer, size);
+	name = xattr_full_name(handler, name);
+	return __ubifs_getxattr(inode, name, buffer, size);
 }
 
 static int ubifs_xattr_set(const struct xattr_handler *handler,
@@ -586,25 +589,27 @@ static int ubifs_xattr_set(const struct xattr_handler *handler,
 	dbg_gen("xattr '%s', host ino %lu ('%pd'), size %zd",
 		name, inode->i_ino, dentry, size);
 
+	name = xattr_full_name(handler, name);
+
 	if (value)
 		return __ubifs_setxattr(inode, name, value, size, flags);
 	else
 		return __ubifs_removexattr(inode, name);
 }
 
-const struct xattr_handler ubifs_user_xattr_handler = {
+static const struct xattr_handler ubifs_user_xattr_handler = {
 	.prefix = XATTR_USER_PREFIX,
 	.get = ubifs_xattr_get,
 	.set = ubifs_xattr_set,
 };
 
-const struct xattr_handler ubifs_trusted_xattr_handler = {
+static const struct xattr_handler ubifs_trusted_xattr_handler = {
 	.prefix = XATTR_TRUSTED_PREFIX,
 	.get = ubifs_xattr_get,
 	.set = ubifs_xattr_set,
 };
 
-const struct xattr_handler ubifs_security_xattr_handler = {
+static const struct xattr_handler ubifs_security_xattr_handler = {
 	.prefix = XATTR_SECURITY_PREFIX,
 	.get = ubifs_xattr_get,
 	.set = ubifs_xattr_set,

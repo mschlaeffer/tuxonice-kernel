@@ -1341,12 +1341,12 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 
 	} else if (new->flags & IRQF_TRIGGER_MASK) {
 		unsigned int nmsk = new->flags & IRQF_TRIGGER_MASK;
-		unsigned int omsk = irq_settings_get_trigger_mask(desc);
+		unsigned int omsk = irqd_get_trigger_type(&desc->irq_data);
 
 		if (nmsk != omsk)
 			/* hope the handler works with current  trigger mode */
 			pr_warn("irq %d uses trigger mode %u; requested %u\n",
-				irq, nmsk, omsk);
+				irq, omsk, nmsk);
 	}
 
 	*old_ptr = new;
@@ -1681,8 +1681,10 @@ int request_threaded_irq(unsigned int irq, irq_handler_t handler,
 	action->dev_id = dev_id;
 
 	retval = irq_chip_pm_get(&desc->irq_data);
-	if (retval < 0)
+	if (retval < 0) {
+		kfree(action);
 		return retval;
+	}
 
 	chip_bus_lock(desc);
 	retval = __setup_irq(irq, desc, action);
@@ -1985,8 +1987,10 @@ int request_percpu_irq(unsigned int irq, irq_handler_t handler,
 	action->percpu_dev_id = dev_id;
 
 	retval = irq_chip_pm_get(&desc->irq_data);
-	if (retval < 0)
+	if (retval < 0) {
+		kfree(action);
 		return retval;
+	}
 
 	chip_bus_lock(desc);
 	retval = __setup_irq(irq, desc, action);

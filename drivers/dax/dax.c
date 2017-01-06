@@ -211,11 +211,9 @@ int devm_create_dax_dev(struct dax_region *dax_region, struct resource *res,
 	}
 	dax_dev->dev = dev;
 
-	rc = devm_add_action(dax_region->dev, unregister_dax_dev, dev);
-	if (rc) {
-		unregister_dax_dev(dev);
+	rc = devm_add_action_or_reset(dax_region->dev, unregister_dax_dev, dev);
+	if (rc)
 		return rc;
-	}
 
 	return 0;
 
@@ -325,8 +323,8 @@ static int check_vma(struct dax_dev *dax_dev, struct vm_area_struct *vma,
 	if (!dax_dev->alive)
 		return -ENXIO;
 
-	/* prevent private / writable mappings from being established */
-	if ((vma->vm_flags & (VM_NORESERVE|VM_SHARED|VM_WRITE)) == VM_WRITE) {
+	/* prevent private mappings from being established */
+	if ((vma->vm_flags & VM_MAYSHARE) != VM_MAYSHARE) {
 		dev_info(dev, "%s: %s: fail, attempted private mapping\n",
 				current->comm, func);
 		return -EINVAL;
@@ -461,7 +459,7 @@ static int __dax_dev_pmd_fault(struct dax_dev *dax_dev,
 	}
 
 	pgoff = linear_page_index(vma, pmd_addr);
-	phys = pgoff_to_phys(dax_dev, pgoff, PAGE_SIZE);
+	phys = pgoff_to_phys(dax_dev, pgoff, PMD_SIZE);
 	if (phys == -1) {
 		dev_dbg(dev, "%s: phys_to_pgoff(%#lx) failed\n", __func__,
 				pgoff);

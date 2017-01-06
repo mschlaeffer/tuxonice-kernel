@@ -35,7 +35,7 @@
  * 00 - data pointer
  * 01 - internal entry
  * 10 - exceptional entry
- * 11 - locked exceptional entry
+ * 11 - this bit combination is currently unused/reserved
  *
  * The internal entry may be a pointer to the next level in the tree, a
  * sibling entry, or an indicator that the entry in this slot has been moved
@@ -280,9 +280,9 @@ bool __radix_tree_delete_node(struct radix_tree_root *root,
 			      struct radix_tree_node *node);
 void *radix_tree_delete_item(struct radix_tree_root *, unsigned long, void *);
 void *radix_tree_delete(struct radix_tree_root *, unsigned long);
-struct radix_tree_node *radix_tree_replace_clear_tags(
-				struct radix_tree_root *root,
-				unsigned long index, void *entry);
+void radix_tree_clear_tags(struct radix_tree_root *root,
+			   struct radix_tree_node *node,
+			   void **slot);
 unsigned int radix_tree_gang_lookup(struct radix_tree_root *root,
 			void **results, unsigned long first_index,
 			unsigned int max_items);

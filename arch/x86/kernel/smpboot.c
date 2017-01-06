@@ -43,7 +43,7 @@
 
 #include <linux/init.h>
 #include <linux/smp.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/sched.h>
 #include <linux/percpu.h>
 #include <linux/bootmem.h>
@@ -100,10 +100,11 @@ EXPORT_PER_CPU_SYMBOL(cpu_info);
 /* Logical package management. We might want to allocate that dynamically */
 static int *physical_to_logical_pkg __read_mostly;
 static unsigned long *physical_package_map __read_mostly;;
-static unsigned long *logical_package_map  __read_mostly;
 static unsigned int max_physical_pkg_id __read_mostly;
 unsigned int __max_logical_packages __read_mostly;
 EXPORT_SYMBOL(__max_logical_packages);
+static unsigned int logical_packages __read_mostly;
+static bool logical_packages_frozen __read_mostly;
 
 /* Maximum number of SMT threads on any online core */
 int __max_smt_threads __read_mostly;
@@ -277,14 +278,14 @@ int topology_update_package_map(unsigned int apicid, unsigned int cpu)
 	if (test_and_set_bit(pkg, physical_package_map))
 		goto found;
 
-	new = find_first_zero_bit(logical_package_map, __max_logical_packages);
-	if (new >= __max_logical_packages) {
+	if (logical_packages_frozen) {
 		physical_to_logical_pkg[pkg] = -1;
-		pr_warn("APIC(%x) Package %u exceeds logical package map\n",
+		pr_warn("APIC(%x) Package %u exceeds logical package max\n",
 			apicid, pkg);
 		return -ENOSPC;
 	}
-	set_bit(new, logical_package_map);
+
+	new = logical_packages++;
 	pr_info("APIC(%x) Converting physical %u to logical package %u\n",
 		apicid, pkg, new);
 	physical_to_logical_pkg[pkg] = new;
@@ -341,6 +342,7 @@ static void __init smp_init_package_map(void)
 	}
 
 	__max_logical_packages = DIV_ROUND_UP(total_cpus, ncpus);
+	logical_packages = 0;
 
 	/*
 	 * Possibly larger than what we need as the number of apic ids per
@@ -352,10 +354,6 @@ static void __init smp_init_package_map(void)
 	memset(physical_to_logical_pkg, 0xff, size);
 	size = BITS_TO_LONGS(max_physical_pkg_id) * sizeof(unsigned long);
 	physical_package_map = kzalloc(size, GFP_KERNEL);
-	size = BITS_TO_LONGS(__max_logical_packages) * sizeof(unsigned long);
-	logical_package_map = kzalloc(size, GFP_KERNEL);
-
-	pr_info("Max logical packages: %u\n", __max_logical_packages);
 
 	for_each_present_cpu(cpu) {
 		unsigned int apicid = apic->cpu_present_to_apicid(cpu);
@@ -369,6 +367,15 @@ static void __init smp_init_package_map(void)
 		set_cpu_possible(cpu, false);
 		set_cpu_present(cpu, false);
 	}
+
+	if (logical_packages > __max_logical_packages) {
+		pr_warn("Detected more packages (%u), then computed by BIOS data (%u).\n",
+			logical_packages, __max_logical_packages);
+		logical_packages_frozen = true;
+		__max_logical_packages  = logical_packages;
+	}
+
+	pr_info("Max logical packages: %u\n", __max_logical_packages);
 }
 
 void __init smp_store_boot_cpu_info(void)
@@ -683,7 +690,7 @@ wakeup_secondary_cpu_via_nmi(int apicid, unsigned long start_eip)
 	 * Give the other CPU some time to accept the IPI.
 	 */
 	udelay(200);
-	if (APIC_INTEGRATED(apic_version[boot_cpu_physical_apicid])) {
+	if (APIC_INTEGRATED(boot_cpu_apic_version)) {
 		maxlvt = lapic_get_maxlvt();
 		if (maxlvt > 3)			/* Due to the Pentium erratum 3AP.  */
 			apic_write(APIC_ESR, 0);
@@ -710,7 +717,7 @@ wakeup_secondary_cpu_via_init(int phys_apicid, unsigned long start_eip)
 	/*
 	 * Be paranoid about clearing APIC errors.
 	 */
-	if (APIC_INTEGRATED(apic_version[phys_apicid])) {
+	if (APIC_INTEGRATED(boot_cpu_apic_version)) {
 		if (maxlvt > 3)		/* Due to the Pentium erratum 3AP.  */
 			apic_write(APIC_ESR, 0);
 		apic_read(APIC_ESR);
@@ -749,7 +756,7 @@ wakeup_secondary_cpu_via_init(int phys_apicid, unsigned long start_eip)
 	 * Determine this based on the APIC version.
 	 * If we don't have an integrated APIC, don't send the STARTUP IPIs.
 	 */
-	if (APIC_INTEGRATED(apic_version[phys_apicid]))
+	if (APIC_INTEGRATED(boot_cpu_apic_version))
 		num_starts = 2;
 	else
 		num_starts = 0;
@@ -987,7 +994,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle)
 		/*
 		 * Be paranoid about clearing APIC errors.
 		*/
-		if (APIC_INTEGRATED(apic_version[boot_cpu_physical_apicid])) {
+		if (APIC_INTEGRATED(boot_cpu_apic_version)) {
 			apic_write(APIC_ESR, 0);
 			apic_read(APIC_ESR);
 		}
@@ -1242,7 +1249,7 @@ static int __init smp_sanity_check(unsigned max_cpus)
 	/*
 	 * If we couldn't find a local APIC, then get out of here now!
 	 */
-	if (APIC_INTEGRATED(apic_version[boot_cpu_physical_apicid]) &&
+	if (APIC_INTEGRATED(boot_cpu_apic_version) &&
 	    !boot_cpu_has(X86_FEATURE_APIC)) {
 		if (!disable_apic) {
 			pr_err("BIOS bug, local APIC #%d not detected!...\n",
@@ -1399,9 +1406,23 @@ __init void prefill_possible_map(void)
 {
 	int i, possible;
 
-	/* no processor from mptable or madt */
-	if (!num_processors)
-		num_processors = 1;
+	/* No boot processor was found in mptable or ACPI MADT */
+	if (!num_processors) {
+		if (boot_cpu_has(X86_FEATURE_APIC)) {
+			int apicid = boot_cpu_physical_apicid;
+			int cpu = hard_smp_processor_id();
+
+			pr_warn("Boot CPU (id %d) not listed by BIOS\n", cpu);
+
+			/* Make sure boot cpu is enumerated */
+			if (apic->cpu_present_to_apicid(0) == BAD_APICID &&
+			    apic->apic_id_valid(apicid))
+				generic_processor_info(apicid, boot_cpu_apic_version);
+		}
+
+		if (!num_processors)
+			num_processors = 1;
+	}
 
 	i = setup_max_cpus ?: 1;
 	if (setup_possible_cpus == -1) {

@@ -403,7 +403,10 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 			}
 
 			ret = btrfs_map_bio(root, bio, 0, 1);
-			BUG_ON(ret); /* -ENOMEM */
+			if (ret) {
+				bio->bi_error = ret;
+				bio_endio(bio);
+			}
 
 			bio_put(bio);
 
@@ -434,7 +437,10 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 	}
 
 	ret = btrfs_map_bio(root, bio, 0, 1);
-	BUG_ON(ret); /* -ENOMEM */
+	if (ret) {
+		bio->bi_error = ret;
+		bio_endio(bio);
+	}
 
 	bio_put(bio);
 	return 0;
@@ -692,7 +698,7 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 
 			ret = btrfs_map_bio(root, comp_bio, mirror_num, 0);
 			if (ret) {
-				bio->bi_error = ret;
+				comp_bio->bi_error = ret;
 				bio_endio(comp_bio);
 			}
 
@@ -722,7 +728,7 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 
 	ret = btrfs_map_bio(root, comp_bio, mirror_num, 0);
 	if (ret) {
-		bio->bi_error = ret;
+		comp_bio->bi_error = ret;
 		bio_endio(comp_bio);
 	}
 
