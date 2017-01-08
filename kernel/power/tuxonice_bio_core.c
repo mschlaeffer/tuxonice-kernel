@@ -360,6 +360,7 @@ static int submit(int writing, struct block_device *dev, sector_t first_block,
 {
         struct bio *bio = NULL;
         int cur_outstanding_io, result;
+        unsigned int op;
 
         /*
          * Shouldn't throttle if reading - can deadlock in the single
@@ -386,6 +387,10 @@ static int submit(int writing, struct block_device *dev, sector_t first_block,
         bio->bi_end_io = toi_end_bio;
         bio_set_flag(bio, BIO_TOI);
 
+        op = writing ? REQ_OP_WRITE : REQ_OP_READ;
+        // op needs to be an unsigned int to avoid the warning triggering.
+        bio_set_op_attrs(bio, op, writing ? WRITE_SYNC : READ_SYNC);
+
         if (bio_add_page(bio, page, PAGE_SIZE, 0) < PAGE_SIZE) {
                 printk(KERN_DEBUG "ERROR: adding page to bio at %lld\n",
                                 (unsigned long long) first_block);
@@ -410,9 +415,8 @@ static int submit(int writing, struct block_device *dev, sector_t first_block,
                 bio->bi_error = 0;
                 toi_end_bio(bio);
         } else {
-		bio_set_op_attrs(bio, (writing ? REQ_OP_WRITE : REQ_OP_READ), REQ_SYNC);
-		submit_bio(bio);
-	}
+          submit_bio(bio);
+        }
 
         return 0;
 }

@@ -668,9 +668,11 @@ top:
                         if (!PageResave(pfn_to_page(write_pfn)))
                                 use_read_page(write_pfn, buffer);
                         else {
+                                mutex_lock(&io_mutex);
                                 toi_message(TOI_IO, TOI_VERBOSE, 0,
                                                 "Resaved %ld.", write_pfn);
-                                memory_bm_clear_bit(io_map, smp_processor_id(), write_pfn);
+                                atomic_inc(&io_count);
+                                mutex_unlock(&io_mutex);
                         }
                 }
 

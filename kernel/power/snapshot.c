@@ -562,12 +562,12 @@ void memory_bm_position_reset(struct memory_bitmap *bm)
     int index;
 
     for (index = 0; index < BM_POSITION_SLOTS; index++) {
-	bm->cur[index].zone = list_entry(bm->zones.next, struct mem_zone_bm_rtree,
-				  list);
-	bm->cur[index].node = list_entry(bm->cur[index].zone->leaves.next,
-				  struct rtree_node, list);
-	bm->cur[index].node_pfn = 0;
-	bm->cur[index].node_bit = 0;
+      bm->cur[index].zone = list_entry(bm->zones.next, struct mem_zone_bm_rtree,
+          list);
+      bm->cur[index].node = list_entry(bm->cur[index].zone->leaves.next,
+          struct rtree_node, list);
+      bm->cur[index].node_pfn = 0;
+      bm->cur[index].node_bit = 0;
     }
 }
 
@@ -703,7 +703,7 @@ static int memory_bm_create(struct memory_bitmap *bm, gfp_t gfp_mask,
 	}
 
 	bm->p_list = ca.chain;
-        memory_bm_position_reset(bm);
+	memory_bm_position_reset(bm);
  Exit:
 	free_mem_extents(&mem_extents);
 	return error;
@@ -745,16 +745,6 @@ int memory_bm_find_bit(struct memory_bitmap *bm, int index,
 	struct mem_zone_bm_rtree *curr, *zone;
 	struct rtree_node *node;
 	int i, block_nr;
-
-        if (!bm->cur[index].zone) {
-            // Reset
-            bm->cur[index].zone = list_entry(bm->zones.next, struct mem_zone_bm_rtree,
-                    list);
-            bm->cur[index].node = list_entry(bm->cur[index].zone->leaves.next,
-                    struct rtree_node, list);
-            bm->cur[index].node_pfn = 0;
-            bm->cur[index].node_bit = 0;
-        }
 
 	zone = bm->cur[index].zone;
 
