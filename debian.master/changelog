@@ -1,3 +1,33 @@
+linux (3.19.0-79.87) vivid; urgency=low
+
+  [ Thadeu Lima de Souza Cascardo ]
+
+  * Release Tracking Bug
+    - LP: #1651534
+
+  [ Luis Henriques ]
+
+  * CVE-2016-9756
+    - KVM: x86: drop error recovery in em_jmp_far and em_ret_far
+
+  * CVE-2016-9806
+    - netlink: Fix dump skb leak/double free
+
+  * CVE-2016-9794
+    - ALSA: pcm : Call kill_fasync() in stream lock
+
+  * [Hyper-V] netvsc: fix incorrect receive checksum offloading (LP: #1636656)
+    - netvsc: fix incorrect receive checksum offloading
+
+  * CVE-2016-9793
+    - net: avoid signed overflows for SO_{SND|RCV}BUFFORCE
+
+  * Ubuntu16.10 - EEH on BELL3 adapter fails to recover (serial/tty)
+    (LP: #1646857)
+    - serial: 8250_pci: Detach low-level driver during PCI error recovery
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Tue, 20 Dec 2016 15:35:23 -0200
+
 linux (3.19.0-78.86) vivid; urgency=low
 
   [ Luis Henriques ]
