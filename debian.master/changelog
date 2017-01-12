@@ -1,3 +1,20 @@
+linux (3.2.0-120.163) precise; urgency=low
+
+  [ Thadeu Lima de Souza Cascardo ]
+
+  * Release Tracking Bug
+    - LP: #1651207
+
+  [ Luis Henriques ]
+
+  * CVE-2016-9756
+    - KVM: x86: drop error recovery in em_jmp_far and em_ret_far
+
+  * CVE-2016-9794
+    - ALSA: pcm : Call kill_fasync() in stream lock
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Mon, 19 Dec 2016 16:34:00 -0200
+
 linux (3.2.0-119.162) precise; urgency=low
 
   [ Luis Henriques ]
