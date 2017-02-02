@@ -1,3 +1,17 @@
+linux (3.13.0-108.155) trusty; urgency=low
+
+  [ John Donnelly ]
+
+  * Release Tracking Bug
+    - LP: #1655476
+
+  [ John Donnelly ]
+
+  * CVE-2016-9555
+    - sctp: validate chunk len before actually using it
+
+ -- John Donnelly <john.donnelly@canonical.com>  Mon, 09 Jan 2017 11:19:42 +0000
+
 linux (3.13.0-107.154) trusty; urgency=low
 
   [ Luis Henriques ]
