@@ -1,3 +1,18 @@
+linux (3.2.0-121.164) precise; urgency=low
+
+  [ John Donnelly ]
+
+  * Release Tracking Bug
+    - LP: #1655071
+
+  * CVE-2016-9685
+    - xfs: fix two memory leaks in xfs_attr_list.c error paths
+
+  * CVE-2016-9555
+    - sctp: validate chunk len before actually using it
+
+ -- John Donnelly <john.donnelly@canonical.com>  Mon, 09 Jan 2017 11:03:53 +0000
+
 linux (3.2.0-120.163) precise; urgency=low
 
   [ Thadeu Lima de Souza Cascardo ]
