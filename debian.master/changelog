@@ -1,3 +1,42 @@
+linux (3.13.0-110.157) trusty; urgency=low
+
+  * CVE-2017-6074 (LP: #1665935)
+    - dccp: fix freeing skb too early for IPV6_RECVPKTINFO
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Mon, 20 Feb 2017 11:15:49 +0100
+
+linux (3.13.0-109.156) trusty; urgency=low
+
+  [ Thadeu Lima de Souza Cascardo ]
+
+  * Release Tracking Bug
+    - LP: #1662186
+
+  [ Luis Henriques ]
+  * Backport Dirty COW patch to prevent wineserver freeze (LP: #1658270)
+    - ARM: 7985/1: mm: implement pte_accessible for faulting mappings
+    - ARM: 8108/1: mm: Introduce {pte,pmd}_isset and {pte,pmd}_isclear
+    - ARM: 8037/1: mm: support big-endian page tables
+    - ARM: 8109/1: mm: Modify pte_write and pmd_write logic for LPAE
+    - arm64: mm: Route pmd thp functions through pte equivalents
+    - mm: fix huge zero page accounting in smaps report
+    - SAUCE: mm: Respect FOLL_FORCE/FOLL_COW for thp
+
+  * kernel BUG at skbuff.h:1486 Insufficient linear data in skb
+    __skb_pull.part.7+0x4/0x6 [openvswitch] (LP: #1655683)
+    - SAUCE: openvswitch: gre: filter gre packets
+
+  * CVE-2016-7911
+    - block: fix use-after-free in sys_ioprio_get()
+
+  * CVE-2016-7910
+    - block: fix use-after-free in seq file
+
+  * Xen MSI setup code incorrectly re-uses cached pirq (LP: #1656381)
+    - SAUCE: xen: do not re-use pirq number cached in pci device msi msg data
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Tue, 07 Feb 2017 09:26:42 -0200
+
 linux (3.13.0-108.155) trusty; urgency=low
 
   [ John Donnelly ]
