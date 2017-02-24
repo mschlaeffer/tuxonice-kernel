@@ -1,3 +1,26 @@
+linux (3.19.0-82.90) vivid; urgency=low
+
+  * CVE-2017-6074 (LP: #1665935)
+    - dccp: fix freeing skb too early for IPV6_RECVPKTINFO
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Mon, 20 Feb 2017 17:54:27 +0100
+
+linux (3.19.0-81.89) vivid; urgency=low
+
+  [ Thadeu Lima de Souza Cascardo ]
+
+  * Release Tracking Bug
+    - LP: #1661699
+
+  [ Luis Henriques ]
+  * CVE-2016-7911
+    - block: fix use-after-free in sys_ioprio_get()
+
+  * CVE-2016-7910
+    - block: fix use-after-free in seq file
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Fri, 03 Feb 2017 15:58:32 -0200
+
 linux (3.19.0-80.88) vivid; urgency=low
 
   [ John Donnelly ]
