@@ -1,19 +1,19 @@
 # arch	version		flavour		installedname			suffix	bdep
-amd64	PKGVER-ABINUM	generic		PKGVER-ABINUM-generic		-	-
+amd64	PKGVER-ABINUM	generic-tuxonice		PKGVER-ABINUM-generic-tuxonice		-	-
 
-i386	PKGVER-ABINUM	generic		PKGVER-ABINUM-generic		-	-
+i386	PKGVER-ABINUM	generic-tuxonice		PKGVER-ABINUM-generic-tuxonice		-	-
 
-armhf	PKGVER-ABINUM	generic		PKGVER-ABINUM-generic		-	-
-armhf	PKGVER-ABINUM	generic-lpae	PKGVER-ABINUM-generic-lpae	-	-
+armhf	PKGVER-ABINUM	generic-tuxonice		PKGVER-ABINUM-generic-tuxonice		-	-
+armhf	PKGVER-ABINUM	generic-lpae-tuxonice	PKGVER-ABINUM-generic-lpae-tuxonice	-	-
 
-arm64	PKGVER-ABINUM	generic		PKGVER-ABINUM-generic		-	-
+arm64	PKGVER-ABINUM	generic-tuxonice		PKGVER-ABINUM-generic-tuxonice		-	-
 
-ppc64el	PKGVER-ABINUM	generic		PKGVER-ABINUM-generic		-	-
+ppc64el	PKGVER-ABINUM	generic-tuxonice		PKGVER-ABINUM-generic-tuxonice		-	-
 
-s390x	PKGVER-ABINUM	generic		PKGVER-ABINUM-generic		-	-
+s390x	PKGVER-ABINUM	generic-tuxonice		PKGVER-ABINUM-generic-tuxonice		-	-
 
 # Ports
 # arch	version		flavour		installedname			suffix	bdep
-powerpc	PKGVER-ABINUM	powerpc-smp	PKGVER-ABINUM-powerpc-smp	-	-
-powerpc	PKGVER-ABINUM	powerpc64-smp	PKGVER-ABINUM-powerpc64-smp	-	-
-powerpc PKGVER-ABINUM	powerpc-e500mc	PKGVER-ABINUM-powerpc-e500mc	-	-
+powerpc	PKGVER-ABINUM	powerpc-smp-tuxonice	PKGVER-ABINUM-powerpc-smp-tuxonice	-	-
+powerpc	PKGVER-ABINUM	powerpc64-smp-tuxonice	PKGVER-ABINUM-powerpc64-smp-tuxonice	-	-
+powerpc PKGVER-ABINUM	powerpc-e500mc	PKGVER-ABINUM-powerpc-e500mc-tuxonice	--tuxonice	-
