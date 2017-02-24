@@ -1567,7 +1567,7 @@ static int too_many_isolated(struct pglist_data *pgdat, int file,
 {
 	unsigned long inactive, isolated;
 
-	if (current_is_kswapd())
+	if (current_is_kswapd() || sc->hibernation_mode)
 		return 0;
 
 	if (!sane_reclaim(sc))
@@ -2457,6 +2457,9 @@ static inline bool should_continue_reclaim(struct pglist_data *pgdat,
 	unsigned long inactive_lru_pages;
 	int z;
 
+	if (nr_reclaimed && nr_scanned && sc->nr_to_reclaim >= sc->nr_reclaimed)
+		return true;
+
 	/* If not in reclaim/compaction mode, stop */
 	if (!in_reclaim_compaction(sc))
 		return false;
@@ -2759,6 +2762,12 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
 	int initial_priority = sc->priority;
 	unsigned long total_scanned = 0;
 	unsigned long writeback_threshold;
+
+#ifdef CONFIG_FREEZER
+	if (unlikely(pm_freezing && !sc->hibernation_mode))
+		return 0;
+#endif
+
 retry:
 	delayacct_freepages_start();
 
@@ -3502,6 +3511,11 @@ void wakeup_kswapd(struct zone *zone, int order, enum zone_type classzone_idx)
 	if (!managed_zone(zone))
 		return;
 
+#ifdef CONFIG_FREEZER
+	if (pm_freezing)
+		return;
+#endif
+
 	if (!cpuset_zone_allowed(zone, GFP_KERNEL | __GFP_HARDWALL))
 		return;
 	pgdat = zone->zone_pgdat;
@@ -3533,7 +3547,7 @@ void wakeup_kswapd(struct zone *zone, int order, enum zone_type classzone_idx)
  * LRU order by reclaiming preferentially
  * inactive > active > active referenced > active mapped
  */
-unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
+unsigned long shrink_memory_mask(unsigned long nr_to_reclaim, gfp_t mask)
 {
 	struct reclaim_state reclaim_state;
 	struct scan_control sc = {
@@ -3562,6 +3576,11 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
 	p->flags &= ~PF_MEMALLOC;
 
 	return nr_reclaimed;
+}
+
+unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
+{
+	return shrink_memory_mask(nr_to_reclaim, GFP_HIGHUSER_MOVABLE);
 }
 #endif /* CONFIG_HIBERNATION */
 
