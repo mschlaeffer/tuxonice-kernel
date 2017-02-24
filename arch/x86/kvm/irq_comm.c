@@ -40,6 +40,15 @@ static int kvm_set_pic_irq(struct kvm_kernel_irq_routing_entry *e,
 			   bool line_status)
 {
 	struct kvm_pic *pic = pic_irqchip(kvm);
+
+	/*
+	 * XXX: rejecting pic routes when pic isn't in use would be better,
+	 * but the default routing table is installed while kvm->arch.vpic is
+	 * NULL and KVM_CREATE_IRQCHIP can race with KVM_IRQ_LINE.
+	 */
+	if (!pic)
+		return -1;
+
 	return kvm_pic_set_irq(pic, e->irqchip.pin, irq_source_id, level);
 }
 
@@ -48,12 +57,16 @@ static int kvm_set_ioapic_irq(struct kvm_kernel_irq_routing_entry *e,
 			      bool line_status)
 {
 	struct kvm_ioapic *ioapic = kvm->arch.vioapic;
+
+	if (!ioapic)
+		return -1;
+
 	return kvm_ioapic_set_irq(ioapic, e->irqchip.pin, irq_source_id, level,
 				line_status);
 }
 
 int kvm_irq_delivery_to_apic(struct kvm *kvm, struct kvm_lapic *src,
-		struct kvm_lapic_irq *irq, unsigned long *dest_map)
+		struct kvm_lapic_irq *irq, struct dest_map *dest_map)
 {
 	int i, r = -1;
 	struct kvm_vcpu *vcpu, *lowest = NULL;
@@ -347,6 +360,13 @@ static const struct kvm_irq_routing_entry empty_routing[] = {};
 int kvm_setup_empty_irq_routing(struct kvm *kvm)
 {
 	return kvm_set_irq_routing(kvm, empty_routing, 0, 0);
+}
+
+void kvm_arch_post_irq_routing_update(struct kvm *kvm)
+{
+	if (ioapic_in_kernel(kvm) || !irqchip_in_kernel(kvm))
+		return;
+	kvm_make_scan_ioapic_request(kvm);
 }
 
 void kvm_scan_ioapic_routes(struct kvm_vcpu *vcpu,

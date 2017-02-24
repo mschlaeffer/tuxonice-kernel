@@ -850,7 +850,6 @@ static netdev_tx_t geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
 	struct geneve_dev *geneve = netdev_priv(dev);
 	struct geneve_sock *gs4 = geneve->sock4;
 	struct rtable *rt = NULL;
-	const struct iphdr *iip; /* interior IP header */
 	int err = -EINVAL;
 	struct flowi4 fl4;
 	__u8 tos, ttl;
@@ -877,8 +876,6 @@ static netdev_tx_t geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
 	skb_reset_mac_header(skb);
 
-	iip = ip_hdr(skb);
-
 	if (info) {
 		const struct ip_tunnel_key *key = &info->key;
 		u8 *opts = NULL;
@@ -898,7 +895,7 @@ static netdev_tx_t geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
 		if (unlikely(err))
 			goto err;
 
-		tos = ip_tunnel_ecn_encap(key->tos, iip, skb);
+		tos = ip_tunnel_ecn_encap(key->tos, ip_hdr(skb), skb);
 		ttl = key->ttl;
 		df = key->tun_flags & TUNNEL_DONT_FRAGMENT ? htons(IP_DF) : 0;
 	} else {
@@ -907,7 +904,7 @@ static netdev_tx_t geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
 		if (unlikely(err))
 			goto err;
 
-		tos = ip_tunnel_ecn_encap(fl4.flowi4_tos, iip, skb);
+		tos = ip_tunnel_ecn_encap(fl4.flowi4_tos, ip_hdr(skb), skb);
 		ttl = geneve->ttl;
 		if (!ttl && IN_MULTICAST(ntohl(fl4.daddr)))
 			ttl = 1;
@@ -941,7 +938,6 @@ static netdev_tx_t geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
 	struct geneve_dev *geneve = netdev_priv(dev);
 	struct geneve_sock *gs6 = geneve->sock6;
 	struct dst_entry *dst = NULL;
-	const struct iphdr *iip; /* interior IP header */
 	int err = -EINVAL;
 	struct flowi6 fl6;
 	__u8 prio, ttl;
@@ -965,8 +961,6 @@ static netdev_tx_t geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
 	skb_reset_mac_header(skb);
 
-	iip = ip_hdr(skb);
-
 	if (info) {
 		const struct ip_tunnel_key *key = &info->key;
 		u8 *opts = NULL;
@@ -987,7 +981,7 @@ static netdev_tx_t geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
 		if (unlikely(err))
 			goto err;
 
-		prio = ip_tunnel_ecn_encap(key->tos, iip, skb);
+		prio = ip_tunnel_ecn_encap(key->tos, ip_hdr(skb), skb);
 		ttl = key->ttl;
 	} else {
 		err = geneve6_build_skb(dst, skb, 0, geneve->vni,
@@ -995,7 +989,7 @@ static netdev_tx_t geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
 		if (unlikely(err))
 			goto err;
 
-		prio = ip_tunnel_ecn_encap(fl6.flowi6_tos, iip, skb);
+		prio = ip_tunnel_ecn_encap(fl6.flowi6_tos, ip_hdr(skb), skb);
 		ttl = geneve->ttl;
 		if (!ttl && ipv6_addr_is_multicast(&fl6.daddr))
 			ttl = 1;
@@ -1442,6 +1436,7 @@ struct net_device *geneve_dev_create_fb(struct net *net, const char *name,
 {
 	struct nlattr *tb[IFLA_MAX + 1];
 	struct net_device *dev;
+	LIST_HEAD(list_kill);
 	int err;
 
 	memset(tb, 0, sizeof(tb));
@@ -1452,8 +1447,10 @@ struct net_device *geneve_dev_create_fb(struct net *net, const char *name,
 
 	err = geneve_configure(net, dev, &geneve_remote_unspec,
 			       0, 0, 0, htons(dst_port), true, 0);
-	if (err)
-		goto err;
+	if (err) {
+		free_netdev(dev);
+		return ERR_PTR(err);
+	}
 
 	/* openvswitch users expect packet sizes to be unrestricted,
 	 * so set the largest MTU we can.
@@ -1462,10 +1459,15 @@ struct net_device *geneve_dev_create_fb(struct net *net, const char *name,
 	if (err)
 		goto err;
 
+	err = rtnl_configure_link(dev, NULL);
+	if (err < 0)
+		goto err;
+
 	return dev;
 
  err:
-	free_netdev(dev);
+	geneve_dellink(dev, &list_kill);
+	unregister_netdevice_many(&list_kill);
 	return ERR_PTR(err);
 }
 EXPORT_SYMBOL_GPL(geneve_dev_create_fb);

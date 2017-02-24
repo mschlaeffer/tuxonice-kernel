@@ -2077,7 +2077,7 @@ static inline struct sk_buff **call_gro_receive(gro_receive_t cb,
 						struct sk_buff **head,
 						struct sk_buff *skb)
 {
-	if (gro_recursion_inc_test(skb)) {
+	if (unlikely(gro_recursion_inc_test(skb))) {
 		NAPI_GRO_CB(skb)->flush |= 1;
 		return NULL;
 	}
@@ -2129,6 +2129,22 @@ struct udp_offload {
 	u8			 ipproto;
 	struct udp_offload_callbacks callbacks;
 };
+
+typedef struct sk_buff **(*gro_receive_udp_t)(struct sk_buff **,
+					      struct sk_buff *,
+					      struct udp_offload *);
+static inline struct sk_buff **call_gro_receive_udp(gro_receive_udp_t cb,
+						    struct sk_buff **head,
+						    struct sk_buff *skb,
+						    struct udp_offload *uoff)
+{
+	if (unlikely(gro_recursion_inc_test(skb))) {
+		NAPI_GRO_CB(skb)->flush |= 1;
+		return NULL;
+	}
+
+	return cb(head, skb, uoff);
+}
 
 /* often modified stats are per cpu, other are shared (netdev->stats) */
 struct pcpu_sw_netstats {
@@ -2358,14 +2374,19 @@ static inline int skb_gro_header_hard(struct sk_buff *skb, unsigned int hlen)
 	return NAPI_GRO_CB(skb)->frag0_len < hlen;
 }
 
+static inline void skb_gro_frag0_invalidate(struct sk_buff *skb)
+{
+	NAPI_GRO_CB(skb)->frag0 = NULL;
+	NAPI_GRO_CB(skb)->frag0_len = 0;
+}
+
 static inline void *skb_gro_header_slow(struct sk_buff *skb, unsigned int hlen,
 					unsigned int offset)
 {
 	if (!pskb_may_pull(skb, hlen))
 		return NULL;
 
-	NAPI_GRO_CB(skb)->frag0 = NULL;
-	NAPI_GRO_CB(skb)->frag0_len = 0;
+	skb_gro_frag0_invalidate(skb);
 	return skb->data + offset;
 }
 
