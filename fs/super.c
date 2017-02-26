@@ -1471,13 +1471,13 @@ void release_super_lock() {
 /**
  *	iterate_supers_no_sb_lock - call function for all active superblocks without using sb_lock
  *
- *	Note that the callback must work with sb_lock taken and not unlock it.
- *
  *	@f: function to call
  *	@arg: argument to pass to it
  *
  *	Scans the superblock list and calls given function, passing it
  *	locked superblock and given argument.
+ *
+ *	Note that the callback must work with sb_lock taken and not unlock it.
  */
 void iterate_supers_no_sb_lock(void (*f)(struct super_block *, void *), void *arg)
 {
