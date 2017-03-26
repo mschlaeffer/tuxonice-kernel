@@ -1,3 +1,21 @@
+linux (3.13.0-113.160) trusty; urgency=low
+
+  * linux: 3.13.0-113.160 -proposed tracker (LP: #1671232)
+
+  * Windows guest got 0x5c BSOD when rebooting (LP: #1660519)
+    - KVM: x86: reset RVI upon system reset
+    - KVM: x86: Emulator should set DR6 upon GD like real CPU
+
+  * ipv6: fix a refcnt leak with peer addr (LP: #1662096)
+    - ipv6: fix a refcnt leak with peer addr
+    - ipv6: use addrconf_get_prefix_route() to remove peer addr
+    - ipv6: Avoid double dst_free
+
+  * Enable CONFIG_NET_DROP_MONITOR=m in Ubuntu Kernel (LP: #1660634)
+    - [Config] CONFIG_NET_DROP_MONITOR=m
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Wed, 08 Mar 2017 17:03:18 -0300
+
 linux (3.13.0-112.159) trusty; urgency=low
 
   * CVE-2017-2636
