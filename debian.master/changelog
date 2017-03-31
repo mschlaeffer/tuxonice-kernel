@@ -1,3 +1,11 @@
+linux (3.2.0-125.168) precise; urgency=low
+
+  * CVE-2017-7184
+    - xfrm_user: validate XFRM_MSG_NEWAE XFRMA_REPLAY_ESN_VAL replay_window
+    - xfrm_user: validate XFRM_MSG_NEWAE incoming ESN size harder
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Fri, 24 Mar 2017 16:57:58 +0100
+
 linux (3.2.0-124.167) precise; urgency=low
 
   * CVE-2017-2636
