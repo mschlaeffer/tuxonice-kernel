@@ -1,3 +1,11 @@
+linux (3.13.0-115.162) trusty; urgency=low
+
+  * CVE-2017-7184
+    - xfrm_user: validate XFRM_MSG_NEWAE XFRMA_REPLAY_ESN_VAL replay_window
+    - xfrm_user: validate XFRM_MSG_NEWAE incoming ESN size harder
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Fri, 24 Mar 2017 12:38:34 -0300
+
 linux (3.13.0-113.160) trusty; urgency=low
 
   * linux: 3.13.0-113.160 -proposed tracker (LP: #1671232)
