@@ -1,3 +1,15 @@
+linux (3.2.0-126.169) precise; urgency=low
+
+  * linux: 3.2.0-126.169 -proposed tracker (LP: #1678070)
+
+  * Fix CVE-2017-7308 (LP: #1678009)
+    - packet: handle too big packets for PACKET_V3
+    - net/packet: fix overflow in check for priv area size
+    - net/packet: fix overflow in check for tp_frame_nr
+    - net/packet: fix overflow in check for tp_reserve
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Fri, 31 Mar 2017 09:39:32 +0200
+
 linux (3.2.0-125.168) precise; urgency=low
 
   * CVE-2017-7184
