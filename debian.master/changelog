@@ -1,3 +1,14 @@
+linux (3.13.0-116.163) trusty; urgency=low
+
+  * linux: 3.13.0-116.163 -proposed tracker (LP: #1678065)
+
+  * Fix CVE-2017-7308 (LP: #1678009)
+    - net/packet: fix overflow in check for priv area size
+    - net/packet: fix overflow in check for tp_frame_nr
+    - net/packet: fix overflow in check for tp_reserve
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Fri, 31 Mar 2017 09:33:48 +0200
+
 linux (3.13.0-115.162) trusty; urgency=low
 
   * CVE-2017-7184
