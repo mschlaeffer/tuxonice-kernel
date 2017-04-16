@@ -102,12 +102,13 @@ struct bio {
 #define BIO_REFFED	8	/* bio has elevated ->bi_cnt */
 #define BIO_THROTTLED	9	/* This bio has already been subjected to
 				 * throttling rules. Don't do it again. */
+#define BIO_TOI		10	/* bio is TuxOnIce submitted */
 
 /*
  * Flags starting here get preserved by bio_reset() - this includes
  * BVEC_POOL_IDX()
  */
-#define BIO_RESET_BITS	10
+#define BIO_RESET_BITS	11
 
 /*
  * We support 6 different bvec pools, the last one is magic in that it

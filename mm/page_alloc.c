@@ -62,6 +62,7 @@
 #include <linux/hugetlb.h>
 #include <linux/sched/rt.h>
 #include <linux/page_owner.h>
+#include <linux/tuxonice.h>
 #include <linux/kthread.h>
 #include <linux/memcontrol.h>
 
@@ -927,6 +928,12 @@ static void free_pages_check_bad(struct page *page)
 	if (unlikely(page->mem_cgroup))
 		bad_reason = "page still charged to cgroup";
 #endif
+        if (unlikely(PageTOI_Untracked(page))) {
+            // Make it writable and included in image if allocated.
+            ClearPageTOI_Untracked(page);
+            // If it gets allocated, it will be dirty from TOI's POV.
+            SetPageTOI_Dirty(page);
+        }
 	bad_page(page, bad_reason, bad_flags);
 }
 
@@ -1758,6 +1765,11 @@ static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags
 		struct page *p = page + i;
 		if (poisoned)
 			poisoned &= page_is_poisoned(p);
+                if (unlikely(toi_incremental_support() && (gfp_flags & ___GFP_TOI_NOTRACK))) {
+                    // Make the page writable if it's protected, and set it to be untracked.
+                    SetPageTOI_Untracked(p);
+                    toi_make_writable(init_mm.pgd, (unsigned long) page_address(p));
+                }
 	}
 
 	post_alloc_hook(page, order, gfp_flags);

@@ -40,6 +40,7 @@ struct vm_area_struct;
 #define ___GFP_DIRECT_RECLAIM	0x400000u
 #define ___GFP_WRITE		0x800000u
 #define ___GFP_KSWAPD_RECLAIM	0x1000000u
+#define ___GFP_TOI_NOTRACK      0x2000000u
 /* If the above are modified, __GFP_BITS_SHIFT may need updating */
 
 /*
@@ -153,6 +154,7 @@ struct vm_area_struct;
 #define __GFP_REPEAT	((__force gfp_t)___GFP_REPEAT)
 #define __GFP_NOFAIL	((__force gfp_t)___GFP_NOFAIL)
 #define __GFP_NORETRY	((__force gfp_t)___GFP_NORETRY)
+#define __GFP_TOI_NOTRACK	((__force gfp_t)___GFP_TOI_NOTRACK)	/* Allocator wants page untracked by TOI */
 
 /*
  * Action modifiers
@@ -180,7 +182,7 @@ struct vm_area_struct;
 #define __GFP_NOTRACK_FALSE_POSITIVE (__GFP_NOTRACK)
 
 /* Room for N __GFP_FOO bits */
-#define __GFP_BITS_SHIFT 25
+#define __GFP_BITS_SHIFT 26
 #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
 
 /*
