@@ -1,3 +1,13 @@
+linux (4.10.0-20.22) zesty; urgency=low
+
+  * linux: 4.10.0-20.22 -proposed tracker (LP: #1684491)
+
+  * [Hyper-V] hv: util: move waiting for release to hv_utils_transport itself
+    (LP: #1682561)
+    - Drivers: hv: util: move waiting for release to hv_utils_transport itself
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Wed, 19 Apr 2017 16:13:16 +0200
+
 linux (4.10.0-19.21) zesty; urgency=low
 
   [ Tim Gardner ]
