@@ -1,3 +1,25 @@
+linux (4.8.0-51.54) yakkety; urgency=low
+
+  * linux: 4.8.0-51.54 -proposed tracker (LP: #1686070)
+
+  * [Hyper-V][SAUCE] pci-hyperv: Use only 16 bit integer for PCI domain
+    (LP: #1684971)
+    - SAUCE: pci-hyperv: Use only 16 bit integer for PCI domain
+
+ -- Kleber Sacilotto de Souza <kleber.souza@canonical.com>  Tue, 25 Apr 2017 13:08:56 +0200
+
+linux (4.8.0-50.53) yakkety; urgency=low
+
+  * linux: 4.8.0-50.53 -proposed tracker (LP: #1685847)
+
+  * ubuntu 4.8 kernel, virtio_net error causes NAT packets to be lost
+    (LP: #1683947)
+    - virtio_net: Simplify call sites for virtio_net_hdr_{from, to}_skb().
+    - virtio: don't set VIRTIO_NET_HDR_F_DATA_VALID on xmit
+    - virtio-net: restore VIRTIO_HDR_F_DATA_VALID on receiving
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Mon, 24 Apr 2017 13:47:28 -0300
+
 linux (4.8.0-49.52) yakkety; urgency=low
 
   * linux: 4.8.0-49.52 -proposed tracker (LP: #1684427)
