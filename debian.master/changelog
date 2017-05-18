@@ -1,3 +1,28 @@
+linux (3.13.0-119.166) trusty; urgency=low
+
+  * linux: 3.13.0-119.166 -proposed tracker (LP: #1687718)
+
+  * CVE-2016-8645: Linux kernel mishandles socket buffer (skb) truncation
+    (LP: #1687107)
+    - rose: limit sk_filter trim to payload
+    - tcp: take care of truncations done by sk_filter()
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Tue, 02 May 2017 15:14:50 -0300
+
+linux (3.13.0-118.165) trusty; urgency=low
+
+  * linux: 3.13.0-118.165 -proposed tracker (LP: #1686154)
+
+  * linux_3.13.0-*.*: nVMX: Check current_vmcs12 before accessing in
+    handle_invept() (LP: #1678676)
+    - SAUCE: KVM has a flaw in INVEPT emulation that could crash the host
+
+  * Please backport fix to reference leak in cgroup blkio throttle
+    (LP: #1683976)
+    - block: fix module reference leak on put_disk() call for cgroups throttle
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Wed, 26 Apr 2017 09:48:54 -0300
+
 linux (3.13.0-117.164) trusty; urgency=low
 
   * linux: 3.13.0-117.164 -proposed tracker (LP: #1680733)
