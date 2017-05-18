@@ -1,3 +1,37 @@
+linux (4.8.0-52.55) yakkety; urgency=low
+
+  * linux: 4.8.0-52.55 -proposed tracker (LP: #1686976)
+
+  * CVE-2017-7477: macsec: avoid heap overflow in skb_to_sgvec (LP: #1685892)
+    - macsec: avoid heap overflow in skb_to_sgvec
+    - macsec: dynamically allocate space for sglist
+
+  * net/ipv4: original ingress device index set as the loopback interface.
+    (LP: #1683982)
+    - net: fix incorrect original ingress device index in PKTINFO
+
+  * Touchpad not working correctly after kernel upgrade (LP: #1662589)
+    - Input: ALPS - fix V8+ protocol handling (73 03 28)
+
+  * ifup service of network device stay active after driver stop (LP: #1672144)
+    - net: use net->count to check whether a netns is alive or not
+
+  * [Hyper-V] mkfs regression in kernel 4.4+ (LP: #1682215)
+    - block: relax check on sg gap
+
+  * Potential memory corruption with capi adapters (LP: #1681469)
+    - powerpc/mm: Add missing global TLB invalidate if cxl is active
+
+  * [Hyper-V/Azure] Please include Mellanox OFED drivers in Azure kernel and
+    image (LP: #1650058)
+    - net/mlx4_en: Fix bad WQE issue
+    - net/mlx4_core: Fix racy CQ (Completion Queue) free
+    - net/mlx4_core: Fix when to save some qp context flags for dynamic VST to VGT
+      transitions
+    - net/mlx4_core: Avoid command timeouts during VF driver device shutdown
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Fri, 28 Apr 2017 12:17:12 +0200
+
 linux (4.8.0-51.54) yakkety; urgency=low
 
   * linux: 4.8.0-51.54 -proposed tracker (LP: #1686070)
