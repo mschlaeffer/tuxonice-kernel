@@ -1,3 +1,41 @@
+linux (4.8.0-53.56) yakkety; urgency=low
+
+  * linux: 4.8.0-53.56 -proposed tracker (LP: #1690956)
+
+  * bond0: Invalid MTU 9000 requested, hw max 1500 with kernel 4.8 / 4.10 in
+    XENIAL LTS (LP: #1679823)
+    - Revert "ethernet: use net core MTU range checking in more drivers"
+    - Revert "Drivers: hv: ring_buffer: count on wrap around mappings in
+      get_next_pkt_raw() (v2)"
+    - Revert "hyperv: Fix spelling of HV_UNKOWN"
+    - Revert "uio-hv-generic: new userspace i/o driver for VMBus"
+    - Revert "UBUNTU: [Config] CONFIG_UIO_HV_GENERIC=m"
+    - Revert "Drivers: hv: balloon: Add logging for dynamic memory operations"
+    - Revert "Drivers: hv: balloon: Fix info request to show max page count"
+    - Revert "Drivers: hv: balloon: Disable hot add when CONFIG_MEMORY_HOTPLUG is
+      not set"
+    - Revert "hv: change clockevents unbind tactics"
+    - Revert "Drivers: hv: vss: Improve log messages."
+    - Revert "Drivers: hv: utils: Fix the mapping between host version and
+      protocol to use"
+    - Revert "Drivers: hv: utils: reduce HV_UTIL_NEGO_TIMEOUT timeout"
+    - Revert "vmbus: add support for dynamic device id's"
+    - Revert "tools: hv: remove unnecessary header files and netlink related code"
+    - Revert "tools: hv: fix a compile warning in snprintf"
+    - Revert "net: use core MTU range checking in virt drivers"
+    - Revert "hv_netvsc: fix a race between netvsc_send() and netvsc_init_buf()"
+    - Revert "net: use core MTU range checking in virt drivers"
+    - Revert "net: deprecate eth_change_mtu, remove usage"
+    - Revert "net: centralize net_device min/max MTU checking"
+    - Revert "hv_netvsc: remove excessive logging on MTU change"
+    - Revert "scsi: storvsc: Payload buffer incorrectly sized for 32 bit kernels."
+    - Revert "PCI: hv: Use the correct buffer size in new_pcichild_device()"
+    - Revert "PCI: hv: Fix wslot_to_devfn() to fix warnings on device removal"
+    - Revert "PCI: hv: Use device serial number as PCI domain"
+    - [Config] Add uio_hv_generic to modules.ignore for 4.8.0-52.55 abi
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Mon, 15 May 2017 21:06:52 -0300
+
 linux (4.8.0-52.55) yakkety; urgency=low
 
   * linux: 4.8.0-52.55 -proposed tracker (LP: #1686976)

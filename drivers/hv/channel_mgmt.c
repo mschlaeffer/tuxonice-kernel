@@ -134,7 +134,7 @@ static const struct vmbus_device vmbus_devs[] = {
 	},
 
 	/* Unknown GUID */
-	{ .dev_type = HV_UNKNOWN,
+	{ .dev_type = HV_UNKOWN,
 	  .perf_device = false,
 	},
 };
@@ -163,9 +163,9 @@ static u16 hv_get_dev_type(const struct vmbus_channel *channel)
 	u16 i;
 
 	if (is_hvsock_channel(channel) || is_unsupported_vmbus_devs(guid))
-		return HV_UNKNOWN;
+		return HV_UNKOWN;
 
-	for (i = HV_IDE; i < HV_UNKNOWN; i++) {
+	for (i = HV_IDE; i < HV_UNKOWN; i++) {
 		if (!uuid_le_cmp(*guid, vmbus_devs[i].guid))
 			return i;
 	}

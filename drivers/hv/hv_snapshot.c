@@ -123,7 +123,7 @@ static int vss_handle_handshake(struct hv_vss_msg *vss_msg)
 	default:
 		return -EINVAL;
 	}
-	pr_info("VSS: userspace daemon ver. %d connected\n", dm_reg_value);
+	pr_debug("VSS: userspace daemon ver. %d connected\n", dm_reg_value);
 	return 0;
 }
 
@@ -131,10 +131,8 @@ static int vss_on_msg(void *msg, int len)
 {
 	struct hv_vss_msg *vss_msg = (struct hv_vss_msg *)msg;
 
-	if (len != sizeof(*vss_msg)) {
-		pr_debug("VSS: Message size does not match length\n");
+	if (len != sizeof(*vss_msg))
 		return -EINVAL;
-	}
 
 	if (vss_msg->vss_hdr.operation == VSS_OP_REGISTER ||
 	    vss_msg->vss_hdr.operation == VSS_OP_REGISTER1) {
@@ -142,11 +140,8 @@ static int vss_on_msg(void *msg, int len)
 		 * Don't process registration messages if we're in the middle
 		 * of a transaction processing.
 		 */
-		if (vss_transaction.state > HVUTIL_READY) {
-			pr_debug("VSS: Got unexpected registration request\n");
+		if (vss_transaction.state > HVUTIL_READY)
 			return -EINVAL;
-		}
-
 		return vss_handle_handshake(vss_msg);
 	} else if (vss_transaction.state == HVUTIL_USERSPACE_REQ) {
 		vss_transaction.state = HVUTIL_USERSPACE_RECV;
@@ -163,7 +158,7 @@ static int vss_on_msg(void *msg, int len)
 		}
 	} else {
 		/* This is a spurious call! */
-		pr_debug("VSS: Transaction not active\n");
+		pr_warn("VSS: Transaction not active\n");
 		return -EINVAL;
 	}
 	return 0;
@@ -176,10 +171,8 @@ static void vss_send_op(void)
 	struct hv_vss_msg *vss_msg;
 
 	/* The transaction state is wrong. */
-	if (vss_transaction.state != HVUTIL_HOSTMSG_RECEIVED) {
-		pr_debug("VSS: Unexpected attempt to send to daemon\n");
+	if (vss_transaction.state != HVUTIL_HOSTMSG_RECEIVED)
 		return;
-	}
 
 	vss_msg = kzalloc(sizeof(*vss_msg), GFP_KERNEL);
 	if (!vss_msg)
@@ -221,13 +214,9 @@ static void vss_handle_request(struct work_struct *dummy)
 	case VSS_OP_HOT_BACKUP:
 		if (vss_transaction.state < HVUTIL_READY) {
 			/* Userspace is not registered yet */
-			pr_debug("VSS: Not ready for request.\n");
 			vss_respond_to_host(HV_E_FAIL);
 			return;
 		}
-
-		pr_debug("VSS: Received request for op code: %d\n",
-			vss_transaction.msg->vss_hdr.operation);
 		vss_transaction.state = HVUTIL_HOSTMSG_RECEIVED;
 		vss_send_op();
 		return;
@@ -368,10 +357,8 @@ hv_vss_init(struct hv_util_service *srv)
 
 	hvt = hvutil_transport_init(vss_devname, CN_VSS_IDX, CN_VSS_VAL,
 				    vss_on_msg, vss_on_reset);
-	if (!hvt) {
-		pr_warn("VSS: Failed to initialize transport\n");
+	if (!hvt)
 		return -EFAULT;
-	}
 
 	return 0;
 }
