@@ -1,3 +1,85 @@
+linux (4.8.0-54.57) yakkety; urgency=low
+
+  * linux: 4.8.0-54.57 -proposed tracker (LP: #1692589)
+
+  * CVE-2017-0605
+    - tracing: Use strlcpy() instead of strcpy() in __trace_find_cmdline()
+
+  * Populating Hyper-V MSR for Ubuntu 13.10 (LP: #1193172)
+    - SAUCE: (no-up) hv: Supply vendor ID and package ABI
+
+  * [Hyper-V] Implement Hyper-V PTP Source (LP: #1676635)
+    - hv: allocate synic pages for all present CPUs
+    - hv: init percpu_list in hv_synic_alloc()
+    - Drivers: hv: vmbus: Prevent sending data on a rescinded channel
+    - hv: switch to cpuhp state machine for synic init/cleanup
+    - hv: make CPU offlining prevention fine-grained
+    - Drivers: hv: vmbus: Fix a rescind handling bug
+    - Drivers: hv: util: kvp: Fix a rescind processing issue
+    - Drivers: hv: util: Fcopy: Fix a rescind processing issue
+    - Drivers: hv: util: Backup: Fix a rescind processing issue
+    - Drivers: hv: vmbus: Move the definition of hv_x64_msr_hypercall_contents
+    - Drivers: hv: vmbus: Move the definition of generate_guest_id()
+    - Revert "UBUNTU: SAUCE: (no-up) hv: Supply vendor ID and package ABI"
+    - Drivers: hv vmbus: Move Hypercall page setup out of common code
+    - Drivers: hv: vmbus: Move Hypercall invocation code out of common code
+    - Drivers: hv: vmbus: Consolidate all Hyper-V specific clocksource code
+    - Drivers: hv: vmbus: Move the extracting of Hypervisor version information
+    - Drivers: hv: vmbus: Move the crash notification function
+    - Drivers: hv: vmbus: Move the check for hypercall page setup
+    - Drivers: hv: vmbus: Move the code to signal end of message
+    - Drivers: hv: vmbus: Restructure the clockevents code
+    - Drivers: hv: util: Use hv_get_current_tick() to get current tick
+    - Drivers: hv: vmbus: Get rid of an unsused variable
+    - Drivers: hv: vmbus: Define APIs to manipulate the message page
+    - Drivers: hv: vmbus: Define APIs to manipulate the event page
+    - Drivers: hv: vmbus: Define APIs to manipulate the synthetic interrupt
+      controller
+    - Drivers: hv: vmbus: Define an API to retrieve virtual processor index
+    - Drivers: hv: vmbus: Define an APIs to manage interrupt state
+    - Drivers: hv: vmbus: Cleanup hyperv_vmbus.h
+    - hv_util: switch to using timespec64
+    - Drivers: hv: restore hypervcall page cleanup before kexec
+    - Drivers: hv: restore TSC page cleanup before kexec
+    - Drivers: hv: balloon: add a fall through comment to hv_memory_notifier()
+    - Drivers: hv: vmbus: Use all supported IC versions to negotiate
+    - Drivers: hv: Log the negotiated IC versions.
+    - Drivers: hv: Fix the bug in generating the guest ID
+    - hv: export current Hyper-V clocksource
+    - hv_utils: implement Hyper-V PTP source
+    - SAUCE: (no-up) hv: Supply vendor ID and package ABI
+
+  * CIFS: Enable encryption for SMB3 (LP: #1670508)
+    - SMB3: Add mount parameter to allow user to override max credits
+    - SMB2: Separate Kerberos authentication from SMB2_sess_setup
+    - SMB2: Separate RawNTLMSSP authentication from SMB2_sess_setup
+    - SMB3: parsing for new snapshot timestamp mount parm
+    - cifs: Simplify SMB2 and SMB311 dependencies
+    - cifs: Only select the required crypto modules
+    - cifs: Add soft dependencies
+    - CIFS: Separate SMB2 header structure
+    - CIFS: Make SendReceive2() takes resp iov
+    - CIFS: Make send_cancel take rqst as argument
+    - CIFS: Send RFC1001 length in a separate iov
+    - CIFS: Separate SMB2 sync header processing
+    - CIFS: Separate RFC1001 length processing for SMB2 read
+    - CIFS: Add capability to transform requests before sending
+    - CIFS: Enable encryption during session setup phase
+    - CIFS: Encrypt SMB3 requests before sending
+    - CIFS: Add transform header handling callbacks
+    - CIFS: Add mid handle callback
+    - CIFS: Add copy into pages callback for a read operation
+    - CIFS: Decrypt and process small encrypted packets
+    - CIFS: Add capability to decrypt big read responses
+    - CIFS: Allow to switch on encryption with seal mount option
+    - CIFS: Fix possible use after free in demultiplex thread
+
+  * APST quirk needed for Samsung 512GB NVMe drive (LP: #1678184)
+    - nvme: Adjust the Samsung APST quirk
+    - nvme: Quirk APST off on "THNSF5256GPUK TOSHIBA"
+
+ -- Kleber Sacilotto de Souza <kleber.souza@canonical.com>  Mon, 22 May 2017 18:56:12 +0200
+
 linux (4.8.0-53.56) yakkety; urgency=low
 
   * linux: 4.8.0-53.56 -proposed tracker (LP: #1690956)

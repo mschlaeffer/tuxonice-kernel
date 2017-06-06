@@ -66,7 +66,6 @@ extern mempool_t *cifs_req_poolp;
 #define TLINK_IDLE_EXPIRE	(600 * HZ)
 
 enum {
-
 	/* Mount options that take no arguments */
 	Opt_user_xattr, Opt_nouser_xattr,
 	Opt_forceuid, Opt_noforceuid,
@@ -98,7 +97,8 @@ enum {
 	Opt_cruid, Opt_gid, Opt_file_mode,
 	Opt_dirmode, Opt_port,
 	Opt_rsize, Opt_wsize, Opt_actimeo,
-	Opt_echo_interval,
+	Opt_echo_interval, Opt_max_credits,
+	Opt_snapshot,
 
 	/* Mount options which take string value */
 	Opt_user, Opt_pass, Opt_ip,
@@ -193,6 +193,8 @@ static const match_table_t cifs_mount_option_tokens = {
 	{ Opt_wsize, "wsize=%s" },
 	{ Opt_actimeo, "actimeo=%s" },
 	{ Opt_echo_interval, "echo_interval=%s" },
+	{ Opt_max_credits, "max_credits=%s" },
+	{ Opt_snapshot, "snapshot=%s" },
 
 	{ Opt_blank_user, "user=" },
 	{ Opt_blank_user, "username=" },
@@ -781,6 +783,15 @@ standard_receive3(struct TCP_Server_Info *server, struct mid_q_entry *mid)
 
 	dump_smb(buf, server->total_read);
 
+	return cifs_handle_standard(server, mid);
+}
+
+int
+cifs_handle_standard(struct TCP_Server_Info *server, struct mid_q_entry *mid)
+{
+	char *buf = server->large_buf ? server->bigbuf : server->smallbuf;
+	int length;
+
 	/*
 	 * We know that we received enough to get to the MID as we
 	 * checked the pdu_length earlier. Now check to see
@@ -866,12 +877,19 @@ cifs_demultiplex_thread(void *p)
 			continue;
 		server->total_read += length;
 
-		mid_entry = server->ops->find_mid(server, buf);
+		if (server->ops->is_transform_hdr &&
+		    server->ops->receive_transform &&
+		    server->ops->is_transform_hdr(buf)) {
+			length = server->ops->receive_transform(server,
+								&mid_entry);
+		} else {
+			mid_entry = server->ops->find_mid(server, buf);
 
-		if (!mid_entry || !mid_entry->receive)
-			length = standard_receive3(server, mid_entry);
-		else
-			length = mid_entry->receive(server, mid_entry);
+			if (!mid_entry || !mid_entry->receive)
+				length = standard_receive3(server, mid_entry);
+			else
+				length = mid_entry->receive(server, mid_entry);
+		}
 
 		if (length < 0)
 			continue;
@@ -1600,6 +1618,23 @@ cifs_parse_mount_options(const char *mountdata, const char *devname,
 			}
 			vol->echo_interval = option;
 			break;
+		case Opt_snapshot:
+			if (get_option_ul(args, &option)) {
+				cifs_dbg(VFS, "%s: Invalid snapshot time\n",
+					 __func__);
+				goto cifs_parse_mount_err;
+			}
+			vol->snapshot_time = option;
+			break;
+		case Opt_max_credits:
+			if (get_option_ul(args, &option) || (option < 20) ||
+			    (option > 60000)) {
+				cifs_dbg(VFS, "%s: Invalid max_credits value\n",
+					 __func__);
+				goto cifs_parse_mount_err;
+			}
+			vol->max_credits = option;
+			break;
 
 		/* String Arguments */
 
@@ -2125,7 +2160,7 @@ cifs_put_tcp_session(struct TCP_Server_Info *server, int from_reconnect)
 	server->tcpStatus = CifsExiting;
 	spin_unlock(&GlobalMid_Lock);
 
-	cifs_crypto_shash_release(server);
+	cifs_crypto_secmech_release(server);
 	cifs_fscache_release_client_cookie(server);
 
 	kfree(server->session_key.response);
@@ -2244,7 +2279,7 @@ cifs_get_tcp_session(struct smb_vol *volume_info)
 	return tcp_ses;
 
 out_err_crypto_release:
-	cifs_crypto_shash_release(tcp_ses);
+	cifs_crypto_secmech_release(tcp_ses);
 
 	put_net(cifs_net_ns(tcp_ses));
 
@@ -2583,17 +2618,23 @@ get_ses_fail:
 	return ERR_PTR(rc);
 }
 
-static int match_tcon(struct cifs_tcon *tcon, const char *unc)
+static int match_tcon(struct cifs_tcon *tcon, struct smb_vol *volume_info)
 {
 	if (tcon->tidStatus == CifsExiting)
 		return 0;
-	if (strncmp(tcon->treeName, unc, MAX_TREE_SIZE))
+	if (strncmp(tcon->treeName, volume_info->UNC, MAX_TREE_SIZE))
 		return 0;
+	if (tcon->seal != volume_info->seal)
+		return 0;
+#ifdef CONFIG_CIFS_SMB2
+	if (tcon->snapshot_time != volume_info->snapshot_time)
+		return 0;
+#endif /* CONFIG_CIFS_SMB2 */
 	return 1;
 }
 
 static struct cifs_tcon *
-cifs_find_tcon(struct cifs_ses *ses, const char *unc)
+cifs_find_tcon(struct cifs_ses *ses, struct smb_vol *volume_info)
 {
 	struct list_head *tmp;
 	struct cifs_tcon *tcon;
@@ -2601,7 +2642,7 @@ cifs_find_tcon(struct cifs_ses *ses, const char *unc)
 	spin_lock(&cifs_tcp_ses_lock);
 	list_for_each(tmp, &ses->tcon_list) {
 		tcon = list_entry(tmp, struct cifs_tcon, tcon_list);
-		if (!match_tcon(tcon, unc))
+		if (!match_tcon(tcon, volume_info))
 			continue;
 		++tcon->tc_count;
 		spin_unlock(&cifs_tcp_ses_lock);
@@ -2643,13 +2684,11 @@ cifs_get_tcon(struct cifs_ses *ses, struct smb_vol *volume_info)
 	int rc, xid;
 	struct cifs_tcon *tcon;
 
-	tcon = cifs_find_tcon(ses, volume_info->UNC);
+	tcon = cifs_find_tcon(ses, volume_info);
 	if (tcon) {
 		cifs_dbg(FYI, "Found match on UNC path\n");
 		/* existing tcon already has a reference */
 		cifs_put_smb_ses(ses);
-		if (tcon->seal != volume_info->seal)
-			cifs_dbg(VFS, "transport encryption setting conflicts with existing tid\n");
 		return tcon;
 	}
 
@@ -2662,6 +2701,22 @@ cifs_get_tcon(struct cifs_ses *ses, struct smb_vol *volume_info)
 	if (tcon == NULL) {
 		rc = -ENOMEM;
 		goto out_fail;
+	}
+
+	if (volume_info->snapshot_time) {
+#ifdef CONFIG_CIFS_SMB2
+		if (ses->server->vals->protocol_id == 0) {
+			cifs_dbg(VFS,
+			     "Use SMB2 or later for snapshot mount option\n");
+			rc = -EOPNOTSUPP;
+			goto out_fail;
+		} else
+			tcon->snapshot_time = volume_info->snapshot_time;
+#else
+		cifs_dbg(VFS, "Snapshot mount option requires SMB2 support\n");
+		rc = -EOPNOTSUPP;
+		goto out_fail;
+#endif /* CONFIG_CIFS_SMB2 */
 	}
 
 	tcon->ses = ses;
@@ -2689,7 +2744,6 @@ cifs_get_tcon(struct cifs_ses *ses, struct smb_vol *volume_info)
 		tcon->Flags &= ~SMB_SHARE_IS_IN_DFS;
 		cifs_dbg(FYI, "DFS disabled (%d)\n", tcon->Flags);
 	}
-	tcon->seal = volume_info->seal;
 	tcon->use_persistent = false;
 	/* check if SMB2 or later, CIFS does not support persistent handles */
 	if (volume_info->persistent) {
@@ -2724,6 +2778,24 @@ cifs_get_tcon(struct cifs_ses *ses, struct smb_vol *volume_info)
 			goto out_fail;
 		}
 		tcon->use_resilient = true;
+	}
+
+	if (volume_info->seal) {
+		if (ses->server->vals->protocol_id == 0) {
+			cifs_dbg(VFS,
+				 "SMB3 or later required for encryption\n");
+			rc = -EOPNOTSUPP;
+			goto out_fail;
+#ifdef CONFIG_CIFS_SMB2
+		} else if (tcon->ses->server->capabilities &
+					SMB2_GLOBAL_CAP_ENCRYPTION)
+			tcon->seal = true;
+		else {
+			cifs_dbg(VFS, "Encryption is not supported on share\n");
+			rc = -EOPNOTSUPP;
+			goto out_fail;
+#endif /* CONFIG_CIFS_SMB2 */
+		}
 	}
 
 	/*
@@ -2857,7 +2929,7 @@ cifs_match_super(struct super_block *sb, void *data)
 
 	if (!match_server(tcp_srv, volume_info) ||
 	    !match_session(ses, volume_info) ||
-	    !match_tcon(tcon, volume_info->UNC) ||
+	    !match_tcon(tcon, volume_info) ||
 	    !match_prepath(sb, mnt_data)) {
 		rc = 0;
 		goto out;
@@ -3629,7 +3701,11 @@ try_mount_again:
 		bdi_destroy(&cifs_sb->bdi);
 		goto out;
 	}
-
+	if ((volume_info->max_credits < 20) ||
+	     (volume_info->max_credits > 60000))
+		server->max_credits = SMB2_MAX_CREDITS_AVAILABLE;
+	else
+		server->max_credits = volume_info->max_credits;
 	/* get a reference to a SMB session */
 	ses = cifs_get_smb_ses(server, volume_info);
 	if (IS_ERR(ses)) {
