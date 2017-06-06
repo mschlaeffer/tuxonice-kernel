@@ -1393,8 +1393,7 @@ bool madvise_free_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
 		deactivate_page(page);
 
 	if (pmd_young(orig_pmd) || pmd_dirty(orig_pmd)) {
-		orig_pmd = pmdp_huge_get_and_clear_full(tlb->mm, addr, pmd,
-			tlb->fullmm);
+		pmdp_invalidate(vma, addr, pmd);
 		orig_pmd = pmd_mkold(orig_pmd);
 		orig_pmd = pmd_mkclean(orig_pmd);
 
@@ -1878,12 +1877,9 @@ static void freeze_page(struct page *page)
 static void unfreeze_page(struct page *page)
 {
 	int i;
-	if (PageTransHuge(page)) {
-		remove_migration_ptes(page, page, true);
-	} else {
-		for (i = 0; i < HPAGE_PMD_NR; i++)
-			remove_migration_ptes(page + i, page + i, true);
-	}
+
+	for (i = 0; i < HPAGE_PMD_NR; i++)
+		remove_migration_ptes(page + i, page + i, true);
 }
 
 static void __split_huge_page_tail(struct page *head, int tail,
