@@ -42,6 +42,8 @@ extern char *check_image_kernel(struct swsusp_info *info);
 extern int init_header(struct swsusp_info *info);
 
 extern char resume_file[256];
+extern int hibernate_resume_nonboot_cpu_disable(void);
+
 /*
  * Keep some memory free so that I/O operations can succeed without paging
  * [Might this be more than 4 MB?]
