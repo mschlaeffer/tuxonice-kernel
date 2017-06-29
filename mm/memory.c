@@ -2661,8 +2661,6 @@ out_release:
 	return ret;
 }
 
-
-
 /*
  * We enter with non-exclusive mmap_sem (to exclude vma changes,
  * but allow concurrent faults), and pte mapped but not yet locked.
@@ -2682,11 +2680,6 @@ static int do_anonymous_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	/* File mapping without ->vm_ops ? */
 	if (vma->vm_flags & VM_SHARED)
 		return VM_FAULT_SIGBUS;
-
-	/* Check if we need to add a guard page to the stack */
-	if ((vma->vm_flags & (VM_GROWSDOWN|VM_GROWSUP)) &&
-			expand_stack(vma, address) < 0)
-		return VM_FAULT_SIGSEGV;
 
 	/* Use the zero-page for reads */
 	if (!(flags & FAULT_FLAG_WRITE) && !mm_forbids_zeropage(mm)) {
