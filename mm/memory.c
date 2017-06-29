@@ -2699,8 +2699,6 @@ out_release:
 	return ret;
 }
 
-
-
 /*
  * We enter with non-exclusive mmap_sem (to exclude vma changes,
  * but allow concurrent faults), and pte mapped but not yet locked.
@@ -2716,11 +2714,6 @@ static int do_anonymous_page(struct fault_env *fe)
 	/* File mapping without ->vm_ops ? */
 	if (vma->vm_flags & VM_SHARED)
 		return VM_FAULT_SIGBUS;
-
-	/* Check if we need to add a guard page to the stack */
-	if ((vma->vm_flags & (VM_GROWSDOWN|VM_GROWSUP)) &&
-			expand_stack(vma, fe->address) < 0)
-		return VM_FAULT_SIGSEGV;
 
 	/*
 	 * Use pte_alloc() instead of pte_alloc_map().  We can't run
