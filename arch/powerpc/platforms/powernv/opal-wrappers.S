@@ -172,7 +172,7 @@ opal_tracepoint_entry:
 opal_tracepoint_return:
 	std	r3,STK_REG(R31)(r1)
 	mr	r4,r3
-	ld	r0,STK_REG(R23)(r1)
+	ld	r3,STK_REG(R23)(r1)
 	bl	__trace_opal_exit
 	ld	r3,STK_REG(R31)(r1)
 	addi	r1,r1,STACKFRAMESIZE
@@ -301,3 +301,21 @@ OPAL_CALL(opal_int_eoi,				OPAL_INT_EOI);
 OPAL_CALL(opal_int_set_mfrr,			OPAL_INT_SET_MFRR);
 OPAL_CALL(opal_pci_tce_kill,			OPAL_PCI_TCE_KILL);
 OPAL_CALL(opal_nmmu_set_ptcr,			OPAL_NMMU_SET_PTCR);
+OPAL_CALL(opal_xive_reset,			OPAL_XIVE_RESET);
+OPAL_CALL(opal_xive_get_irq_info,		OPAL_XIVE_GET_IRQ_INFO);
+OPAL_CALL(opal_xive_get_irq_config,		OPAL_XIVE_GET_IRQ_CONFIG);
+OPAL_CALL(opal_xive_set_irq_config,		OPAL_XIVE_SET_IRQ_CONFIG);
+OPAL_CALL(opal_xive_get_queue_info,		OPAL_XIVE_GET_QUEUE_INFO);
+OPAL_CALL(opal_xive_set_queue_info,		OPAL_XIVE_SET_QUEUE_INFO);
+OPAL_CALL(opal_xive_donate_page,		OPAL_XIVE_DONATE_PAGE);
+OPAL_CALL(opal_xive_alloc_vp_block,		OPAL_XIVE_ALLOCATE_VP_BLOCK);
+OPAL_CALL(opal_xive_free_vp_block,		OPAL_XIVE_FREE_VP_BLOCK);
+OPAL_CALL(opal_xive_allocate_irq,		OPAL_XIVE_ALLOCATE_IRQ);
+OPAL_CALL(opal_xive_free_irq,			OPAL_XIVE_FREE_IRQ);
+OPAL_CALL(opal_xive_get_vp_info,		OPAL_XIVE_GET_VP_INFO);
+OPAL_CALL(opal_xive_set_vp_info,		OPAL_XIVE_SET_VP_INFO);
+OPAL_CALL(opal_xive_sync,			OPAL_XIVE_SYNC);
+OPAL_CALL(opal_xive_dump,			OPAL_XIVE_DUMP);
+OPAL_CALL(opal_npu_init_context,		OPAL_NPU_INIT_CONTEXT);
+OPAL_CALL(opal_npu_destroy_context,		OPAL_NPU_DESTROY_CONTEXT);
+OPAL_CALL(opal_npu_map_lpar,			OPAL_NPU_MAP_LPAR);

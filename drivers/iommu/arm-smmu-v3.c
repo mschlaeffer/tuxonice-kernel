@@ -557,9 +557,14 @@ struct arm_smmu_s2_cfg {
 };
 
 struct arm_smmu_strtab_ent {
-	bool				valid;
-
-	bool				bypass;	/* Overrides s1/s2 config */
+	/*
+	 * An STE is "assigned" if the master emitting the corresponding SID
+	 * is attached to a domain. The behaviour of an unassigned STE is
+	 * determined by the disable_bypass parameter, whereas an assigned
+	 * STE behaves according to s1_cfg/s2_cfg, which themselves are
+	 * configured according to the domain type.
+	 */
+	bool				assigned;
 	struct arm_smmu_s1_cfg		*s1_cfg;
 	struct arm_smmu_s2_cfg		*s2_cfg;
 };
@@ -619,6 +624,9 @@ struct arm_smmu_device {
 	unsigned int			sid_bits;
 
 	struct arm_smmu_strtab_cfg	strtab_cfg;
+
+	/* IOMMU core code handle */
+	struct iommu_device		iommu;
 };
 
 /* SMMU private data for each master */
@@ -632,6 +640,7 @@ enum arm_smmu_domain_stage {
 	ARM_SMMU_DOMAIN_S1 = 0,
 	ARM_SMMU_DOMAIN_S2,
 	ARM_SMMU_DOMAIN_NESTED,
+	ARM_SMMU_DOMAIN_BYPASS,
 };
 
 struct arm_smmu_domain {
@@ -1005,9 +1014,9 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_device *smmu, u32 sid,
 	 * This is hideously complicated, but we only really care about
 	 * three cases at the moment:
 	 *
-	 * 1. Invalid (all zero) -> bypass  (init)
-	 * 2. Bypass -> translation (attach)
-	 * 3. Translation -> bypass (detach)
+	 * 1. Invalid (all zero) -> bypass/fault (init)
+	 * 2. Bypass/fault -> translation/bypass (attach)
+	 * 3. Translation/bypass -> bypass/fault (detach)
 	 *
 	 * Given that we can't update the STE atomically and the SMMU
 	 * doesn't read the thing in a defined order, that leaves us
@@ -1046,11 +1055,15 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_device *smmu, u32 sid,
 	}
 
 	/* Nuke the existing STE_0 value, as we're going to rewrite it */
-	val = ste->valid ? STRTAB_STE_0_V : 0;
+	val = STRTAB_STE_0_V;
 
-	if (ste->bypass) {
-		val |= disable_bypass ? STRTAB_STE_0_CFG_ABORT
-				      : STRTAB_STE_0_CFG_BYPASS;
+	/* Bypass/fault */
+	if (!ste->assigned || !(ste->s1_cfg || ste->s2_cfg)) {
+		if (!ste->assigned && disable_bypass)
+			val |= STRTAB_STE_0_CFG_ABORT;
+		else
+			val |= STRTAB_STE_0_CFG_BYPASS;
+
 		dst[0] = cpu_to_le64(val);
 		dst[1] = cpu_to_le64(STRTAB_STE_1_SHCFG_INCOMING
 			 << STRTAB_STE_1_SHCFG_SHIFT);
@@ -1113,10 +1126,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_device *smmu, u32 sid,
 static void arm_smmu_init_bypass_stes(u64 *strtab, unsigned int nent)
 {
 	unsigned int i;
-	struct arm_smmu_strtab_ent ste = {
-		.valid	= true,
-		.bypass	= true,
-	};
+	struct arm_smmu_strtab_ent ste = { .assigned = false };
 
 	for (i = 0; i < nent; ++i) {
 		arm_smmu_write_strtab_ent(NULL, -1, strtab, &ste);
@@ -1380,7 +1390,9 @@ static struct iommu_domain *arm_smmu_domain_alloc(unsigned type)
 {
 	struct arm_smmu_domain *smmu_domain;
 
-	if (type != IOMMU_DOMAIN_UNMANAGED && type != IOMMU_DOMAIN_DMA)
+	if (type != IOMMU_DOMAIN_UNMANAGED &&
+	    type != IOMMU_DOMAIN_DMA &&
+	    type != IOMMU_DOMAIN_IDENTITY)
 		return NULL;
 
 	/*
@@ -1511,6 +1523,11 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain)
 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
 	struct arm_smmu_device *smmu = smmu_domain->smmu;
 
+	if (domain->type == IOMMU_DOMAIN_IDENTITY) {
+		smmu_domain->stage = ARM_SMMU_DOMAIN_BYPASS;
+		return 0;
+	}
+
 	/* Restrict the stage to what we can actually support */
 	if (!(smmu->features & ARM_SMMU_FEAT_TRANS_S1))
 		smmu_domain->stage = ARM_SMMU_DOMAIN_S2;
@@ -1581,7 +1598,7 @@ static __le64 *arm_smmu_get_step_for_sid(struct arm_smmu_device *smmu, u32 sid)
 	return step;
 }
 
-static int arm_smmu_install_ste_for_dev(struct iommu_fwspec *fwspec)
+static void arm_smmu_install_ste_for_dev(struct iommu_fwspec *fwspec)
 {
 	int i;
 	struct arm_smmu_master_data *master = fwspec->iommu_priv;
@@ -1593,17 +1610,14 @@ static int arm_smmu_install_ste_for_dev(struct iommu_fwspec *fwspec)
 
 		arm_smmu_write_strtab_ent(smmu, sid, step, &master->ste);
 	}
-
-	return 0;
 }
 
 static void arm_smmu_detach_dev(struct device *dev)
 {
 	struct arm_smmu_master_data *master = dev->iommu_fwspec->iommu_priv;
 
-	master->ste.bypass = true;
-	if (arm_smmu_install_ste_for_dev(dev->iommu_fwspec) < 0)
-		dev_warn(dev, "failed to install bypass STE\n");
+	master->ste.assigned = false;
+	arm_smmu_install_ste_for_dev(dev->iommu_fwspec);
 }
 
 static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
@@ -1622,7 +1636,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
 	ste = &master->ste;
 
 	/* Already attached to a different domain? */
-	if (!ste->bypass)
+	if (ste->assigned)
 		arm_smmu_detach_dev(dev);
 
 	mutex_lock(&smmu_domain->init_mutex);
@@ -1643,10 +1657,12 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
 		goto out_unlock;
 	}
 
-	ste->bypass = false;
-	ste->valid = true;
+	ste->assigned = true;
 
-	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+	if (smmu_domain->stage == ARM_SMMU_DOMAIN_BYPASS) {
+		ste->s1_cfg = NULL;
+		ste->s2_cfg = NULL;
+	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
 		ste->s1_cfg = &smmu_domain->s1_cfg;
 		ste->s2_cfg = NULL;
 		arm_smmu_write_ctx_desc(smmu, ste->s1_cfg);
@@ -1655,10 +1671,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
 		ste->s2_cfg = &smmu_domain->s2_cfg;
 	}
 
-	ret = arm_smmu_install_ste_for_dev(dev->iommu_fwspec);
-	if (ret < 0)
-		ste->valid = false;
-
+	arm_smmu_install_ste_for_dev(dev->iommu_fwspec);
 out_unlock:
 	mutex_unlock(&smmu_domain->init_mutex);
 	return ret;
@@ -1790,8 +1803,10 @@ static int arm_smmu_add_device(struct device *dev)
 	}
 
 	group = iommu_group_get_for_dev(dev);
-	if (!IS_ERR(group))
+	if (!IS_ERR(group)) {
 		iommu_group_put(group);
+		iommu_device_link(&smmu->iommu, dev);
+	}
 
 	return PTR_ERR_OR_ZERO(group);
 }
@@ -1800,14 +1815,17 @@ static void arm_smmu_remove_device(struct device *dev)
 {
 	struct iommu_fwspec *fwspec = dev->iommu_fwspec;
 	struct arm_smmu_master_data *master;
+	struct arm_smmu_device *smmu;
 
 	if (!fwspec || fwspec->ops != &arm_smmu_ops)
 		return;
 
 	master = fwspec->iommu_priv;
-	if (master && master->ste.valid)
+	smmu = master->smmu;
+	if (master && master->ste.assigned)
 		arm_smmu_detach_dev(dev);
 	iommu_group_remove_device(dev);
+	iommu_device_unlink(&smmu->iommu, dev);
 	kfree(master);
 	iommu_fwspec_free(dev);
 }
@@ -1834,6 +1852,9 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
 {
 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
 
+	if (domain->type != IOMMU_DOMAIN_UNMANAGED)
+		return -EINVAL;
+
 	switch (attr) {
 	case DOMAIN_ATTR_NESTING:
 		*(int *)data = (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED);
@@ -1848,6 +1869,9 @@ static int arm_smmu_domain_set_attr(struct iommu_domain *domain,
 {
 	int ret = 0;
 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+
+	if (domain->type != IOMMU_DOMAIN_UNMANAGED)
+		return -EINVAL;
 
 	mutex_lock(&smmu_domain->init_mutex);
 
@@ -2632,6 +2656,7 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
 {
 	int irq, ret;
 	struct resource *res;
+	resource_size_t ioaddr;
 	struct arm_smmu_device *smmu;
 	struct device *dev = &pdev->dev;
 	bool bypass;
@@ -2649,6 +2674,7 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
 		dev_err(dev, "MMIO region too small (%pr)\n", res);
 		return -EINVAL;
 	}
+	ioaddr = res->start;
 
 	smmu->base = devm_ioremap_resource(dev, res);
 	if (IS_ERR(smmu->base))
@@ -2701,6 +2727,16 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
 		return ret;
 
 	/* And we're up. Go go go! */
+	ret = iommu_device_sysfs_add(&smmu->iommu, dev, NULL,
+				     "smmu3.%pa", &ioaddr);
+	if (ret)
+		return ret;
+
+	iommu_device_set_ops(&smmu->iommu, &arm_smmu_ops);
+	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
+
+	ret = iommu_device_register(&smmu->iommu);
+
 	iommu_register_instance(dev->fwnode, &arm_smmu_ops);
 
 #ifdef CONFIG_PCI

@@ -212,6 +212,42 @@ struct iommu_ops {
 	unsigned long pgsize_bitmap;
 };
 
+/**
+ * struct iommu_device - IOMMU core representation of one IOMMU hardware
+ *			 instance
+ * @list: Used by the iommu-core to keep a list of registered iommus
+ * @ops: iommu-ops for talking to this iommu
+ * @dev: struct device for sysfs handling
+ */
+struct iommu_device {
+	struct list_head list;
+	const struct iommu_ops *ops;
+	struct fwnode_handle *fwnode;
+	struct device dev;
+};
+
+int  iommu_device_register(struct iommu_device *iommu);
+void iommu_device_unregister(struct iommu_device *iommu);
+int  iommu_device_sysfs_add(struct iommu_device *iommu,
+			    struct device *parent,
+			    const struct attribute_group **groups,
+			    const char *fmt, ...) __printf(4, 5);
+void iommu_device_sysfs_remove(struct iommu_device *iommu);
+int  iommu_device_link(struct iommu_device   *iommu, struct device *link);
+void iommu_device_unlink(struct iommu_device *iommu, struct device *link);
+
+static inline void iommu_device_set_ops(struct iommu_device *iommu,
+					const struct iommu_ops *ops)
+{
+	iommu->ops = ops;
+}
+
+static inline void iommu_device_set_fwnode(struct iommu_device *iommu,
+					   struct fwnode_handle *fwnode)
+{
+	iommu->fwnode = fwnode;
+}
+
 #define IOMMU_GROUP_NOTIFY_ADD_DEVICE		1 /* Device added */
 #define IOMMU_GROUP_NOTIFY_DEL_DEVICE		2 /* Pre Device removed */
 #define IOMMU_GROUP_NOTIFY_BIND_DRIVER		3 /* Pre Driver bind */
@@ -279,12 +315,6 @@ extern int iommu_domain_get_attr(struct iommu_domain *domain, enum iommu_attr,
 				 void *data);
 extern int iommu_domain_set_attr(struct iommu_domain *domain, enum iommu_attr,
 				 void *data);
-struct device *iommu_device_create(struct device *parent, void *drvdata,
-				   const struct attribute_group **groups,
-				   const char *fmt, ...) __printf(4, 5);
-void iommu_device_destroy(struct device *dev);
-int iommu_device_link(struct device *dev, struct device *link);
-void iommu_device_unlink(struct device *dev, struct device *link);
 
 /* Window handling function prototypes */
 extern int iommu_domain_window_enable(struct iommu_domain *domain, u32 wnd_nr,
@@ -366,13 +396,14 @@ void iommu_fwspec_free(struct device *dev);
 int iommu_fwspec_add_ids(struct device *dev, u32 *ids, int num_ids);
 void iommu_register_instance(struct fwnode_handle *fwnode,
 			     const struct iommu_ops *ops);
-const struct iommu_ops *iommu_get_instance(struct fwnode_handle *fwnode);
+const struct iommu_ops *iommu_ops_from_fwnode(struct fwnode_handle *fwnode);
 
 #else /* CONFIG_IOMMU_API */
 
 struct iommu_ops {};
 struct iommu_group {};
 struct iommu_fwspec {};
+struct iommu_device {};
 
 static inline bool iommu_present(struct bus_type *bus)
 {
@@ -564,15 +595,34 @@ static inline int iommu_domain_set_attr(struct iommu_domain *domain,
 	return -EINVAL;
 }
 
-static inline struct device *iommu_device_create(struct device *parent,
-					void *drvdata,
-					const struct attribute_group **groups,
-					const char *fmt, ...)
+static inline int  iommu_device_register(struct iommu_device *iommu)
 {
-	return ERR_PTR(-ENODEV);
+	return -ENODEV;
 }
 
-static inline void iommu_device_destroy(struct device *dev)
+static inline void iommu_device_set_ops(struct iommu_device *iommu,
+					const struct iommu_ops *ops)
+{
+}
+
+static inline void iommu_device_set_fwnode(struct iommu_device *iommu,
+					   struct fwnode_handle *fwnode)
+{
+}
+
+static inline void iommu_device_unregister(struct iommu_device *iommu)
+{
+}
+
+static inline int  iommu_device_sysfs_add(struct iommu_device *iommu,
+					  struct device *parent,
+					  const struct attribute_group **groups,
+					  const char *fmt, ...)
+{
+	return -ENODEV;
+}
+
+static inline void iommu_device_sysfs_remove(struct iommu_device *iommu)
 {
 }
 
@@ -608,7 +658,7 @@ static inline void iommu_register_instance(struct fwnode_handle *fwnode,
 }
 
 static inline
-const struct iommu_ops *iommu_get_instance(struct fwnode_handle *fwnode)
+const struct iommu_ops *iommu_ops_from_fwnode(struct fwnode_handle *fwnode)
 {
 	return NULL;
 }

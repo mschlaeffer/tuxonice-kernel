@@ -36,6 +36,7 @@
 
 static struct kset *iommu_group_kset;
 static DEFINE_IDA(iommu_group_ida);
+static unsigned int iommu_def_domain_type = IOMMU_DOMAIN_DMA;
 
 struct iommu_callback_data {
 	const struct iommu_ops *ops;
@@ -55,7 +56,7 @@ struct iommu_group {
 	struct iommu_domain *domain;
 };
 
-struct iommu_device {
+struct group_device {
 	struct list_head list;
 	struct device *dev;
 	char *name;
@@ -83,6 +84,25 @@ struct iommu_group_attribute iommu_group_attr_##_name =		\
 #define to_iommu_group(_kobj)		\
 	container_of(_kobj, struct iommu_group, kobj)
 
+static LIST_HEAD(iommu_device_list);
+static DEFINE_SPINLOCK(iommu_device_lock);
+
+int iommu_device_register(struct iommu_device *iommu)
+{
+	spin_lock(&iommu_device_lock);
+	list_add_tail(&iommu->list, &iommu_device_list);
+	spin_unlock(&iommu_device_lock);
+
+	return 0;
+}
+
+void iommu_device_unregister(struct iommu_device *iommu)
+{
+	spin_lock(&iommu_device_lock);
+	list_del(&iommu->list);
+	spin_unlock(&iommu_device_lock);
+}
+
 static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
 						 unsigned type);
 static int __iommu_attach_device(struct iommu_domain *domain,
@@ -91,6 +111,18 @@ static int __iommu_attach_group(struct iommu_domain *domain,
 				struct iommu_group *group);
 static void __iommu_detach_group(struct iommu_domain *domain,
 				 struct iommu_group *group);
+
+static int __init iommu_set_def_domain_type(char *str)
+{
+	bool pt;
+
+	if (!str || strtobool(str, &pt))
+		return -EINVAL;
+
+	iommu_def_domain_type = pt ? IOMMU_DOMAIN_IDENTITY : IOMMU_DOMAIN_DMA;
+	return 0;
+}
+early_param("iommu.passthrough", iommu_set_def_domain_type);
 
 static ssize_t iommu_group_attr_show(struct kobject *kobj,
 				     struct attribute *__attr, char *buf)
@@ -218,7 +250,7 @@ iommu_insert_device_resv_regions(struct list_head *dev_resv_regions,
 int iommu_get_group_resv_regions(struct iommu_group *group,
 				 struct list_head *head)
 {
-	struct iommu_device *device;
+	struct group_device *device;
 	int ret = 0;
 
 	mutex_lock(&group->mutex);
@@ -511,7 +543,7 @@ out:
 int iommu_group_add_device(struct iommu_group *group, struct device *dev)
 {
 	int ret, i = 0;
-	struct iommu_device *device;
+	struct group_device *device;
 
 	device = kzalloc(sizeof(*device), GFP_KERNEL);
 	if (!device)
@@ -586,7 +618,7 @@ EXPORT_SYMBOL_GPL(iommu_group_add_device);
 void iommu_group_remove_device(struct device *dev)
 {
 	struct iommu_group *group = dev->iommu_group;
-	struct iommu_device *tmp_device, *device = NULL;
+	struct group_device *tmp_device, *device = NULL;
 
 	pr_info("Removing device %s from group %d\n", dev_name(dev), group->id);
 
@@ -621,7 +653,7 @@ EXPORT_SYMBOL_GPL(iommu_group_remove_device);
 
 static int iommu_group_device_count(struct iommu_group *group)
 {
-	struct iommu_device *entry;
+	struct group_device *entry;
 	int ret = 0;
 
 	list_for_each_entry(entry, &group->devices, list)
@@ -644,7 +676,7 @@ static int iommu_group_device_count(struct iommu_group *group)
 static int __iommu_group_for_each_dev(struct iommu_group *group, void *data,
 				      int (*fn)(struct device *, void *))
 {
-	struct iommu_device *device;
+	struct group_device *device;
 	int ret = 0;
 
 	list_for_each_entry(device, &group->devices, list) {
@@ -984,10 +1016,19 @@ struct iommu_group *iommu_group_get_for_dev(struct device *dev)
 	 * IOMMU driver.
 	 */
 	if (!group->default_domain) {
-		group->default_domain = __iommu_domain_alloc(dev->bus,
-							     IOMMU_DOMAIN_DMA);
+		struct iommu_domain *dom;
+
+		dom = __iommu_domain_alloc(dev->bus, iommu_def_domain_type);
+		if (!dom && iommu_def_domain_type != IOMMU_DOMAIN_DMA) {
+			dev_warn(dev,
+				 "failed to allocate default IOMMU domain of type %u; falling back to IOMMU_DOMAIN_DMA",
+				 iommu_def_domain_type);
+			dom = __iommu_domain_alloc(dev->bus, IOMMU_DOMAIN_DMA);
+		}
+
+		group->default_domain = dom;
 		if (!group->domain)
-			group->domain = group->default_domain;
+			group->domain = dom;
 	}
 
 	ret = iommu_group_add_device(group, dev);
@@ -1808,7 +1849,7 @@ void iommu_register_instance(struct fwnode_handle *fwnode,
 	spin_unlock(&iommu_instance_lock);
 }
 
-const struct iommu_ops *iommu_get_instance(struct fwnode_handle *fwnode)
+const struct iommu_ops *iommu_ops_from_fwnode(struct fwnode_handle *fwnode)
 {
 	struct iommu_instance *instance;
 	const struct iommu_ops *ops = NULL;

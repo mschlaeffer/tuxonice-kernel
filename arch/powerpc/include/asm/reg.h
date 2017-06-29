@@ -310,6 +310,7 @@
 #define SPRN_PMCR	0x374	/* Power Management Control Register */
 
 /* HFSCR and FSCR bit numbers are the same */
+#define FSCR_SCV_LG	12	/* Enable System Call Vectored */
 #define FSCR_MSGP_LG	10	/* Enable MSGP */
 #define FSCR_TAR_LG	8	/* Enable Target Address Register */
 #define FSCR_EBB_LG	7	/* Enable Event Based Branching */
@@ -320,6 +321,7 @@
 #define FSCR_VECVSX_LG	1	/* Enable VMX/VSX  */
 #define FSCR_FP_LG	0	/* Enable Floating Point */
 #define SPRN_FSCR	0x099	/* Facility Status & Control Register */
+#define   FSCR_SCV	__MASK(FSCR_SCV_LG)
 #define   FSCR_TAR	__MASK(FSCR_TAR_LG)
 #define   FSCR_EBB	__MASK(FSCR_EBB_LG)
 #define   FSCR_DSCR	__MASK(FSCR_DSCR_LG)
@@ -342,7 +344,7 @@
 #define   LPCR_DPFD_SH		52
 #define   LPCR_DPFD		(ASM_CONST(7) << LPCR_DPFD_SH)
 #define   LPCR_VRMASD_SH	47
-#define   LPCR_VRMASD		(ASM_CONST(1) << LPCR_VRMASD_SH)
+#define   LPCR_VRMASD		(ASM_CONST(0x1f) << LPCR_VRMASD_SH)
 #define   LPCR_VRMA_L		ASM_CONST(0x0008000000000000)
 #define   LPCR_VRMA_LP0		ASM_CONST(0x0001000000000000)
 #define   LPCR_VRMA_LP1		ASM_CONST(0x0000800000000000)

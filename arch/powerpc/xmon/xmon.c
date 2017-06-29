@@ -30,6 +30,7 @@
 #include <linux/ctype.h>
 
 #include <asm/ptrace.h>
+#include <asm/smp.h>
 #include <asm/string.h>
 #include <asm/prom.h>
 #include <asm/machdep.h>
@@ -48,7 +49,7 @@
 #include <asm/reg.h>
 #include <asm/debug.h>
 #include <asm/hw_breakpoint.h>
-
+#include <asm/xive.h>
 #include <asm/opal.h>
 #include <asm/firmware.h>
 
@@ -212,6 +213,10 @@ Commands:\n\
   "\
   C	checksum\n\
   d	dump bytes\n\
+  d1	dump 1 byte values\n\
+  d2	dump 2 byte values\n\
+  d4	dump 4 byte values\n\
+  d8	dump 8 byte values\n\
   di	dump instructions\n\
   df	dump float values\n\
   dd	dump double values\n\
@@ -228,7 +233,13 @@ Commands:\n\
   "\
   dr	dump stream of raw bytes\n\
   dt	dump the tracing buffers (uses printk)\n\
-  e	print exception information\n\
+"
+#ifdef CONFIG_PPC_POWERNV
+"  dx#   dump xive on CPU #\n\
+  dxi#  dump xive irq state #\n\
+  dxa   dump xive on all CPUs\n"
+#endif
+"  e	print exception information\n\
   f	flush cache\n\
   la	lookup symbol+offset of specified address\n\
   ls	lookup address of specified symbol\n\
@@ -2334,9 +2345,117 @@ static void dump_pacas(void)
 }
 #endif
 
+#ifdef CONFIG_PPC_POWERNV
+static void dump_one_xive(int cpu)
+{
+	unsigned int hwid = get_hard_smp_processor_id(cpu);
+
+	opal_xive_dump(XIVE_DUMP_TM_HYP, hwid);
+	opal_xive_dump(XIVE_DUMP_TM_POOL, hwid);
+	opal_xive_dump(XIVE_DUMP_TM_OS, hwid);
+	opal_xive_dump(XIVE_DUMP_TM_USER, hwid);
+	opal_xive_dump(XIVE_DUMP_VP, hwid);
+	opal_xive_dump(XIVE_DUMP_EMU_STATE, hwid);
+
+	if (setjmp(bus_error_jmp) != 0) {
+		catch_memory_errors = 0;
+		printf("*** Error dumping xive on cpu %d\n", cpu);
+		return;
+	}
+
+	catch_memory_errors = 1;
+	sync();
+	xmon_xive_do_dump(cpu);
+	sync();
+	__delay(200);
+	catch_memory_errors = 0;
+}
+
+static void dump_all_xives(void)
+{
+	int cpu;
+
+	if (num_possible_cpus() == 0) {
+		printf("No possible cpus, use 'dx #' to dump individual cpus\n");
+		return;
+	}
+
+	for_each_possible_cpu(cpu)
+		dump_one_xive(cpu);
+}
+
+static void dump_one_xive_irq(u32 num)
+{
+	s64 rc;
+	__be64 vp;
+	u8 prio;
+	__be32 lirq;
+
+	rc = opal_xive_get_irq_config(num, &vp, &prio, &lirq);
+	xmon_printf("IRQ 0x%x config: vp=0x%llx prio=%d lirq=0x%x (rc=%lld)\n",
+		    num, be64_to_cpu(vp), prio, be32_to_cpu(lirq), rc);
+}
+
+static void dump_xives(void)
+{
+	unsigned long num;
+	int c;
+
+	c = inchar();
+	if (c == 'a') {
+		dump_all_xives();
+		return;
+	} else if (c == 'i') {
+		if (scanhex(&num))
+			dump_one_xive_irq(num);
+		return;
+	}
+
+	termch = c;	/* Put c back, it wasn't 'a' */
+
+	if (scanhex(&num))
+		dump_one_xive(num);
+	else
+		dump_one_xive(xmon_owner);
+}
+#endif /* CONFIG_PPC_POWERNV */
+
+static void dump_by_size(unsigned long addr, long count, int size)
+{
+	unsigned char temp[16];
+	int i, j;
+	u64 val;
+
+	count = ALIGN(count, 16);
+
+	for (i = 0; i < count; i += 16, addr += 16) {
+		printf(REG, addr);
+
+		if (mread(addr, temp, 16) != 16) {
+			printf("\nFaulted reading %d bytes from 0x"REG"\n", 16, addr);
+			return;
+		}
+
+		for (j = 0; j < 16; j += size) {
+			putchar(' ');
+			switch (size) {
+			case 1: val = temp[j]; break;
+			case 2: val = *(u16 *)&temp[j]; break;
+			case 4: val = *(u32 *)&temp[j]; break;
+			case 8: val = *(u64 *)&temp[j]; break;
+			default: val = 0;
+			}
+
+			printf("%0*lx", size * 2, val);
+		}
+		printf("\n");
+	}
+}
+
 static void
 dump(void)
 {
+	static char last[] = { "d?\n" };
 	int c;
 
 	c = inchar();
@@ -2349,9 +2468,18 @@ dump(void)
 		return;
 	}
 #endif
+#ifdef CONFIG_PPC_POWERNV
+	if (c == 'x') {
+		xmon_start_pagination();
+		dump_xives();
+		xmon_end_pagination();
+		return;
+	}
+#endif
 
-	if ((isxdigit(c) && c != 'f' && c != 'd') || c == '\n')
+	if (c == '\n')
 		termch = c;
+
 	scanhex((void *)&adrs);
 	if (termch != '\n')
 		termch = 0;
@@ -2383,9 +2511,23 @@ dump(void)
 			ndump = 64;
 		else if (ndump > MAX_DUMP)
 			ndump = MAX_DUMP;
-		prdump(adrs, ndump);
+
+		switch (c) {
+		case '8':
+		case '4':
+		case '2':
+		case '1':
+			ndump = ALIGN(ndump, 16);
+			dump_by_size(adrs, ndump, c - '0');
+			last[1] = c;
+			last_cmd = last;
+			break;
+		default:
+			prdump(adrs, ndump);
+			last_cmd = "d\n";
+		}
+
 		adrs += ndump;
-		last_cmd = "d\n";
 	}
 }
 

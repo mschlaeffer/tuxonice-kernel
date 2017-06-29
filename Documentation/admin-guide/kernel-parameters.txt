@@ -1630,6 +1630,12 @@
 		nobypass	[PPC/POWERNV]
 			Disable IOMMU bypass, using IOMMU for PCI devices.
 
+	iommu.passthrough=
+			[ARM64] Configure DMA to bypass the IOMMU by default.
+			Format: { "0" | "1" }
+			0 - Use IOMMU translation for DMA.
+			1 - Bypass the IOMMU for DMA.
+			unset - Use IOMMU translation for DMA.
 
 	io7=		[HW] IO7 for Marvel based alpha systems
 			See comment before marvel_specify_io7 in
@@ -3743,6 +3749,13 @@
 	spia_fio_base=
 	spia_pedr=
 	spia_peddr=
+
+	stack_guard_gap=	[MM]
+			override the default stack gap protection. The value
+			is in page units and it defines how many pages prior
+			to (for stacks growing down) resp. after (for stacks
+			growing up) the main stack are reserved for no other
+			mapping. Default value is 256 pages.
 
 	stacktrace	[FTRACE]
 			Enabled the stack tracer on boot up.

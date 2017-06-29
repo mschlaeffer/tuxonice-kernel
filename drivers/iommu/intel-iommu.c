@@ -548,7 +548,7 @@ EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
 static DEFINE_SPINLOCK(device_domain_lock);
 static LIST_HEAD(device_domain_list);
 
-static const struct iommu_ops intel_iommu_ops;
+const struct iommu_ops intel_iommu_ops;
 
 static bool translation_pre_enabled(struct intel_iommu *iommu)
 {
@@ -4128,7 +4128,7 @@ static int init_iommu_hw(void)
 				iommu_disable_protect_mem_regions(iommu);
 			continue;
 		}
-	
+
 		iommu_flush_write_buffer(iommu);
 
 		iommu_set_root_entry(iommu);
@@ -4869,10 +4869,13 @@ int __init intel_iommu_init(void)
 
 	init_iommu_pm_ops();
 
-	for_each_active_iommu(iommu, drhd)
-		iommu->iommu_dev = iommu_device_create(NULL, iommu,
-						       intel_iommu_groups,
-						       "%s", iommu->name);
+	for_each_active_iommu(iommu, drhd) {
+		iommu_device_sysfs_add(&iommu->iommu, NULL,
+				       intel_iommu_groups,
+				       "%s", iommu->name);
+		iommu_device_set_ops(&iommu->iommu, &intel_iommu_ops);
+		iommu_device_register(&iommu->iommu);
+	}
 
 	bus_set_iommu(&pci_bus_type, &intel_iommu_ops);
 	bus_register_notifier(&pci_bus_type, &device_nb);
@@ -5194,7 +5197,7 @@ static int intel_iommu_add_device(struct device *dev)
 	if (!iommu)
 		return -ENODEV;
 
-	iommu_device_link(iommu->iommu_dev, dev);
+	iommu_device_link(&iommu->iommu, dev);
 
 	group = iommu_group_get_for_dev(dev);
 
@@ -5216,7 +5219,7 @@ static void intel_iommu_remove_device(struct device *dev)
 
 	iommu_group_remove_device(dev);
 
-	iommu_device_unlink(iommu->iommu_dev, dev);
+	iommu_device_unlink(&iommu->iommu, dev);
 }
 
 static void intel_iommu_get_resv_regions(struct device *device,
@@ -5387,7 +5390,7 @@ struct intel_iommu *intel_svm_device_to_iommu(struct device *dev)
 }
 #endif /* CONFIG_INTEL_IOMMU_SVM */
 
-static const struct iommu_ops intel_iommu_ops = {
+const struct iommu_ops intel_iommu_ops = {
 	.capable		= intel_iommu_capable,
 	.domain_alloc		= intel_iommu_domain_alloc,
 	.domain_free		= intel_iommu_domain_free,
