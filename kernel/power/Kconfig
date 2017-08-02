@@ -344,7 +344,7 @@ menuconfig TOI_CORE
 	config  TOI_DEFAULT_EXTRA_PAGES_ALLOWANCE
 		int "Default extra pages allowance"
 		default "2000"
-		range 500 32768
+		range 500 524288
 		depends on TOI_CORE
 		help
 		  This value controls the default for the allowance TuxOnIce makes for
