@@ -1,3 +1,12 @@
+linux (4.4.0-92.115) xenial; urgency=low
+
+  * linux: 4.4.0-92.115 -proposed tracker (LP: #1709812)
+
+  * Creating conntrack entry failure with kernel 4.4.0-89 (LP: #1709032)
+    - Revert "netfilter: synproxy: fix conntrackd interaction"
+
+ -- Kleber Sacilotto de Souza <kleber.souza@canonical.com>  Thu, 10 Aug 2017 10:29:51 +0200
+
 linux (4.4.0-91.114) xenial; urgency=low
 
   * CVE-2017-1000112
