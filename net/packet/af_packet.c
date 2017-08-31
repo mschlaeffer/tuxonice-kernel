@@ -3627,9 +3627,9 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
 		if (val > INT_MAX)
 			return -EINVAL;
 		lock_sock(sk);
-		if (po->rx_ring.pg_vec || po->tx_ring.pg_vec)
+		if (po->rx_ring.pg_vec || po->tx_ring.pg_vec) {
 			ret = -EBUSY;
-		else {
+		} else {
 			po->tp_reserve = val;
 			ret = 0;
 		}
