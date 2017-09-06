@@ -251,9 +251,9 @@ static void toi_user_rcv_skb(struct sk_buff *skb)
 
     err = toi_nl_gen_rcv_msg(uhd, skb, nlh);
     if (err)
-      netlink_ack(skb, nlh, err);
+      netlink_ack(skb, nlh, err, NULL);
     else if (nlh->nlmsg_flags & NLM_F_ACK)
-      netlink_ack(skb, nlh, 0);
+      netlink_ack(skb, nlh, 0, NULL);
     skb_pull(skb, rlen);
   }
 }

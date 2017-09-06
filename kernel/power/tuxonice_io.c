@@ -596,7 +596,7 @@ static int worker_rw_loop(void *data)
     goto out;
   }
 
-  cpumask_copy(&current->cpus_allowed, orig_mask);
+  cpumask_copy(orig_mask, &current->cpus_allowed);
 
   current->flags |= PF_NOFREEZE;
 
@@ -604,7 +604,7 @@ top:
   mutex_lock(&io_mutex);
   thread_num = atomic_read(&toi_io_workers);
 
-  cpumask_copy(tsk_cpus_allowed(current), orig_mask);
+  cpumask_copy(&current->cpus_allowed, orig_mask);
   schedule();
 
   atomic_inc(&toi_io_workers);
