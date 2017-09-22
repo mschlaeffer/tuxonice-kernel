@@ -13413,6 +13413,13 @@ S:	Maintained
 F:	drivers/tc/
 F:	include/linux/tc.h
 
+TUXONICE (ENHANCED HIBERNATION)
+P:	Nigel Cunningham
+M:	nigel@nigelcunningham.com.au
+L:	tuxonice-devel@lists.nigelcunningham.com.au
+W:	http://tuxonice.net
+S:	Maintained
+
 TW5864 VIDEO4LINUX DRIVER
 M:	Bluecherry Maintainers <maintainers@bluecherrydvr.com>
 M:	Anton Sviridenko <anton@corp.bluecherry.net>

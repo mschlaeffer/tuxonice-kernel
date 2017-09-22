@@ -163,8 +163,8 @@ static int page_size_mask;
 static void __init probe_page_size_mask(void)
 {
 	/*
-	 * For CONFIG_KMEMCHECK or pagealloc debugging, identity mapping will
-	 * use small pages.
+         * For CONFIG_KMEMCHECK, TuxOnIce's incremental image support or
+         * pagealloc debugging, identity mapping will use small pages.
 	 * This will simplify cpa(), which otherwise needs to support splitting
 	 * large pages into small in interrupt context, etc.
 	 */
