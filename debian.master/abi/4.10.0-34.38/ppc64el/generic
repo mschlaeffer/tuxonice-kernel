@@ -5837,6 +5837,7 @@ EXPORT_SYMBOL vmlinux 0x00000000	__dev_getfirstbyhwtype
 EXPORT_SYMBOL vmlinux 0x00000000	__dev_kfree_skb_any
 EXPORT_SYMBOL vmlinux 0x00000000	__dev_kfree_skb_irq
 EXPORT_SYMBOL vmlinux 0x00000000	__dev_remove_pack
+EXPORT_SYMBOL vmlinux 0x00000000	__dev_set_mtu
 EXPORT_SYMBOL vmlinux 0x00000000	__devm_release_region
 EXPORT_SYMBOL vmlinux 0x00000000	__devm_request_region
 EXPORT_SYMBOL vmlinux 0x00000000	__do_once_done
@@ -9076,7 +9077,6 @@ EXPORT_SYMBOL vmlinux 0x00000000	radix__flush_tlb_pwc
 EXPORT_SYMBOL vmlinux 0x00000000	radix__flush_tlb_range
 EXPORT_SYMBOL vmlinux 0x00000000	radix__local_flush_tlb_mm
 EXPORT_SYMBOL vmlinux 0x00000000	radix__local_flush_tlb_page
-EXPORT_SYMBOL vmlinux 0x00000000	radix__local_flush_tlb_pwc
 EXPORT_SYMBOL vmlinux 0x00000000	radix_tree_delete
 EXPORT_SYMBOL vmlinux 0x00000000	radix_tree_delete_item
 EXPORT_SYMBOL vmlinux 0x00000000	radix_tree_gang_lookup
@@ -15897,6 +15897,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x00000000	__trace_note_message
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__trace_printk
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__trace_puts
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_add_device_to_group
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_arm_event
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_attach_device_to_domain
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_block_bio_complete
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_block_bio_remap
@@ -15912,6 +15913,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_kfree_skb
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_map
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_mc_event
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_napi_poll
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_non_standard_event
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_powernv_throttle
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_remove_device_from_group
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	__tracepoint_rpm_idle
@@ -17439,7 +17441,10 @@ EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_take_ownership
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_tce_clear_param_check
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_tce_direction
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_tce_put_param_check
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_tce_table_get
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_tce_table_put
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_tce_xchg
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_tce_xchg_rm
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	iommu_unmap
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	ip4_datagram_release_cb
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	ip6_append_data
@@ -17784,11 +17789,13 @@ EXPORT_SYMBOL_GPL vmlinux 0x00000000	metadata_dst_alloc_percpu
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_find
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_get
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_lookup
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_lookup_rm
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_mapped_dec
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_mapped_inc
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_preregistered
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_put
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_ua_to_hpa
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_iommu_ua_to_hpa_rm
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mm_kobj
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mmc_abort_tuning
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	mmc_app_cmd
@@ -19490,6 +19497,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x00000000	usb_anchor_empty
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	usb_anchor_resume_wakeups
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	usb_anchor_suspend_wakeups
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	usb_anchor_urb
+EXPORT_SYMBOL_GPL vmlinux 0x00000000	usb_asmedia_modifyflowcontrol
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	usb_autopm_get_interface
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	usb_autopm_get_interface_async
 EXPORT_SYMBOL_GPL vmlinux 0x00000000	usb_autopm_get_interface_no_resume

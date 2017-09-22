@@ -873,6 +873,7 @@ struct kvm_ppc_smmu_info {
 #define KVM_CAP_PPC_HTM 132
 #define KVM_CAP_PPC_MMU_RADIX 134
 #define KVM_CAP_PPC_MMU_HASH_V3 135
+#define KVM_CAP_SPAPR_TCE_VFIO 142
 
 #ifdef KVM_CAP_IRQ_ROUTING
 
@@ -1077,6 +1078,7 @@ struct kvm_device_attr {
 #define  KVM_DEV_VFIO_GROUP			1
 #define   KVM_DEV_VFIO_GROUP_ADD			1
 #define   KVM_DEV_VFIO_GROUP_DEL			2
+#define   KVM_DEV_VFIO_GROUP_SET_SPAPR_TCE		3
 
 enum kvm_device_type {
 	KVM_DEV_TYPE_FSL_MPIC_20	= 1,
@@ -1096,6 +1098,11 @@ enum kvm_device_type {
 	KVM_DEV_TYPE_ARM_VGIC_ITS,
 #define KVM_DEV_TYPE_ARM_VGIC_ITS	KVM_DEV_TYPE_ARM_VGIC_ITS
 	KVM_DEV_TYPE_MAX,
+};
+
+struct kvm_vfio_spapr_tce {
+	__s32	groupfd;
+	__s32	tablefd;
 };
 
 /*
