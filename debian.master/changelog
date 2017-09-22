@@ -1,3 +1,83 @@
+linux (3.13.0-132.181) trusty; urgency=low
+
+  * linux: 3.13.0-132.181 -proposed tracker (LP: #1716634)
+
+  * CVE-2017-1000251
+    - Bluetooth: Properly check L2CAP config option output buffer length
+
+ -- Juerg Haefliger <juerg.haefliger@canonical.com>  Wed, 13 Sep 2017 13:34:29 +0200
+
+linux (3.13.0-131.180) trusty; urgency=low
+
+  * linux: 3.13.0-131.180 -proposed tracker (LP: #1715439)
+
+  * CVE-2016-7097
+    - posix_acl: Clear SGID bit when setting file permissions
+
+  * CVE-2016-9083
+    - vfio/pci: Fix integer overflows, bitmask check
+
+  * CVE-2016-9084
+    - vfio/pci: Fix integer overflows, bitmask check
+
+  * CVE-2016-9604
+    - KEYS: Disallow keyrings beginning with '.' to be joined as session keyrings
+
+  * CVE-2016-9191
+    - sysctl: Drop reference added by grab_header in proc_sys_readdir
+
+  * CVE-2016-9178
+    - fix minor infoleak in get_user_ex()
+
+  * CVE-2016-8650
+    - mpi: Fix NULL ptr dereference in mpi_powm() [ver #3]
+
+  * CVE-2016-10044
+    - vfs: Commit to never having exectuables on proc and sysfs.
+    - aio: mark AIO pseudo-fs noexec
+
+ -- Kleber Sacilotto de Souza <kleber.souza@canonical.com>  Thu, 07 Sep 2017 10:14:05 +0200
+
+linux (3.13.0-130.179) trusty; urgency=low
+
+  * linux: 3.13.0-130.179 -proposed tracker (LP: #1713456)
+
+  * CVE-2016-10200
+    - l2tp: fix racy SOCK_ZAPPED flag check in l2tp_ip{, 6}_bind()
+
+  * CVE-2016-9754
+    - ring-buffer: Prevent overflow of size in ring_buffer_resize()
+
+  * CVE-2017-5970
+    - ipv4: keep skb->dst around in presence of IP options
+
+  * CVE-2017-6346
+    - packet: fix races in fanout_add()
+
+  * CVE-2017-6214
+    - tcp: avoid infinite loop in tcp_splice_read()
+
+  * CVE-2017-6951
+    - KEYS: Change the name of the dead type to ".dead" to prevent user access
+
+  * CVE-2017-7472
+    - KEYS: fix keyctl_set_reqkey_keyring() to not leak thread keyrings
+
+  * CVE-2017-7187
+    - scsi: sg: check length passed to SG_NEXT_CMD_LEN
+
+  * CVE-2017-7541
+    - brcmfmac: fix possible buffer overflow in brcmf_cfg80211_mgmt_tx()
+
+  * sort ABI files with C.UTF-8 locale (LP: #1712345)
+    - [Packaging] sort ABI files with C.UTF-8 locale
+
+  * Please only recommend or suggest initramfs-tools | linux-initramfs-tool for
+    kernels able to boot without initramfs (LP: #1700972)
+    - [Debian] Don't depend on initramfs-tools
+
+ -- Kleber Sacilotto de Souza <kleber.souza@canonical.com>  Tue, 29 Aug 2017 17:04:34 +0200
+
 linux (3.13.0-129.178) trusty; urgency=low
 
   * linux: 3.13.0-129.178 -proposed tracker (LP: #1709292)
