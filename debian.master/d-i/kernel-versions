@@ -1,16 +1,16 @@
 # arch	version		flavour		installedname			suffix	bdep
-amd64	-		generic		-				-	-
+amd64	-		generic-tuxonice		-				-	-
 
-i386	-		generic		-				-	-
+i386	-		generic-tuxonice		-				-	-
 
-armhf	-		generic		-				-	-
-armhf	-		generic-lpae	-				-	-
+armhf	-		generic-tuxonice		-				-	-
+armhf	-		generic-lpae-tuxonice	-				-	-
 
-arm64	-		generic		-				-	-
+arm64	-		generic-tuxonice		-				-	-
 
-ppc64el	-		generic		-				-	-
+ppc64el	-		generic-tuxonice		-				-	-
 
-s390x	-		generic		-				-	-
+s390x	-		generic-tuxonice		-				-	-
 
 # Ports
 # arch	version		flavour		installedname			suffix	bdep
