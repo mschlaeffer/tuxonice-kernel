@@ -63,6 +63,7 @@
 #include <linux/sched/rt.h>
 #include <linux/sched/mm.h>
 #include <linux/page_owner.h>
+#include <linux/tuxonice.h>
 #include <linux/kthread.h>
 #include <linux/memcontrol.h>
 #include <linux/ftrace.h>
@@ -941,6 +942,12 @@ static void free_pages_check_bad(struct page *page)
 	if (unlikely(page->mem_cgroup))
 		bad_reason = "page still charged to cgroup";
 #endif
+        if (unlikely(PageTOI_Untracked(page))) {
+            // Make it writable and included in image if allocated.
+            ClearPageTOI_Untracked(page);
+            // If it gets allocated, it will be dirty from TOI's POV.
+            SetPageTOI_Dirty(page);
+        }
 	bad_page(page, bad_reason, bad_flags);
 }
 

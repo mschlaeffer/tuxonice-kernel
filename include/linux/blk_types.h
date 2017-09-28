@@ -132,7 +132,8 @@ struct bio {
 #define BIO_REFFED	8	/* bio has elevated ->bi_cnt */
 #define BIO_THROTTLED	9	/* This bio has already been subjected to
 				 * throttling rules. Don't do it again. */
-#define BIO_TRACE_COMPLETION 10	/* bio_endio() should trace the final completion
+#define BIO_TOI		10	/* bio is TuxOnIce submitted */
+#define BIO_TRACE_COMPLETION 11	/* bio_endio() should trace the final completion
 				 * of this bio. */
 /* See BVEC_POOL_OFFSET below before adding new flags */
 
