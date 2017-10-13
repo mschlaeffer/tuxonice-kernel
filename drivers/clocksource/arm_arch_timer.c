@@ -764,10 +764,11 @@ static void arch_counter_set_user_access(void)
 {
 	u32 cntkctl = arch_timer_get_cntkctl();
 
-	/* Disable user access to the timers and the physical counter */
+	/* Disable user access to the timers and both counters */
 	/* Also disable virtual event stream */
 	cntkctl &= ~(ARCH_TIMER_USR_PT_ACCESS_EN
 			| ARCH_TIMER_USR_VT_ACCESS_EN
+		        | ARCH_TIMER_USR_VCT_ACCESS_EN
 			| ARCH_TIMER_VIRT_EVT_EN
 			| ARCH_TIMER_USR_PCT_ACCESS_EN);
 
@@ -1218,9 +1219,9 @@ arch_timer_mem_frame_get_cntfrq(struct arch_timer_mem_frame *frame)
 		return 0;
 	}
 
-	rate = readl_relaxed(frame + CNTFRQ);
+	rate = readl_relaxed(base + CNTFRQ);
 
-	iounmap(frame);
+	iounmap(base);
 
 	return rate;
 }
@@ -1277,7 +1278,7 @@ arch_timer_mem_find_best_frame(struct arch_timer_mem *timer_mem)
 		pr_err("Unable to find a suitable frame in timer @ %pa\n",
 			&timer_mem->cntctlbase);
 
-	return frame;
+	return best_frame;
 }
 
 static int __init
@@ -1449,7 +1450,7 @@ static int __init arch_timer_mem_acpi_init(int platform_timer_count)
 	 * While unlikely, it's theoretically possible that none of the frames
 	 * in a timer expose the combination of feature we want.
 	 */
-	for (i = i; i < timer_count; i++) {
+	for (i = 0; i < timer_count; i++) {
 		timer = &timers[i];
 
 		frame = arch_timer_mem_find_best_frame(timer);
