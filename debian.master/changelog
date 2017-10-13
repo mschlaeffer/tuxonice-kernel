@@ -1,3 +1,16 @@
+linux (3.13.0-133.182) trusty; urgency=low
+
+  * linux: 3.13.0-133.182 -proposed tracker (LP: #1718159)
+
+  [ Stefan Bader ]
+  * CVE-2016-8633
+    - firewire: net: guard against rx buffer overflows
+
+  * CVE-2017-14106
+    - tcp: initialize rcv_mss to TCP_MIN_MSS instead of 0
+
+ -- Juerg Haefliger <juerg.haefliger@canonical.com>  Tue, 19 Sep 2017 13:11:55 +0200
+
 linux (3.13.0-132.181) trusty; urgency=low
 
   * linux: 3.13.0-132.181 -proposed tracker (LP: #1716634)
