@@ -1,3 +1,18 @@
+linux (4.13.0-16.19) artful; urgency=low
+
+  * 20170817 - ISO hangs on boot on qemu with splash screen enabled and qxl
+    graphics driver (LP: #1711358)
+    - qxl: fix framebuffer unpinning
+
+  * [Bug] USB controller failed to respond on Denverton after loading
+    intel_th_pci module (LP: #1715833)
+    - SAUCE: PCI: Disable broken RTIT_BAR of Intel TH
+
+  * CVE-2017-5123
+    - waitid(): Add missing access_ok() checks
+
+ -- Seth Forshee <seth.forshee@canonical.com>  Wed, 11 Oct 2017 12:33:10 -0500
+
 linux (4.13.0-15.16) artful; urgency=low
 
   * linux: 4.13.0-15.16 -proposed tracker (LP: #1721373)
