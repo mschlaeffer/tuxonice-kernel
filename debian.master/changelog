@@ -1,3 +1,46 @@
+linux (3.13.0-135.184) trusty; urgency=low
+
+  * linux: 3.13.0-135.184 -proposed tracker (LP: #1724500)
+
+  * Trusty NVMe boot fails on some systems (LP: #1720867)
+    - NVMe: RCU protected access to io queues
+    - NVMe: IOCTL path RCU protect queue access
+    - powerpc/mm: fix ".__node_distance" undefined
+    - NVMe: per-cpu io queues
+    - nvme: Use pci_enable_msi_range() and pci_enable_msix_range()
+    - NVMe: make setup work for devices that don't do INTx
+    - NVMe: Always use MSI/MSI-x interrupts
+
+ -- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>  Wed, 18 Oct 2017 07:09:04 -0200
+
+linux (3.13.0-134.183) trusty; urgency=low
+
+  * linux: 3.13.0-134.183 -proposed tracker (LP: #1722335)
+
+  [ Thadeu Lima de Souza Cascardo ]
+  * CVE-2017-10661
+    - timerfd: Protect the might cancel mechanism proper
+
+  * CVE-2017-10662
+    - f2fs: sanity check segment count
+
+  * CVE-2017-10663
+    - f2fs: sanity check checkpoint segno and blkoff
+
+  * CVE-2017-14340
+    - xfs: XFS_IS_REALTIME_INODE() should be false if no rt device present
+
+  * CVE-2017-10911
+    - xen-blkback: don't leak stack data via response ring
+
+  * CVE-2017-11176
+    - mqueue: fix a use-after-free in sys_mq_notify()
+
+  * CVE-2016-8632
+    - tipc: check minimum bearer MTU
+
+ -- Juerg Haefliger <juerg.haefliger@canonical.com>  Tue, 10 Oct 2017 13:23:11 +0200
+
 linux (3.13.0-133.182) trusty; urgency=low
 
   * linux: 3.13.0-133.182 -proposed tracker (LP: #1718159)
