@@ -122,7 +122,7 @@ EXC_REAL_BEGIN(system_reset, 0x100, 0x200)
 	SET_SCRATCH0(r13)
 	GET_PACA(r13)
 	clrrdi	r13,r13,1 /* Last bit of HSPRG0 is set if waking from winkle */
-	EXCEPTION_PROLOG_PSERIES_PACA(PACA_EXGEN, system_reset_common, EXC_STD,
+	EXCEPTION_PROLOG_PSERIES_PACA(PACA_EXNMI, system_reset_common, EXC_STD,
 				 IDLETEST, 0x100)
 
 EXC_REAL_END(system_reset, 0x100, 0x200)
@@ -157,7 +157,10 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_300)
 2:	b	pnv_wakeup_noloss
 #endif
 
-EXC_COMMON(system_reset_common, 0x100, system_reset_exception)
+EXC_COMMON_BEGIN(system_reset_common)
+	EXCEPTION_COMMON(PACA_EXNMI, 0x100,
+			system_reset, system_reset_exception,
+			ret_from_except, ADD_NVGPRS;ADD_RECONCILE)
 
 #ifdef CONFIG_PPC_PSERIES
 /*
@@ -165,7 +168,7 @@ EXC_COMMON(system_reset_common, 0x100, system_reset_exception)
  */
 TRAMP_REAL_BEGIN(system_reset_fwnmi)
 	SET_SCRATCH0(r13)		/* save r13 */
-	EXCEPTION_PROLOG_PSERIES(PACA_EXGEN, system_reset_common, EXC_STD,
+	EXCEPTION_PROLOG_PSERIES(PACA_EXNMI, system_reset_common, EXC_STD,
 				 NOTEST, 0x100)
 #endif /* CONFIG_PPC_PSERIES */
 
@@ -1009,6 +1012,8 @@ TRAMP_REAL_BEGIN(hmi_exception_early)
 	EXCEPTION_PROLOG_COMMON_3(0xe60)
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	BRANCH_LINK_TO_FAR(hmi_exception_realmode) /* Function call ABI */
+	cmpdi	cr0,r3,0
+
 	/* Windup the stack. */
 	/* Move original HSRR0 and HSRR1 into the respective regs */
 	ld	r9,_MSR(r1)
@@ -1025,10 +1030,15 @@ TRAMP_REAL_BEGIN(hmi_exception_early)
 	REST_8GPRS(2, r1)
 	REST_GPR(10, r1)
 	ld	r11,_CCR(r1)
+	REST_2GPRS(12, r1)
+	bne	1f
 	mtcr	r11
 	REST_GPR(11, r1)
-	REST_2GPRS(12, r1)
-	/* restore original r1. */
+	ld	r1,GPR1(r1)
+	hrfid
+
+1:	mtcr	r11
+	REST_GPR(11, r1)
 	ld	r1,GPR1(r1)
 
 	/*
@@ -1041,8 +1051,9 @@ hmi_exception_after_realmode:
 	EXCEPTION_PROLOG_0(PACA_EXGEN)
 	b	tramp_real_hmi_exception
 
-EXC_COMMON_ASYNC(hmi_exception_common, 0xe60, handle_hmi_exception)
-
+EXC_COMMON_BEGIN(hmi_exception_common)
+EXCEPTION_COMMON(PACA_EXGEN, 0xe60, hmi_exception_common, handle_hmi_exception,
+        ret_from_except, FINISH_NAP;ADD_NVGPRS;ADD_RECONCILE;RUNLATCH_ON)
 
 EXC_REAL_OOL_MASKABLE_HV(h_doorbell, 0xe80, 0xea0)
 EXC_VIRT_OOL_MASKABLE_HV(h_doorbell, 0x4e80, 0x4ea0, 0xe80)
