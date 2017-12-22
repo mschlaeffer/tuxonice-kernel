@@ -1,3 +1,26 @@
+linux (3.13.0-137.186) trusty; urgency=low
+
+  * linux: 3.13.0-137.186 -proposed tracker (LP: #1736194)
+
+  * CVE-2017-1000405
+    - mm, thp: Do not make page table dirty unconditionally in touch_p[mu]d()
+
+  * CVE-2017-16939
+    - netlink: add a start callback for starting a netlink dump
+    - ipsec: Fix aborted xfrm policy dump crash
+
+ -- Stefan Bader <stefan.bader@canonical.com>  Mon, 04 Dec 2017 19:45:06 +0100
+
+linux (3.13.0-136.185) trusty; urgency=low
+
+  * linux: 3.13.0-136.185 -proposed tracker (LP: #1734733)
+
+  * NVMe timeout is too short (LP: #1729119)
+    - NVMe: Make I/O timeout a module parameter
+    - nvme: update timeout module parameter type
+
+ -- Khalid Elmously <khalid.elmously@canonical.com>  Mon, 27 Nov 2017 15:46:57 -0500
+
 linux (3.13.0-135.184) trusty; urgency=low
 
   * linux: 3.13.0-135.184 -proposed tracker (LP: #1724500)
