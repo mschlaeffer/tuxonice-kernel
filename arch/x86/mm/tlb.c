@@ -6,6 +6,7 @@
 #include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/cpu.h>
+#include <linux/ptrace.h>
 #include <linux/debugfs.h>
 
 #include <asm/tlbflush.h>
@@ -13,6 +14,7 @@
 #include <asm/cache.h>
 #include <asm/apic.h>
 #include <asm/uv/uv.h>
+#include <asm/microcode.h>
 #include <asm/kaiser.h>
 
 DEFINE_PER_CPU_SHARED_ALIGNED(struct tlb_state, cpu_tlbstate)
@@ -98,6 +100,11 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
 			struct task_struct *tsk)
 {
 	unsigned cpu = smp_processor_id();
+
+	/* Null tsk means switching to kernel, so that's safe */
+	if (ibpb_inuse && tsk &&
+		___ptrace_may_access(tsk, current, PTRACE_MODE_IBPB))
+		native_wrmsrl(MSR_IA32_PRED_CMD, FEATURE_SET_IBPB);
 
 	if (likely(prev != next)) {
 		this_cpu_write(cpu_tlbstate.state, TLBSTATE_OK);
