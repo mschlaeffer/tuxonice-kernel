@@ -31,6 +31,8 @@ family=ubuntu
 # AUTOBUILD can also be used by anyone wanting to build a custom kernel
 # image, or rebuild the entire set of Ubuntu packages using custom patches
 # or configs.
+skipabi=true
+skipmodule=true
 AUTOBUILD=
 
 ifneq ($(AUTOBUILD),)
