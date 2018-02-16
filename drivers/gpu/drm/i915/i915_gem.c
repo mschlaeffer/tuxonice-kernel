@@ -4394,7 +4394,7 @@ static int i915_gem_object_create_shmem(struct drm_device *dev,
 		filp = shmem_file_setup_with_mnt(i915->mm.gemfs, "i915", size,
 						 flags);
 	else
-		filp = shmem_file_setup("i915", size, flags);
+		filp = shmem_file_setup("i915", size, flags, 1);
 
 	if (IS_ERR(filp))
 		return PTR_ERR(filp);
