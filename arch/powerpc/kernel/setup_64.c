@@ -726,3 +726,111 @@ void __init setup_per_cpu_areas(void)
 struct ppc_pci_io ppc_pci_io;
 EXPORT_SYMBOL(ppc_pci_io);
 #endif
+
+#ifdef CONFIG_PPC_BOOK3S_64
+static enum l1d_flush_type enabled_flush_types;
+#define MAX_L1D_SIZE (64 * 1024)
+static char l1d_flush_fallback_area[2 * MAX_L1D_SIZE] __page_aligned_bss;
+static bool no_rfi_flush;
+bool rfi_flush;
+
+static int __init handle_no_rfi_flush(char *p)
+{
+	pr_info("rfi-flush: disabled on command line.");
+	no_rfi_flush = true;
+	return 0;
+}
+early_param("no_rfi_flush", handle_no_rfi_flush);
+
+/*
+ * The RFI flush is not KPTI, but because users will see doco that says to use
+ * nopti we hijack that option here to also disable the RFI flush.
+ */
+static int __init handle_no_pti(char *p)
+{
+	pr_info("rfi-flush: disabling due to 'nopti' on command line.\n");
+	handle_no_rfi_flush(NULL);
+	return 0;
+}
+early_param("nopti", handle_no_pti);
+
+static void do_nothing(void *unused)
+{
+	/*
+	 * We don't need to do the flush explicitly, just enter+exit kernel is
+	 * sufficient, the RFI exit handlers will do the right thing.
+	 */
+}
+
+void rfi_flush_enable(bool enable)
+{
+	if (enable) {
+		do_rfi_flush_fixups(enabled_flush_types);
+		on_each_cpu(do_nothing, NULL, 1);
+	} else
+		do_rfi_flush_fixups(L1D_FLUSH_NONE);
+
+	rfi_flush = enable;
+}
+
+static bool init_fallback_flush(void)
+{
+	u64 l1d_size;
+	int cpu;
+
+	/*
+	 * On distros using bootmem, l1d_flush_fallback area is always allocated
+	 * (in BSS) and valid, so skip the checks for l1d_flush_fallback_area and
+	 * slab_is_available().
+	 *
+	 * Possibly it's not even needed to do any of the rest of this function
+	 *  _again_ (can anything set below can changed after LPM/other system?),
+	 * but keep it simple and don't try to different first from future calls,
+	 * just run it again in that case.
+	 */
+
+	l1d_size = ppc64_caches.dsize;
+
+	/*
+	 * We allocate 2x L1d size for the dummy area, to
+	 * catch possible hardware prefetch runoff.
+	 *
+	 * We can't use memblock_alloc here because bootmem has
+	 * been initialized, and the bootmem APIs don't work well
+	 * with an upper limit we need, so we allocate it statically
+	 * from BSS. The biggest L1d supported by this kernel is
+	 * 64kB (POWER8), so 128kB is reserved above.
+	 */
+	WARN_ON(l1d_size > MAX_L1D_SIZE);
+
+	for_each_possible_cpu(cpu) {
+		paca[cpu].rfi_flush_fallback_area = l1d_flush_fallback_area;
+		paca[cpu].l1d_flush_size = l1d_size;
+	}
+
+	return true;
+}
+
+void setup_rfi_flush(enum l1d_flush_type types, bool enable)
+{
+	if (types & L1D_FLUSH_FALLBACK) {
+		if (init_fallback_flush())
+			pr_info("rfi-flush: Using fallback displacement flush\n");
+		else {
+			pr_warn("rfi-flush: Error unable to use fallback displacement flush!\n");
+			types &= ~L1D_FLUSH_FALLBACK;
+		}
+	}
+
+	if (types & L1D_FLUSH_ORI)
+		pr_info("rfi-flush: Using ori type flush\n");
+
+	if (types & L1D_FLUSH_MTTRIG)
+		pr_info("rfi-flush: Using mttrig type flush\n");
+
+	enabled_flush_types = types;
+
+	if (!no_rfi_flush)
+		rfi_flush_enable(enable);
+}
+#endif /* CONFIG_PPC_BOOK3S_64 */
