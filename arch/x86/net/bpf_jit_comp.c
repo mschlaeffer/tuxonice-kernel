@@ -16,6 +16,7 @@
 #include <linux/bpf.h>
 
 int bpf_jit_enable __read_mostly;
+u8 bpf_jit_fence = 0;
 
 /*
  * assembly code in arch/x86/net/bpf_jit.S
@@ -112,15 +113,9 @@ static void emit_memory_barrier(u8 **pprog)
 	u8 *prog = *pprog;
 	int cnt = 0;
 
-	if (bpf_jit_blinding_enabled()) {
-		if (boot_cpu_has(X86_FEATURE_LFENCE_RDTSC))
-			/* x86 LFENCE opcode 0F AE E8 */
+	if (bpf_jit_fence)
 			EMIT3(0x0f, 0xae, 0xe8);
-		else
-			/* we should never end up here,
-			 * but if we do, better not to emit anything*/
-			return;
-	}
+
 	*pprog = prog;
 	return;
 }
@@ -1126,6 +1121,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 
 	if (!bpf_jit_enable)
 		return orig_prog;
+
+	if (bpf_jit_fence_present() && bpf_jit_blinding_enabled())
+		bpf_jit_fence = 1;
 
 	tmp = bpf_jit_blind_constants(prog);
 	/* If blinding was requested and we failed during blinding,

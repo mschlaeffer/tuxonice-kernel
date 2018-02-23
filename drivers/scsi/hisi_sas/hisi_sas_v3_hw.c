@@ -1636,7 +1636,7 @@ static const struct hisi_sas_hw hisi_sas_v3_hw = {
 	.start_delivery = start_delivery_v3_hw,
 	.slot_complete = slot_complete_v3_hw,
 	.phys_init = phys_init_v3_hw,
-	.phy_enable = enable_phy_v3_hw,
+	.phy_start = start_phy_v3_hw,
 	.phy_disable = disable_phy_v3_hw,
 	.phy_hard_reset = phy_hard_reset_v3_hw,
 	.phy_get_max_linkrate = phy_get_max_linkrate_v3_hw,
@@ -1816,6 +1816,7 @@ static void hisi_sas_v3_remove(struct pci_dev *pdev)
 
 	hisi_sas_free(hisi_hba);
 	hisi_sas_v3_destroy_irqs(pdev, hisi_hba);
+	hisi_sas_kill_tasklets(hisi_hba);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
 }

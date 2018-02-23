@@ -23,8 +23,6 @@
 #define wmb()	asm volatile("sfence" ::: "memory")
 #endif
 
-#define gmb() alternative("", "lfence", X86_FEATURE_LFENCE_RDTSC);
-
 #ifdef CONFIG_X86_PPRO_FENCE
 #define dma_rmb()	rmb()
 #else
@@ -77,6 +75,8 @@ do {									\
 })
 
 #endif
+
+#define osb() alternative("", "lfence", X86_FEATURE_LFENCE_RDTSC)
 
 /* Atomic operations are already serializing on x86 */
 #define __smp_mb__before_atomic()	barrier()

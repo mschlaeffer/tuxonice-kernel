@@ -42,10 +42,6 @@
 #define wmb()	mb()
 #endif
 
-#ifndef gmb
-#define gmb()	do { } while (0)
-#endif
-
 #ifndef dma_rmb
 #define dma_rmb()	rmb()
 #endif
@@ -248,6 +244,21 @@ do {									\
 	smp_acquire__after_ctrl_dep();				\
 	VAL;							\
 })
+#endif
+
+/* Observable speculation barrier: ensures that any user
+ * observable speculation doesn't cross the boundary.
+ * Any user observable speculative activity on this CPU
+ * thread before this point either completes, reaches a
+ * state it can no longer cause observable activity, or
+ * is aborted before instructions after the barrier execute.
+ */
+#ifndef osb
+#define osb()	do { } while (0)
+#define osb_is_enabled (0)
+#endif
+#ifndef osb_is_enabled
+#define osb_is_enabled (1)
 #endif
 
 #endif /* !__ASSEMBLY__ */

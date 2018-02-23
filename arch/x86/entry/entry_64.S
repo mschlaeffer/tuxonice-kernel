@@ -36,6 +36,7 @@
 #include <asm/pgtable_types.h>
 #include <asm/export.h>
 #include <asm/frame.h>
+#include <asm/nospec-branch.h>
 #include <asm/spec_ctrl.h>
 #include <linux/err.h>
 
@@ -187,7 +188,7 @@ ENTRY(entry_SYSCALL_64_trampoline)
 	 */
 	pushq	%rdi
 	movq	$entry_SYSCALL_64_stage2, %rdi
-	jmp	*%rdi
+	JMP_NOSPEC %rdi
 END(entry_SYSCALL_64_trampoline)
 
 	.popsection
@@ -231,16 +232,10 @@ GLOBAL(entry_SYSCALL_64_after_hwframe)
 	pushq	%r9				/* pt_regs->r9 */
 	pushq	%r10				/* pt_regs->r10 */
 	pushq	%r11				/* pt_regs->r11 */
-	sub	$(6*8), %rsp			/* pt_regs->bp, bx, r12-15 not used */
+	sub	$(6*8), %rsp			/* pt_regs->bp, bx, r12-15 not saved */
 	UNWIND_HINT_REGS extra=0
 
 	ENABLE_IBRS
-	/*
-	 * Clear the unused extra regs for code hygiene.
-	 * Will restore the callee saved extra regs at end of syscall.
-	 */
-	SAVE_EXTRA_REGS
-	CLEAR_EXTRA_REGS
 
 	STUFF_RSB
 
@@ -276,15 +271,12 @@ entry_SYSCALL_64_fastpath:
 	 * It might end up jumping to the slow path.  If it jumps, RAX
 	 * and all argument registers are clobbered.
 	 */
-	movq	sys_call_table(, %rax, 8), %r10
-	jmp     1001f
-1004:	callq   1002f
-1003:	nop
-	jmp     1003b
-1002:	mov     %r10, (%rsp)
-	retq
-1001:	callq   1004b
-
+#ifdef CONFIG_RETPOLINE
+	movq	sys_call_table(, %rax, 8), %rax
+	call	__x86_indirect_thunk_rax
+#else
+	call	*sys_call_table(, %rax, 8)
+#endif
 .Lentry_SYSCALL_64_after_fastpath_call:
 
 	movq	%rax, RAX(%rsp)
@@ -306,7 +298,7 @@ entry_SYSCALL_64_fastpath:
 	movq	RIP(%rsp), %rcx
 	movq	EFLAGS(%rsp), %r11
 	DISABLE_IBRS
-	POP_EXTRA_REGS
+	addq	$6*8, %rsp	/* skip extra regs -- they were preserved */
 	UNWIND_HINT_EMPTY
 	jmp	.Lpop_c_regs_except_rcx_r11_and_sysret
 
@@ -318,12 +310,14 @@ entry_SYSCALL_64_fastpath:
 	 */
 	TRACE_IRQS_ON
 	ENABLE_INTERRUPTS(CLBR_ANY)
+	SAVE_EXTRA_REGS
 	movq	%rsp, %rdi
 	call	syscall_return_slowpath	/* returns with IRQs disabled */
 	jmp	return_from_SYSCALL_64
 
 entry_SYSCALL64_slow_path:
 	/* IRQs are off. */
+	SAVE_EXTRA_REGS
 	movq	%rsp, %rdi
 	call	do_syscall_64		/* returns with IRQs disabled */
 
@@ -457,7 +451,7 @@ ENTRY(stub_ptregs_64)
 	jmp	entry_SYSCALL64_slow_path
 
 1:
-	jmp	*%rax				/* Called from C */
+	JMP_NOSPEC %rax				/* Called from C */
 END(stub_ptregs_64)
 
 .macro ptregs_stub func
@@ -500,6 +494,18 @@ ENTRY(__switch_to_asm)
 	movq	%rbx, PER_CPU_VAR(irq_stack_union)+stack_canary_offset
 #endif
 
+#ifdef CONFIG_RETPOLINE
+	/*
+	 * When switching from a shallower to a deeper call stack
+	 * the RSB may either underflow or use entries populated
+	 * with userspace addresses. On CPUs where those concerns
+	 * exist, overwrite the RSB with entries which capture
+	 * speculative execution to prevent attack.
+	 */
+	/* Clobbers %rbx */
+	FILL_RETURN_BUFFER RSB_CLEAR_LOOPS, X86_FEATURE_RSB_CTXSW
+#endif
+
 	/* restore callee-saved registers */
 	popq	%r15
 	popq	%r14
@@ -536,7 +542,7 @@ ENTRY(ret_from_fork)
 1:
 	/* kernel thread */
 	movq	%r12, %rdi
-	call	*%rbx
+	CALL_NOSPEC %rbx
 	/*
 	 * A kernel thread is allowed to return here after successfully
 	 * calling do_execve().  Exit to userspace to complete the execve()

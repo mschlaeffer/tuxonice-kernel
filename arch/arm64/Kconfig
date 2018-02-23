@@ -22,7 +22,24 @@ config ARM64
 	select ARCH_HAS_STRICT_MODULE_RWX
 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if ACPI_APEI_SEA
+	select ARCH_INLINE_READ_LOCK if !PREEMPT
+	select ARCH_INLINE_READ_LOCK_BH if !PREEMPT
+	select ARCH_INLINE_READ_LOCK_IRQ if !PREEMPT
+	select ARCH_INLINE_READ_LOCK_IRQSAVE if !PREEMPT
+	select ARCH_INLINE_READ_UNLOCK if !PREEMPT
+	select ARCH_INLINE_READ_UNLOCK_BH if !PREEMPT
+	select ARCH_INLINE_READ_UNLOCK_IRQ if !PREEMPT
+	select ARCH_INLINE_READ_UNLOCK_IRQRESTORE if !PREEMPT
+	select ARCH_INLINE_WRITE_LOCK if !PREEMPT
+	select ARCH_INLINE_WRITE_LOCK_BH if !PREEMPT
+	select ARCH_INLINE_WRITE_LOCK_IRQ if !PREEMPT
+	select ARCH_INLINE_WRITE_LOCK_IRQSAVE if !PREEMPT
+	select ARCH_INLINE_WRITE_UNLOCK if !PREEMPT
+	select ARCH_INLINE_WRITE_UNLOCK_BH if !PREEMPT
+	select ARCH_INLINE_WRITE_UNLOCK_IRQ if !PREEMPT
+	select ARCH_INLINE_WRITE_UNLOCK_IRQRESTORE if !PREEMPT
 	select ARCH_USE_CMPXCHG_LOCKREF
+	select ARCH_USE_QUEUED_RWLOCKS
 	select ARCH_SUPPORTS_MEMORY_FAILURE
 	select ARCH_SUPPORTS_ATOMIC_RMW
 	select ARCH_SUPPORTS_NUMA_BALANCING
@@ -535,6 +552,16 @@ config QCOM_QDF2400_ERRATUM_0065
 	  On Qualcomm Datacenter Technologies QDF2400 SoC, ITS hardware reports
 	  ITE size incorrectly. The GITS_TYPER.ITT_Entry_size field should have
 	  been indicated as 16Bytes (0xf), not 8Bytes (0x7).
+
+	  If unsure, say Y.
+
+config QCOM_FALKOR_ERRATUM_E1041
+	bool "Falkor E1041: Speculative instruction fetches might cause errant memory access"
+	default y
+	help
+	  Falkor CPU may speculatively fetch instructions from an improper
+	  memory location when MMU translation is changed from SCTLR_ELn[M]=1
+	  to SCTLR_ELn[M]=0. Prefix an ISB instruction to fix the problem.
 
 	  If unsure, say Y.
 
