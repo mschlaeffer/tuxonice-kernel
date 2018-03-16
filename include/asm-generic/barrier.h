@@ -40,10 +40,6 @@
 #define smp_wmb()	barrier()
 #endif
 
-#ifndef gmb
-#define gmb()		do { } while (0)
-#endif
-
 #define set_mb(var, value)  do { var = value;  mb(); } while (0)
 #define set_wmb(var, value) do { var = value; wmb(); } while (0)
 
@@ -64,6 +60,17 @@ do {									\
 	smp_mb();							\
 	___p1;								\
 })
+
+/* Observable speculation barrier: ensures that any user
+ * observable speculation doesn't cross the boundary.
+ * Any user observable speculative activity on this CPU
+ * thread before this point either completes, reaches a
+ * state it can no longer cause observable activity, or
+ * is aborted before instructions after the barrier execute.
+ */
+#ifndef osb
+#define osb()	do { } while (0)
+#endif
 
 #endif /* !__ASSEMBLY__ */
 #endif /* __ASM_GENERIC_BARRIER_H */

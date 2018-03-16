@@ -24,8 +24,6 @@
 #define wmb()	asm volatile("sfence" ::: "memory")
 #endif
 
-#define gmb() alternative("", "lfence", X86_FEATURE_LFENCE_RDTSC);
-
 /**
  * read_barrier_depends - Flush all pending reads that subsequents reads
  * depend on.
@@ -154,5 +152,7 @@ static __always_inline void rdtsc_barrier(void)
 {
 	alternative(ASM_NOP3, "lfence", X86_FEATURE_LFENCE_RDTSC);
 }
+
+#define osb() alternative("", "lfence", X86_FEATURE_LFENCE_RDTSC)
 
 #endif /* _ASM_X86_BARRIER_H */

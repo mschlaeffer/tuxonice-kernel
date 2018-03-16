@@ -48,7 +48,9 @@
 #define rmb()		barrier()
 #define wmb()		barrier()
 #endif
-#define gmb() 		do { } while (0)
+
+#define osb() 		do { } while (0)
+#define osb_is_enabled	(0)
 
 #ifndef CONFIG_SMP
 #define smp_mb()	barrier()

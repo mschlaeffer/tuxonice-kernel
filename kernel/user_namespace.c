@@ -500,7 +500,7 @@ static void *m_start(struct seq_file *seq, loff_t *ppos, struct uid_gid_map *map
 	loff_t pos = *ppos;
 
 	if (pos < map->nr_extents) {
-		gmb();
+		osb();
 		extent = &map->extent[pos];
 	}
 

@@ -675,10 +675,10 @@ static void init_amd(struct cpuinfo_x86 *c)
 
 	if (cpu_has_xmm2) {
 		/*
-		* Use LFENCE for execution serialization. On some families
-		* LFENCE is already serialized and the MSR is not available,
-		* but msr_set_bit() uses rdmsrl_safe() and wrmsrl_safe().
-		*/
+		 * Use LFENCE for execution serialization. On some families
+		 * LFENCE is already serialized and the MSR is not available,
+		 * but msr_set_bit() uses rdmsrl_safe() and wrmsrl_safe().
+		 */
 		if (c->x86 > 0xf)
 			msr_set_bit(MSR_F10H_DECFG,
 				    MSR_F10H_DECFG_LFENCE_SERIALIZE_BIT);

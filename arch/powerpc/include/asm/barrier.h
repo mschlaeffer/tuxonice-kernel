@@ -33,10 +33,11 @@
 #define mb()   __asm__ __volatile__ ("sync" : : : "memory")
 #define rmb()  __asm__ __volatile__ ("sync" : : : "memory")
 #define wmb()  __asm__ __volatile__ ("sync" : : : "memory")
-#define gmb()  do { } while (0)
 #define read_barrier_depends()  do { } while(0)
 
 #define set_mb(var, value)	do { var = value; mb(); } while (0)
+
+#define osb()   asm volatile("ori 31,31,0")
 
 #ifdef CONFIG_SMP
 
