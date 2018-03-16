@@ -29,6 +29,7 @@
 #include <linux/string.h>
 #include <linux/tracehook.h>
 #include <linux/ratelimit.h>
+#include <linux/syscalls.h>
 
 #include <asm/debug-monitors.h>
 #include <asm/elf.h>
@@ -387,7 +388,7 @@ static int restore_sigframe(struct pt_regs *regs,
 	/*
 	 * Avoid sys_rt_sigreturn() restarting.
 	 */
-	regs->syscallno = ~0UL;
+	regs->syscallno = ~0;
 
 	err |= !valid_user_regs(&regs->user_regs, current);
 	if (err == 0)
@@ -673,7 +674,7 @@ static void do_signal(struct pt_regs *regs)
 {
 	unsigned long continue_addr = 0, restart_addr = 0;
 	int retval = 0;
-	int syscall = (int)regs->syscallno;
+	int syscall = regs->syscallno;
 	struct ksignal ksig;
 
 	/*
@@ -687,7 +688,7 @@ static void do_signal(struct pt_regs *regs)
 		/*
 		 * Avoid additional syscall restarting via ret_to_user.
 		 */
-		regs->syscallno = ~0UL;
+		regs->syscallno = ~0;
 
 		/*
 		 * Prepare for system call restart. We do this here so that a
@@ -749,7 +750,11 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
 	 * Update the trace code with the current status.
 	 */
 	trace_hardirqs_off();
+
 	do {
+		/* Check valid user FS if needed */
+		addr_limit_user_check();
+
 		if (thread_flags & _TIF_NEED_RESCHED) {
 			schedule();
 		} else {

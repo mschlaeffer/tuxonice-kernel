@@ -34,6 +34,7 @@
 #include <linux/hugetlb.h>
 
 #include <asm/bug.h>
+#include <asm/cmpxchg.h>
 #include <asm/cpufeature.h>
 #include <asm/exception.h>
 #include <asm/debug-monitors.h>
@@ -139,7 +140,6 @@ void show_pte(unsigned long addr)
 	pr_cont("\n");
 }
 
-#ifdef CONFIG_ARM64_HW_AFDBM
 /*
  * This function sets the access flags (dirty, accessed), as well as write
  * permission, and only to a more permissive setting.
@@ -154,18 +154,13 @@ int ptep_set_access_flags(struct vm_area_struct *vma,
 			  unsigned long address, pte_t *ptep,
 			  pte_t entry, int dirty)
 {
-	pteval_t old_pteval;
-	unsigned int tmp;
+	pteval_t old_pteval, pteval;
 
 	if (pte_same(*ptep, entry))
 		return 0;
 
 	/* only preserve the access flags and write permission */
-	pte_val(entry) &= PTE_AF | PTE_WRITE | PTE_DIRTY;
-
-	/* set PTE_RDONLY if actual read-only or clean PTE */
-	if (!pte_write(entry) || !pte_sw_dirty(entry))
-		pte_val(entry) |= PTE_RDONLY;
+	pte_val(entry) &= PTE_RDONLY | PTE_AF | PTE_WRITE | PTE_DIRTY;
 
 	/*
 	 * Setting the flags must be done atomically to avoid racing with the
@@ -174,21 +169,18 @@ int ptep_set_access_flags(struct vm_area_struct *vma,
 	 * (calculated as: a & b == ~(~a | ~b)).
 	 */
 	pte_val(entry) ^= PTE_RDONLY;
-	asm volatile("//	ptep_set_access_flags\n"
-	"	prfm	pstl1strm, %2\n"
-	"1:	ldxr	%0, %2\n"
-	"	eor	%0, %0, %3		// negate PTE_RDONLY in *ptep\n"
-	"	orr	%0, %0, %4		// set flags\n"
-	"	eor	%0, %0, %3		// negate final PTE_RDONLY\n"
-	"	stxr	%w1, %0, %2\n"
-	"	cbnz	%w1, 1b\n"
-	: "=&r" (old_pteval), "=&r" (tmp), "+Q" (pte_val(*ptep))
-	: "L" (PTE_RDONLY), "r" (pte_val(entry)));
+	pteval = READ_ONCE(pte_val(*ptep));
+	do {
+		old_pteval = pteval;
+		pteval ^= PTE_RDONLY;
+		pteval |= pte_val(entry);
+		pteval ^= PTE_RDONLY;
+		pteval = cmpxchg_relaxed(&pte_val(*ptep), old_pteval, pteval);
+	} while (pteval != old_pteval);
 
 	flush_tlb_fix_spurious_fault(vma, address);
 	return 1;
 }
-#endif
 
 static bool is_el1_instruction_abort(unsigned int esr)
 {
@@ -207,7 +199,7 @@ static inline bool is_permission_fault(unsigned int esr, struct pt_regs *regs,
 	if (fsc_type == ESR_ELx_FSC_PERM)
 		return true;
 
-	if (addr < USER_DS && system_uses_ttbr0_pan())
+	if (addr < TASK_SIZE && system_uses_ttbr0_pan())
 		return fsc_type == ESR_ELx_FSC_FAULT &&
 			(regs->pstate & PSR_PAN_BIT);
 
@@ -389,7 +381,7 @@ static int __kprobes do_page_fault(unsigned long addr, unsigned int esr,
 		mm_flags |= FAULT_FLAG_WRITE;
 	}
 
-	if (addr < USER_DS && is_permission_fault(esr, regs, addr)) {
+	if (addr < TASK_SIZE && is_permission_fault(esr, regs, addr)) {
 		/* regs->orig_addr_limit may be 0 if we entered from EL0 */
 		if (regs->orig_addr_limit == KERNEL_DS)
 			die("Accessing user space memory with fs=KERNEL_DS", regs, esr);
@@ -712,6 +704,29 @@ asmlinkage void __exception do_mem_abort(unsigned long addr, unsigned int esr,
 	arm64_notify_die("", regs, &info, esr);
 }
 
+asmlinkage void __exception do_el0_irq_bp_hardening(void)
+{
+	/* PC has already been checked in entry.S */
+	arm64_apply_bp_hardening();
+}
+
+asmlinkage void __exception do_el0_ia_bp_hardening(unsigned long addr,
+						   unsigned int esr,
+						   struct pt_regs *regs)
+{
+	/*
+	 * We've taken an instruction abort from userspace and not yet
+	 * re-enabled IRQs. If the address is a kernel address, apply
+	 * BP hardening prior to enabling IRQs and pre-emption.
+	 */
+	if (addr > TASK_SIZE)
+		arm64_apply_bp_hardening();
+
+	local_irq_enable();
+	do_mem_abort(addr, esr, regs);
+}
+
+
 /*
  * Handle stack alignment exceptions.
  */
@@ -721,6 +736,12 @@ asmlinkage void __exception do_sp_pc_abort(unsigned long addr,
 {
 	struct siginfo info;
 	struct task_struct *tsk = current;
+
+	if (user_mode(regs)) {
+		if (instruction_pointer(regs) > TASK_SIZE)
+			arm64_apply_bp_hardening();
+		local_irq_enable();
+	}
 
 	if (show_unhandled_signals && unhandled_signal(tsk, SIGBUS))
 		pr_info_ratelimited("%s[%d]: %s exception: pc=%p sp=%p\n",
@@ -780,6 +801,9 @@ asmlinkage int __exception do_debug_exception(unsigned long addr,
 	 */
 	if (interrupts_enabled(regs))
 		trace_hardirqs_off();
+
+	if (user_mode(regs) && instruction_pointer(regs) > TASK_SIZE)
+		arm64_apply_bp_hardening();
 
 	if (!inf->fn(addr, esr, regs)) {
 		rv = 1;
