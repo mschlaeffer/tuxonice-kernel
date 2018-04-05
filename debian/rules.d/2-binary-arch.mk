@@ -414,7 +414,9 @@ install-arch-headers:
 	@echo Debug: $@
 	dh_testdir
 	dh_testroot
+ifeq ($(do_libc_dev_package),true)
 	dh_prep -plinux-libc-dev
+endif
 
 	rm -rf $(headers_tmp)
 	install -d $(headers_tmp) $(headers_dir)/usr/include/
@@ -456,6 +458,7 @@ endif
 endif
 
 binary-%: pkgimg = $(bin_pkg_name)-$*
+binary-%: pkgdir_ex = $(CURDIR)/debian/$(extra_pkg_name)-$*
 binary-%: pkgimg_ex = $(extra_pkg_name)-$*
 binary-%: pkghdr = $(hdrs_pkg_name)-$*
 binary-%: dbgpkg = $(bin_pkg_name)-$*-dbgsym
@@ -480,6 +483,14 @@ binary-%: install-%
 	dh_builddeb -p$(pkgimg)
 
 ifeq ($(do_extras_package),true)
+  ifeq ($(ship_extras_package),false)
+	# If $(ship_extras_package) is explicitly set to false, then do not
+	# construct the linux-image-extra package; instead just log all of the
+	# "extra" modules which were pointlessly built yet won't be shipped.
+	find $(pkgdir_ex) -name '*.ko' | sort \
+		| sed 's|^$(pkgdir_ex)/|NOT-SHIPPED |' \
+		| tee -a $(target_flavour).not-shipped.log;
+  else
 	if [ -f $(DEBIAN)/control.d/$(target_flavour).inclusion-list ] ; then \
 		dh_installchangelogs -p$(pkgimg_ex); \
 		dh_installdocs -p$(pkgimg_ex); \
@@ -491,6 +502,7 @@ ifeq ($(do_extras_package),true)
 		dh_md5sums -p$(pkgimg_ex); \
 		dh_builddeb -p$(pkgimg_ex); \
 	fi
+  endif
 endif
 
 	dh_installchangelogs -p$(pkghdr)
@@ -622,7 +634,7 @@ ifeq ($(do_tools_perf),true)
 	cd $(builddirpa) && $(kmake) silentoldconfig
 	cd $(builddirpa) && $(kmake) prepare
 	cd $(builddirpa)/tools/perf && \
-		$(kmake) prefix=/usr HAVE_CPLUS_DEMANGLE=1 CROSS_COMPILE=$(CROSS_COMPILE) NO_LIBPYTHON=1 NO_LIBPERL=1 PYTHON=python2.7
+		$(kmake) prefix=/usr HAVE_NO_LIBBFD=1 HAVE_CPUS_DEMANGLE_SUPPORT=1 CROSS_COMPILE=$(CROSS_COMPILE) NO_LIBPYTHON=1 NO_LIBPERL=1 PYTHON=python2.7
 endif
 ifeq ($(do_tools_x86),true)
 	cd $(builddirpa)/tools/power/x86/x86_energy_perf_policy && make CROSS_COMPILE=$(CROSS_COMPILE)

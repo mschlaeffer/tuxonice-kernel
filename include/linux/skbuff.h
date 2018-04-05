@@ -3162,6 +3162,7 @@ int skb_shift(struct sk_buff *tgt, struct sk_buff *skb, int shiftlen);
 void skb_scrub_packet(struct sk_buff *skb, bool xnet);
 unsigned int skb_gso_transport_seglen(const struct sk_buff *skb);
 bool skb_gso_validate_mtu(const struct sk_buff *skb, unsigned int mtu);
+bool skb_gso_validate_mac_len(const struct sk_buff *skb, unsigned int len);
 struct sk_buff *skb_segment(struct sk_buff *skb, netdev_features_t features);
 struct sk_buff *skb_vlan_untag(struct sk_buff *skb);
 int skb_ensure_writable(struct sk_buff *skb, int write_len);
@@ -3655,6 +3656,13 @@ static inline void nf_reset_trace(struct sk_buff *skb)
 #endif
 }
 
+static inline void ipvs_reset(struct sk_buff *skb)
+{
+#if IS_ENABLED(CONFIG_IP_VS)
+	skb->ipvs_property = 0;
+#endif
+}
+
 /* Note: This doesn't put any conntrack and bridge info in dst. */
 static inline void __nf_copy(struct sk_buff *dst, const struct sk_buff *src,
 			     bool copy)
@@ -3922,6 +3930,21 @@ static inline unsigned int skb_gso_network_seglen(const struct sk_buff *skb)
 {
 	unsigned int hdr_len = skb_transport_header(skb) -
 			       skb_network_header(skb);
+	return hdr_len + skb_gso_transport_seglen(skb);
+}
+
+/**
+ * skb_gso_mac_seglen - Return length of individual segments of a gso packet
+ *
+ * @skb: GSO skb
+ *
+ * skb_gso_mac_seglen is used to determine the real size of the
+ * individual segments, including MAC/L2, Layer3 (IP, IPv6) and L4
+ * headers (TCP/UDP).
+ */
+static inline unsigned int skb_gso_mac_seglen(const struct sk_buff *skb)
+{
+	unsigned int hdr_len = skb_transport_header(skb) - skb_mac_header(skb);
 	return hdr_len + skb_gso_transport_seglen(skb);
 }
 
