@@ -442,8 +442,8 @@ struct mlx5_core_srq {
 	struct mlx5_core_rsc_common	common; /* must be first */
 	u32		srqn;
 	int		max;
-	int		max_gs;
-	int		max_avail_gather;
+	size_t		max_gs;
+	size_t		max_avail_gather;
 	int		wqe_shift;
 	void (*event)	(struct mlx5_core_srq *, enum mlx5_event);
 
@@ -1238,7 +1238,7 @@ mlx5_get_vector_affinity(struct mlx5_core_dev *dev, int vector)
 	int eqn;
 	int err;
 
-	err = mlx5_vector2eqn(dev, vector, &eqn, &irq);
+	err = mlx5_vector2eqn(dev, MLX5_EQ_VEC_COMP_BASE + vector, &eqn, &irq);
 	if (err)
 		return NULL;
 
