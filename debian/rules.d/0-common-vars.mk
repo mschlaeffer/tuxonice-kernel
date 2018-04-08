@@ -33,6 +33,7 @@ family=ubuntu
 # or configs.
 skipabi=true
 skipmodule=true
+skipretpoline=true
 AUTOBUILD=
 
 ifneq ($(AUTOBUILD),)
