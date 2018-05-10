@@ -164,6 +164,8 @@ struct tlb_state {
 	struct mm_struct *loaded_mm;
 	u16 loaded_mm_asid;
 	u16 next_asid;
+	/* last user mm's ctx id */
+	u64 last_ctx_id;
 
 	/*
 	 * We can be in one of several states:
@@ -328,6 +330,8 @@ static inline void invalidate_user_asid(u16 asid)
 	__set_bit(kern_pcid(asid),
 		  (unsigned long *)this_cpu_ptr(&cpu_tlbstate.user_pcid_flush_mask));
 }
+
+extern void initialize_tlbstate_and_flush(void);
 
 /*
  * flush the entire current user mapping
