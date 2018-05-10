@@ -844,6 +844,13 @@ static inline bool is_machine_check(u32 intr_info)
 		(INTR_TYPE_HARD_EXCEPTION | MC_VECTOR | INTR_INFO_VALID_MASK);
 }
 
+/* Undocumented: icebp/int1 */
+static inline bool is_icebp(u32 intr_info)
+{
+	return (intr_info & (INTR_INFO_INTR_TYPE_MASK | INTR_INFO_VALID_MASK))
+		== (INTR_TYPE_PRIV_SW_EXCEPTION | INTR_INFO_VALID_MASK);
+}
+
 static inline bool cpu_has_vmx_msr_bitmap(void)
 {
 	return vmcs_config.cpu_based_exec_ctrl & CPU_BASED_USE_MSR_BITMAPS;
@@ -3234,12 +3241,12 @@ static void enter_lmode(struct kvm_vcpu *vcpu)
 	vmx_segment_cache_clear(to_vmx(vcpu));
 
 	guest_tr_ar = vmcs_read32(GUEST_TR_AR_BYTES);
-	if ((guest_tr_ar & AR_TYPE_MASK) != AR_TYPE_BUSY_64_TSS) {
+	if ((guest_tr_ar & VMX_AR_TYPE_MASK) != VMX_AR_TYPE_BUSY_64_TSS) {
 		pr_debug_ratelimited("%s: tss fixup for long mode. \n",
 				     __func__);
 		vmcs_write32(GUEST_TR_AR_BYTES,
-			     (guest_tr_ar & ~AR_TYPE_MASK)
-			     | AR_TYPE_BUSY_64_TSS);
+			     (guest_tr_ar & ~VMX_AR_TYPE_MASK)
+			     | VMX_AR_TYPE_BUSY_64_TSS);
 	}
 	vmx_set_efer(vcpu, vcpu->arch.efer | EFER_LMA);
 }
@@ -3663,11 +3670,11 @@ static bool code_segment_valid(struct kvm_vcpu *vcpu)
 
 	if (cs.unusable)
 		return false;
-	if (~cs.type & (AR_TYPE_CODE_MASK|AR_TYPE_ACCESSES_MASK))
+	if (~cs.type & (VMX_AR_TYPE_CODE_MASK|VMX_AR_TYPE_ACCESSES_MASK))
 		return false;
 	if (!cs.s)
 		return false;
-	if (cs.type & AR_TYPE_WRITEABLE_MASK) {
+	if (cs.type & VMX_AR_TYPE_WRITEABLE_MASK) {
 		if (cs.dpl > cs_rpl)
 			return false;
 	} else {
@@ -3717,7 +3724,7 @@ static bool data_segment_valid(struct kvm_vcpu *vcpu, int seg)
 		return false;
 	if (!var.present)
 		return false;
-	if (~var.type & (AR_TYPE_CODE_MASK|AR_TYPE_WRITEABLE_MASK)) {
+	if (~var.type & (VMX_AR_TYPE_CODE_MASK|VMX_AR_TYPE_WRITEABLE_MASK)) {
 		if (var.dpl < rpl) /* DPL < RPL */
 			return false;
 	}
@@ -4816,7 +4823,11 @@ static int handle_exception(struct kvm_vcpu *vcpu)
 		dr6 = vmcs_readl(EXIT_QUALIFICATION);
 		if (!(vcpu->guest_debug &
 		      (KVM_GUESTDBG_SINGLESTEP | KVM_GUESTDBG_USE_HW_BP))) {
-			vcpu->arch.dr6 = dr6 | DR6_FIXED_1;
+			vcpu->arch.dr6 &= ~15;
+			vcpu->arch.dr6 |= dr6;
+			if (is_icebp(intr_info))
+				skip_emulated_instruction(vcpu);
+
 			kvm_queue_exception(vcpu, DB_VECTOR);
 			return 1;
 		}
@@ -7038,13 +7049,13 @@ static void vmx_handle_external_intr(struct kvm_vcpu *vcpu)
 			"pushf\n\t"
 			"orl $0x200, (%%" _ASM_SP ")\n\t"
 			__ASM_SIZE(push) " $%c[cs]\n\t"
-			"call *%[entry]\n\t"
+			CALL_NOSPEC
 			:
 #ifdef CONFIG_X86_64
 			[sp]"=&r"(tmp)
 #endif
 			:
-			[entry]"r"(entry),
+			THUNK_TARGET(entry),
 			[ss]"i"(__KERNEL_DS),
 			[cs]"i"(__KERNEL_CS)
 			);
