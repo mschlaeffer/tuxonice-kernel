@@ -19,6 +19,7 @@
 #include <linux/cpuidle.h>
 #include <trace/events/power.h>
 #include <linux/hw_breakpoint.h>
+#include <asm/spec-ctrl.h>
 #include <asm/cpu.h>
 #include <asm/apic.h>
 #include <asm/syscalls.h>
@@ -196,6 +197,24 @@ int set_tsc_mode(unsigned int val)
 	return 0;
 }
 
+static __always_inline void __speculative_store_bypass_update(unsigned long tifn)
+{
+	u64 msr;
+
+	if (static_cpu_has(X86_FEATURE_AMD_SSBD)) {
+		msr = x86_amd_ls_cfg_base | ssbd_tif_to_amd_ls_cfg(tifn);
+		wrmsrl(MSR_AMD64_LS_CFG, msr);
+	} else {
+		msr = x86_spec_ctrl_base | ssbd_tif_to_spec_ctrl(tifn);
+		wrmsrl(MSR_IA32_SPEC_CTRL, msr);
+	}
+}
+
+void speculative_store_bypass_update(void)
+{
+	__speculative_store_bypass_update(current_thread_info()->flags);
+}
+
 void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
 		      struct tss_struct *tss)
 {
@@ -223,6 +242,10 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
 		else
 			hard_enable_TSC();
 	}
+
+	if (test_tsk_thread_flag(prev_p, TIF_SSBD) ^
+	    test_tsk_thread_flag(next_p, TIF_SSBD))
+		__speculative_store_bypass_update(task_thread_info(next_p)->flags);
 
 	if (test_tsk_thread_flag(next_p, TIF_IO_BITMAP)) {
 		/*
@@ -437,15 +460,15 @@ static void mwait_idle(void)
 		}
 
 		if (ibrs_inuse)
-			native_wrmsrl(MSR_IA32_SPEC_CTRL, 0);
+			native_wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_get_default());
 		__monitor((void *)&current_thread_info()->flags, 0, 0);
 		if (!need_resched()) {
 			__sti_mwait(0, 0);
 			if (ibrs_inuse)
-				native_wrmsrl(MSR_IA32_SPEC_CTRL, FEATURE_ENABLE_IBRS);
+				native_wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_get_default() | SPEC_CTRL_IBRS);
 		} else {
 			if (ibrs_inuse)
-				native_wrmsrl(MSR_IA32_SPEC_CTRL, FEATURE_ENABLE_IBRS);
+				native_wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_get_default() | SPEC_CTRL_IBRS);
 			local_irq_enable();
 		}
 
