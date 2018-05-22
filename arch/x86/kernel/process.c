@@ -38,6 +38,7 @@
 #include <asm/switch_to.h>
 #include <asm/desc.h>
 #include <asm/prctl.h>
+#include <asm/spec-ctrl.h>
 
 /*
  * per-CPU TSS segments. Threads are completely 'soft' on Linux,
@@ -278,6 +279,24 @@ static inline void switch_to_bitmap(struct tss_struct *tss,
 	}
 }
 
+static __always_inline void __speculative_store_bypass_update(unsigned long tifn)
+{
+	u64 msr;
+
+	if (static_cpu_has(X86_FEATURE_AMD_SSBD)) {
+		msr = x86_amd_ls_cfg_base | ssbd_tif_to_amd_ls_cfg(tifn);
+		wrmsrl(MSR_AMD64_LS_CFG, msr);
+	} else {
+		msr = x86_spec_ctrl_base | ssbd_tif_to_spec_ctrl(tifn);
+		wrmsrl(MSR_IA32_SPEC_CTRL, msr);
+	}
+}
+
+void speculative_store_bypass_update(void)
+{
+	__speculative_store_bypass_update(current_thread_info()->flags);
+}
+
 void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
 		      struct tss_struct *tss)
 {
@@ -309,6 +328,9 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
 
 	if ((tifp ^ tifn) & _TIF_NOCPUID)
 		set_cpuid_faulting(!!(tifn & _TIF_NOCPUID));
+
+	if ((tifp ^ tifn) & _TIF_SSBD)
+		__speculative_store_bypass_update(tifn);
 }
 
 /*
@@ -448,16 +470,16 @@ static __cpuidle void mwait_idle(void)
 		}
 
 		if (ibrs_inuse)
-                        native_wrmsrl(MSR_IA32_SPEC_CTRL, 0);
+                        native_wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_get_default());
 
 		__monitor((void *)&current_thread_info()->flags, 0, 0);
 		if (!need_resched()) {
 			__sti_mwait(0, 0);
 			if (ibrs_inuse)
-				native_wrmsrl(MSR_IA32_SPEC_CTRL, FEATURE_ENABLE_IBRS);
+				native_wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_get_default() | SPEC_CTRL_IBRS);
 		} else {
 			if (ibrs_inuse)
-				native_wrmsrl(MSR_IA32_SPEC_CTRL, FEATURE_ENABLE_IBRS);
+				native_wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_get_default() | SPEC_CTRL_IBRS);
 			local_irq_enable();
 		}
 		trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());

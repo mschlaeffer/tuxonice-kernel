@@ -197,10 +197,26 @@ struct prctl_mm_map {
 # define PR_CAP_AMBIENT_LOWER		3
 # define PR_CAP_AMBIENT_CLEAR_ALL	4
 
+/* Per task speculation control */
+#define PR_GET_SPECULATION_CTRL		52
+#define PR_SET_SPECULATION_CTRL		53
+/* Speculation control variants */
+# define PR_SPEC_STORE_BYPASS		0
+/* Return and control values for PR_SET/GET_SPECULATION_CTRL */
+# define PR_SPEC_NOT_AFFECTED		0
+# define PR_SPEC_PRCTL			(1UL << 0)
+# define PR_SPEC_ENABLE			(1UL << 1)
+# define PR_SPEC_DISABLE		(1UL << 2)
+# define PR_SPEC_FORCE_DISABLE		(1UL << 3)
+
 /*
- * Control the LSM specific information reported by
- * SO_PEERSEC and /proc/.../attr/current
+ * Control the LSM specific peer information
+ *
+ * The Ubuntu kernel provides an early preview of LSM Stacking. Use these
+ * PRCTLs at your own risk. Their values are not guaranteed to be stable in the
+ * case of colliding with an upstream PRCTL.
  */
-#define	PR_GET_DISPLAY_LSM	48
-#define	PR_SET_DISPLAY_LSM	49
+#define	PR_GET_DISPLAY_LSM	1000000
+#define	PR_SET_DISPLAY_LSM	1000001
+
 #endif /* _LINUX_PRCTL_H */
