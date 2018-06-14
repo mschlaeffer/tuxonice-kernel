@@ -197,7 +197,6 @@
 #define X86_FEATURE_CAT_L2		( 7*32+ 5) /* Cache Allocation Technology L2 */
 #define X86_FEATURE_CDP_L3		( 7*32+ 6) /* Code and Data Prioritization L3 */
 #define X86_FEATURE_INVPCID_SINGLE	( 7*32+ 7) /* Effectively INVPCID && CR4.PCIDE=1 */
-
 #define X86_FEATURE_HW_PSTATE		( 7*32+ 8) /* AMD HW-PState */
 #define X86_FEATURE_PROC_FEEDBACK	( 7*32+ 9) /* AMD ProcFeedbackInterface */
 #define X86_FEATURE_SME			( 7*32+10) /* AMD Secure Memory Encryption */
@@ -215,7 +214,11 @@
 #define X86_FEATURE_ARCH_CAPABILITIES	( 7*32+21) /* IA32_ARCH_CAPABILITIES MSR (Intel) */
 #define X86_FEATURE_SSBD		( 7*32+22) /* Speculative Store Bypass Disable */
 #define X86_FEATURE_SPEC_STORE_BYPASS_DISABLE ( 7*32+23 ) /* Disable Speculative Store Bypass. */
-#define X86_FEATURE_AMD_SSBD		( 7*32+24) /* AMD SSBD implementation */
+#define X86_FEATURE_LS_CFG_SSBD		( 7*32+24) /* AMD SSBD implementation via LS_CFG MSR */
+#define X86_FEATURE_IBPB		( 7*32+25) /* Indirect Branch Prediction Barrier */
+#define X86_FEATURE_MSR_SPEC_CTRL	( 7*32+26) /* "" MSR SPEC_CTRL is implemented */
+#define X86_FEATURE_SPEC_CTRL_SSBD	( 7*32+27) /* "" Speculative Store Bypass Disable */
+#define X86_FEATURE_ZEN			( 7*32+28) /* "" CPU is AMD family 0x17 (Zen) */
 
 /* Virtualization flags: Linux defined, word 8 */
 #define X86_FEATURE_TPR_SHADOW		( 8*32+ 0) /* Intel TPR Shadow */
@@ -275,7 +278,8 @@
 #define X86_FEATURE_CLZERO		(13*32+ 0) /* CLZERO instruction */
 #define X86_FEATURE_IRPERF		(13*32+ 1) /* Instructions Retired Count */
 #define X86_FEATURE_XSAVEERPTR		(13*32+ 2) /* Always save/restore FP error pointers */
-#define X86_FEATURE_IBPB		(13*32+12) /* Indirect Branch Prediction Barrier */
+#define X86_FEATURE_AMD_IBPB		(13*32+12) /* "" Indirect Branch Prediction Barrier */
+#define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
 
 /* Thermal and Power Management Leaf, CPUID level 0x00000006 (EAX), word 14 */
 #define X86_FEATURE_DTHERM		(14*32+ 0) /* Digital Thermal Sensor */
