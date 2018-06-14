@@ -489,8 +489,8 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
 		 * avoid RMW. If that faults, do not enable SSBD.
 		 */
 		if (!rdmsrl_safe(MSR_AMD64_LS_CFG, &x86_amd_ls_cfg_base)) {
+			setup_force_cpu_cap(X86_FEATURE_LS_CFG_SSBD);
 			setup_force_cpu_cap(X86_FEATURE_SSBD);
-			setup_force_cpu_cap(X86_FEATURE_AMD_SSBD);
 			x86_amd_ls_cfg_ssbd_mask = 1ULL << bit;
 		}
 	}
@@ -783,6 +783,16 @@ static void init_amd(struct cpuinfo_x86 *c)
 	if (cpu_has_amd_erratum(c, amd_erratum_400))
 		set_cpu_bug(c, X86_BUG_AMD_APIC_C1E);
 
+	if (c->x86 == 0x17) {
+		set_cpu_cap(c, X86_FEATURE_ZEN);
+		/*
+		 * Fix erratum 1076: CPB feature bit not being set in CPUID.
+		 * It affects all up to and including B1.
+		 */
+		if (c->x86_model <= 1 && c->x86_mask <= 1)
+			set_cpu_cap(c, X86_FEATURE_CPB);
+	}
+
 	/* AMD speculative control support */
 	if (cpu_has(c, X86_FEATURE_SPEC_CTRL)) {
 		pr_info_once("FEATURE SPEC_CTRL Present\n");
@@ -792,7 +802,8 @@ static void init_amd(struct cpuinfo_x86 *c)
 			sysctl_ibrs_enabled = 1;
 		if (ibpb_inuse)
 			sysctl_ibpb_enabled = 1;
-	} else if (cpu_has(c, X86_FEATURE_IBPB)) {
+		set_cpu_cap(c, X86_FEATURE_MSR_SPEC_CTRL);
+	} else if (cpu_has(c, X86_FEATURE_AMD_IBPB)) {
 		pr_info_once("FEATURE SPEC_CTRL Not Present\n");
 		pr_info_once("FEATURE IBPB Present\n");
 		set_ibpb_supported();
@@ -822,9 +833,9 @@ static void init_amd(struct cpuinfo_x86 *c)
 		}
 	}
 
-	if (boot_cpu_has(X86_FEATURE_AMD_SSBD)) {
+	if (cpu_has(c, X86_FEATURE_SPEC_CTRL_SSBD) ||
+	    cpu_has(c, X86_FEATURE_VIRT_SSBD)) {
 		set_cpu_cap(c, X86_FEATURE_SSBD);
-		set_cpu_cap(c, X86_FEATURE_AMD_SSBD);
 	}
 
 	rdmsr_safe(MSR_AMD64_PATCH_LEVEL, &c->microcode, &dummy);

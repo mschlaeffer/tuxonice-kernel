@@ -59,7 +59,7 @@
 #define MSR_IA32_ARCH_CAPABILITIES	0x0000010a
 #define ARCH_CAP_RDCL_NO		(1 << 0)	/* Not susceptible to Meltdown */
 #define ARCH_CAP_IBRS_ALL		(1 << 1)	/* Enhanced IBRS support */
-#define ARCH_CAP_SSBD_NO		(1 << 4)	/*
+#define ARCH_CAP_SSB_NO			(1 << 4)	/*
 							 * Not susceptible to Speculative Store Bypass
 							 * attack, so no Speculative Store Bypass
 							 * control required.
@@ -223,6 +223,8 @@
 #define MSR_AMD64_IBSCTL		0xc001103a
 #define MSR_AMD64_IBSBRTARGET		0xc001103b
 #define MSR_AMD64_IBS_REG_COUNT_MAX	8 /* includes MSR_AMD64_IBSBRTARGET */
+
+#define MSR_AMD64_VIRT_SPEC_CTRL	0xc001011f
 
 /* Fam 16h MSRs */
 #define MSR_F16H_L2I_PERF_CTL		0xc0010230

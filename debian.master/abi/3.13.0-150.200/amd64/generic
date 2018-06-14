@@ -10272,7 +10272,6 @@ EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xb573778a	kvm_lapic_set_eoi
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xb72c8dc3	kvm_vcpu_init
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xb759ca20	kvm_init
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xb7839e68	kvm_set_cr0
-EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xba95a6ff	kvm_x86_ops
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xba9ed435	kvm_mmu_set_mmio_spte_mask
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xc0a53e89	kvm_apic_update_irr
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xc2de8433	kvm_read_guest
@@ -10290,6 +10289,7 @@ EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xd0cf068c	kvm_is_linear_rip
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xd187fa4d	kvm_emulate_hypercall
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xd294dd5c	kvm_vcpu_uninit
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xd50aa44f	handle_mmio_page_fault_common
+EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xd9efece2	kvm_x86_ops
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xda418e4f	kvm_rdpmc
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xdada83fd	gfn_to_pfn_prot
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0xdbc6039f	kvm_mmu_unprotect_page_virt
@@ -14380,6 +14380,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x0e1d5516	aead_geniv_exit
 EXPORT_SYMBOL_GPL vmlinux 0x0e4bda76	usb_autopm_get_interface
 EXPORT_SYMBOL_GPL vmlinux 0x0e6d10d3	tps6586x_reads
 EXPORT_SYMBOL_GPL vmlinux 0x0e958ca8	virtqueue_add_outbuf
+EXPORT_SYMBOL_GPL vmlinux 0x0e96c795	x86_spec_ctrl_base
 EXPORT_SYMBOL_GPL vmlinux 0x0eb9afc7	relay_subbufs_consumed
 EXPORT_SYMBOL_GPL vmlinux 0x0ec66eaf	tty_encode_baud_rate
 EXPORT_SYMBOL_GPL vmlinux 0x0ecf823a	static_key_slow_dec
@@ -14753,6 +14754,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x2c755d51	debugfs_create_x8
 EXPORT_SYMBOL_GPL vmlinux 0x2c7864b7	iptunnel_handle_offloads
 EXPORT_SYMBOL_GPL vmlinux 0x2c7d9c64	xen_store_interface
 EXPORT_SYMBOL_GPL vmlinux 0x2c7db649	irq_dispose_mapping
+EXPORT_SYMBOL_GPL vmlinux 0x2ca2b5b0	x86_virt_spec_ctrl
 EXPORT_SYMBOL_GPL vmlinux 0x2cb35d80	sdev_evt_send_simple
 EXPORT_SYMBOL_GPL vmlinux 0x2cd33b1d	unix_inq_len
 EXPORT_SYMBOL_GPL vmlinux 0x2ce0d999	driver_find_device

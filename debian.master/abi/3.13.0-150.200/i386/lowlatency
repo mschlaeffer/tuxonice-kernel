@@ -10293,7 +10293,7 @@ EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x4142371d	kvm_is_visible_gfn
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x42d40eea	gfn_to_pfn_atomic
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x42f93f1f	kvm_is_linear_rip
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x4396e2e9	kvm_apic_set_eoi_accelerated
-EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x44603316	kvm_x86_ops
+EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x47ff99cd	kvm_x86_ops
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x485cd7f6	kvm_rebooting
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x4896b9ec	kvm_get_dr
 EXPORT_SYMBOL_GPL arch/x86/kvm/kvm 0x4d501e6e	mark_page_dirty
@@ -14490,6 +14490,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x0e5e4024	regulator_list_voltage_linear_range
 EXPORT_SYMBOL_GPL vmlinux 0x0e6e0bf4	pingv6_prot
 EXPORT_SYMBOL_GPL vmlinux 0x0e6fef91	uart_handle_dcd_change
 EXPORT_SYMBOL_GPL vmlinux 0x0e7386e2	tpm_release
+EXPORT_SYMBOL_GPL vmlinux 0x0e96c795	x86_spec_ctrl_base
 EXPORT_SYMBOL_GPL vmlinux 0x0e979ec1	xen_unregister_device_domain_owner
 EXPORT_SYMBOL_GPL vmlinux 0x0ea5c4c3	invalidate_inode_pages2
 EXPORT_SYMBOL_GPL vmlinux 0x0eb1db74	irq_gc_mask_clr_bit
@@ -14882,6 +14883,7 @@ EXPORT_SYMBOL_GPL vmlinux 0x2c6a0410	xen_set_domain_pte
 EXPORT_SYMBOL_GPL vmlinux 0x2c709a1a	usb_wakeup_notification
 EXPORT_SYMBOL_GPL vmlinux 0x2c7d9c64	xen_store_interface
 EXPORT_SYMBOL_GPL vmlinux 0x2c7db649	irq_dispose_mapping
+EXPORT_SYMBOL_GPL vmlinux 0x2ca2b5b0	x86_virt_spec_ctrl
 EXPORT_SYMBOL_GPL vmlinux 0x2cca7ee6	led_trigger_event
 EXPORT_SYMBOL_GPL vmlinux 0x2ce98559	kcrypto_wq
 EXPORT_SYMBOL_GPL vmlinux 0x2cea32ee	unregister_oldmem_pfn_is_ram
