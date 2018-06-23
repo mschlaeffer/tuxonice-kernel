@@ -7,6 +7,7 @@ armhf	-		generic-tuxonice		-				-	-
 armhf	-		generic-lpae-tuxonice	-				-	-
 
 arm64	-		generic-tuxonice		-				-	-
+arm64	-		snapdragon-tuxonice	-				-	-
 
 ppc64el	-		generic-tuxonice		-				-	-
 

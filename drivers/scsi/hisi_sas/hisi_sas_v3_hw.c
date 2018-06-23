@@ -187,15 +187,6 @@
 #define DMA_RX_STATUS_BUSY_MSK		(0x1 << DMA_RX_STATUS_BUSY_OFF)
 
 #define COARSETUNE_TIME			(PORT_BASE + 0x304)
-#define SAS_TXDEEMPH_G1			(PORT_BASE + 0x350)
-#define SAS_TXDEEMPH_G2			(PORT_BASE + 0x354)
-#define SAS_TXDEEMPH_G3			(PORT_BASE + 0x358)
-#define SAS_TXDEEMPH_G4			(PORT_BASE + 0x35c)
-#define SATA_TXDEEMPH_G1			(PORT_BASE + 0x360)
-#define SATA_TXDEEMPH_G2			(PORT_BASE + 0x364)
-#define SATA_TXDEEMPH_G3			(PORT_BASE + 0x368)
-#define SATA_TXDEEMPH_G4			(PORT_BASE + 0x36c)
-
 #define ERR_CNT_DWS_LOST		(PORT_BASE + 0x380)
 #define ERR_CNT_RESET_PROB		(PORT_BASE + 0x384)
 #define ERR_CNT_INVLD_DW		(PORT_BASE + 0x390)
@@ -352,12 +343,6 @@ struct hisi_sas_err_record_v3 {
 #define HISI_SAS_COMMAND_ENTRIES_V3_HW 4096
 #define HISI_SAS_MSI_COUNT_V3_HW 32
 
-enum {
-	HISI_SAS_PHY_PHY_UPDOWN,
-	HISI_SAS_PHY_CHNL_INT,
-	HISI_SAS_PHY_INT_NR
-};
-
 #define DIR_NO_DATA 0
 #define DIR_TO_INI 1
 #define DIR_TO_DEVICE 2
@@ -414,6 +399,7 @@ static void init_reg_v3_hw(struct hisi_hba *hisi_hba)
 			 (u32)((1ULL << hisi_hba->queue_count) - 1));
 	hisi_sas_write32(hisi_hba, CFG_MAX_TAG, 0xfff0400);
 	hisi_sas_write32(hisi_hba, HGC_SAS_TXFAIL_RETRY_CTRL, 0x108);
+	hisi_sas_write32(hisi_hba, CFG_1US_TIMER_TRSH, 0xd);
 	hisi_sas_write32(hisi_hba, INT_COAL_EN, 0x1);
 	hisi_sas_write32(hisi_hba, OQ_INT_COAL_TIME, 0x1);
 	hisi_sas_write32(hisi_hba, OQ_INT_COAL_CNT, 0x1);
@@ -450,21 +436,12 @@ static void init_reg_v3_hw(struct hisi_hba *hisi_hba)
 		hisi_sas_phy_write32(hisi_hba, i, PHYCTRL_PHY_ENA_MSK, 0x0);
 		hisi_sas_phy_write32(hisi_hba, i, SL_RX_BCAST_CHK_MSK, 0x0);
 		hisi_sas_phy_write32(hisi_hba, i, PHYCTRL_OOB_RESTART_MSK, 0x1);
+		hisi_sas_phy_write32(hisi_hba, i, STP_LINK_TIMER, 0x7f7a120);
 
 		/* used for 12G negotiate */
 		hisi_sas_phy_write32(hisi_hba, i, COARSETUNE_TIME, 0x1e);
-		hisi_sas_phy_write32(hisi_hba, i, SAS_TXDEEMPH_G1, 0x8d04);
-		hisi_sas_phy_write32(hisi_hba, i, SAS_TXDEEMPH_G2, 0x8d04);
-		hisi_sas_phy_write32(hisi_hba, i, SAS_TXDEEMPH_G3, 0x8d04);
-		hisi_sas_phy_write32(hisi_hba, i, SAS_TXDEEMPH_G4, 0x8d04);
-		hisi_sas_phy_write32(hisi_hba, i, SATA_TXDEEMPH_G1, 0x8d04);
-		hisi_sas_phy_write32(hisi_hba, i, SATA_TXDEEMPH_G2, 0x8d04);
-		hisi_sas_phy_write32(hisi_hba, i, SATA_TXDEEMPH_G3, 0x8d04);
-		hisi_sas_phy_write32(hisi_hba, i, SATA_TXDEEMPH_G4, 0x8d04);
-
-		/* disable stp link timer */
-		hisi_sas_phy_write32(hisi_hba, i, STP_LINK_TIMER, 0x2710);
 	}
+
 	for (i = 0; i < hisi_hba->queue_count; i++) {
 		/* Delivery queue */
 		hisi_sas_write32(hisi_hba,
@@ -692,8 +669,10 @@ static int reset_hw_v3_hw(struct hisi_hba *hisi_hba)
 			dev_err(dev, "Reset failed\n");
 			return -EIO;
 		}
-	} else
+	} else {
 		dev_err(dev, "no reset method!\n");
+		return -EINVAL;
+	}
 
 	return 0;
 }
@@ -753,7 +732,7 @@ static void phy_hard_reset_v3_hw(struct hisi_hba *hisi_hba, int phy_no)
 	start_phy_v3_hw(hisi_hba, phy_no);
 }
 
-enum sas_linkrate phy_get_max_linkrate_v3_hw(void)
+static enum sas_linkrate phy_get_max_linkrate_v3_hw(void)
 {
 	return SAS_LINK_RATE_12_0_GBPS;
 }
@@ -1118,7 +1097,7 @@ static int prep_abort_v3_hw(struct hisi_hba *hisi_hba,
 	/* dw0 */
 	hdr->dw0 = cpu_to_le32((5 << CMD_HDR_CMD_OFF) | /*abort*/
 			       (port->id << CMD_HDR_PORT_OFF) |
-				   ((dev_is_sata(dev) ? 1:0)
+				   (dev_is_sata(dev)
 					<< CMD_HDR_ABORT_DEVICE_TYPE_OFF) |
 					(abort_flag
 					 << CMD_HDR_ABORT_FLAG_OFF));
@@ -1134,10 +1113,10 @@ static int prep_abort_v3_hw(struct hisi_hba *hisi_hba,
 	return 0;
 }
 
-static int phy_up_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
+static irqreturn_t phy_up_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
 {
-	int i, res = 0;
-	u32 context, port_id, link_rate, hard_phy_linkrate;
+	int i, res;
+	u32 context, port_id, link_rate;
 	struct hisi_sas_phy *phy = &hisi_hba->phy[phy_no];
 	struct asd_sas_phy *sas_phy = &phy->sas_phy;
 	struct device *dev = hisi_hba->dev;
@@ -1155,10 +1134,6 @@ static int phy_up_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
 		goto end;
 	}
 	sas_phy->linkrate = link_rate;
-	hard_phy_linkrate = hisi_sas_phy_read32(hisi_hba, phy_no,
-						HARD_PHY_LINKRATE);
-	phy->maximum_linkrate = hard_phy_linkrate & 0xf;
-	phy->minimum_linkrate = (hard_phy_linkrate >> 4) & 0xf;
 	phy->phy_type &= ~(PORT_TYPE_SAS | PORT_TYPE_SATA);
 
 	/* Check for SATA dev */
@@ -1212,7 +1187,7 @@ static int phy_up_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
 	phy->port_id = port_id;
 	phy->phy_attached = 1;
 	hisi_sas_notify_phy_event(phy, HISI_PHYE_PHY_UP);
-
+	res = IRQ_HANDLED;
 end:
 	hisi_sas_phy_write32(hisi_hba, phy_no, CHL_INT0,
 			     CHL_INT0_SL_PHY_ENABLE_MSK);
@@ -1221,7 +1196,7 @@ end:
 	return res;
 }
 
-static int phy_down_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
+static irqreturn_t phy_down_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
 {
 	u32 phy_state, sl_ctrl, txid_auto;
 	struct device *dev = hisi_hba->dev;
@@ -1243,10 +1218,10 @@ static int phy_down_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
 	hisi_sas_phy_write32(hisi_hba, phy_no, CHL_INT0, CHL_INT0_NOT_RDY_MSK);
 	hisi_sas_phy_write32(hisi_hba, phy_no, PHYCTRL_NOT_RDY_MSK, 0);
 
-	return 0;
+	return IRQ_HANDLED;
 }
 
-static void phy_bcast_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
+static irqreturn_t phy_bcast_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
 {
 	struct hisi_sas_phy *phy = &hisi_hba->phy[phy_no];
 	struct asd_sas_phy *sas_phy = &phy->sas_phy;
@@ -1257,6 +1232,8 @@ static void phy_bcast_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
 	hisi_sas_phy_write32(hisi_hba, phy_no, CHL_INT0,
 			     CHL_INT0_SL_RX_BCST_ACK_MSK);
 	hisi_sas_phy_write32(hisi_hba, phy_no, SL_RX_BCAST_CHK_MSK, 0);
+
+	return IRQ_HANDLED;
 }
 
 static irqreturn_t int_phy_up_down_bcast_v3_hw(int irq_no, void *p)
@@ -1283,7 +1260,9 @@ static irqreturn_t int_phy_up_down_bcast_v3_hw(int irq_no, void *p)
 						res = IRQ_HANDLED;
 				if (irq_value & CHL_INT0_SL_RX_BCST_ACK_MSK)
 					/* phy bcast */
-					phy_bcast_v3_hw(phy_no, hisi_hba);
+					if (phy_bcast_v3_hw(phy_no, hisi_hba)
+							== IRQ_HANDLED)
+						res = IRQ_HANDLED;
 			} else {
 				if (irq_value & CHL_INT0_NOT_RDY_MSK)
 					/* phy down */
@@ -1599,7 +1578,7 @@ slot_complete_v3_hw(struct hisi_hba *hisi_hba, struct hisi_sas_slot *slot)
 		spin_lock_irqsave(&hisi_hba->lock, flags);
 		hisi_sas_slot_task_free(hisi_hba, task, slot);
 		spin_unlock_irqrestore(&hisi_hba->lock, flags);
-		return -1;
+		return ts->stat;
 	}
 
 	if (unlikely(!sas_dev)) {
@@ -1880,7 +1859,6 @@ static void phy_set_linkrate_v3_hw(struct hisi_hba *hisi_hba, int phy_no,
 	sas_phy->phy->maximum_linkrate = max;
 	sas_phy->phy->minimum_linkrate = min;
 
-	min -= SAS_LINK_RATE_1_5_GBPS;
 	max -= SAS_LINK_RATE_1_5_GBPS;
 
 	for (i = 0; i <= max; i++)
@@ -1889,10 +1867,11 @@ static void phy_set_linkrate_v3_hw(struct hisi_hba *hisi_hba, int phy_no,
 	prog_phy_link_rate &= ~0xff;
 	prog_phy_link_rate |= rate_mask;
 
+	disable_phy_v3_hw(hisi_hba, phy_no);
+	msleep(100);
 	hisi_sas_phy_write32(hisi_hba, phy_no, PROG_PHY_LINK_RATE,
 			prog_phy_link_rate);
-
-	phy_hard_reset_v3_hw(hisi_hba, phy_no);
+	start_phy_v3_hw(hisi_hba, phy_no);
 }
 
 static void interrupt_disable_v3_hw(struct hisi_hba *hisi_hba)
@@ -2438,4 +2417,4 @@ module_pci_driver(sas_v3_pci_driver);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("John Garry <john.garry@huawei.com>");
 MODULE_DESCRIPTION("HISILICON SAS controller v3 hw driver based on pci device");
-MODULE_ALIAS("platform:" DRV_NAME);
+MODULE_ALIAS("pci:" DRV_NAME);
