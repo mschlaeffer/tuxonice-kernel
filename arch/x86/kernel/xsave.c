@@ -509,15 +509,11 @@ static void __init setup_init_fpu_buf(void)
 	xsave_state(init_xstate_buf, -1);
 }
 
-static enum { AUTO, ENABLE, DISABLE } eagerfpu = AUTO;
+static enum { ENABLE, DISABLE } eagerfpu = ENABLE;
 static int __init eager_fpu_setup(char *s)
 {
-	if (!strcmp(s, "on"))
-		eagerfpu = ENABLE;
-	else if (!strcmp(s, "off"))
+	if (!strcmp(s, "off"))
 		eagerfpu = DISABLE;
-	else if (!strcmp(s, "auto"))
-		eagerfpu = AUTO;
 	return 1;
 }
 __setup("eagerfpu=", eager_fpu_setup);
@@ -605,6 +601,8 @@ void eager_fpu_init(void)
 
 	if (eagerfpu == ENABLE)
 		setup_force_cpu_cap(X86_FEATURE_EAGER_FPU);
+
+	printk_once(KERN_INFO "x86/fpu: Using '%s' FPU context switches.\n", eagerfpu == ENABLE ? "eager" : "lazy");
 
 	if (!cpu_has_eager_fpu) {
 		stts();
