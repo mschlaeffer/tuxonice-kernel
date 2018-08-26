@@ -61,8 +61,8 @@
 #include <asm/pgtable_types.h>
 #include <asm/kaiser.h>
 #include <asm/spec_ctrl.h>
-#include <linux/err.h>
 #include <asm/nospec-branch.h>
+#include <linux/err.h>
 
 /* Avoid __ASSEMBLER__'ifying <linux/audit.h> just for this.  */
 #include <linux/elf-em.h>
@@ -702,16 +702,18 @@ GLOBAL(system_call_after_swapgs)
 	jnz tracesys
 system_call_fastpath:
 #if __SYSCALL_MASK == ~0
-	cmpq $__NR_syscall_max,%rax
+	cmpq	$NR_syscalls, %rax
 #else
 	andl $__SYSCALL_MASK,%eax
-	cmpl $__NR_syscall_max,%eax
+	cmpl	$NR_syscalls, %eax
 #endif
-	ja badsys
+	jae	badsys
+	sbb	%rcx, %rcx			/* array_index_mask_nospec() */
+	and	%rcx, %rax
 	movq %r10,%rcx
-#ifdef RETPOLINE
-	movq    sys_call_table(, %rax, 8), %rax
-	call    __x86_indirect_thunk_rax
+#ifdef CONFIG_RETPOLINE
+	movq	sys_call_table(, %rax, 8), %rax
+	call	__x86_indirect_thunk_rax
 #else
 	call *sys_call_table(,%rax,8)  # XXX:	 rip relative
 #endif
@@ -835,16 +837,18 @@ tracesys:
 	LOAD_ARGS ARGOFFSET, 1
 	RESTORE_REST
 #if __SYSCALL_MASK == ~0
-	cmpq $__NR_syscall_max,%rax
+	cmpq	$NR_syscalls, %rax
 #else
 	andl $__SYSCALL_MASK,%eax
-	cmpl $__NR_syscall_max,%eax
+	cmpl	$NR_syscalls, %eax
 #endif
-	ja   int_ret_from_sys_call	/* RAX(%rsp) set to -ENOSYS above */
+	jae	int_ret_from_sys_call		/* RAX(%rsp) set to -ENOSYS above */
+	sbb	%rcx, %rcx			/* array_index_mask_nospec() */
+	and	%rcx, %rax
 	movq %r10,%rcx	/* fixup for C */
-#ifdef RETPOLINE
-	movq    sys_call_table(, %rax, 8), %rax
-	call    __x86_indirect_thunk_rax
+#ifdef CONFIG_RETPOLINE
+	movq	sys_call_table(, %rax, 8), %rax
+	call	__x86_indirect_thunk_rax
 #else
 	call *sys_call_table(,%rax,8)
 #endif

@@ -309,7 +309,7 @@ ENTRY(ret_from_kernel_thread)
 	pushl_cfi $0x0202		# Reset kernel eflags
 	popfl_cfi
 	movl PT_EBP(%esp),%eax
-	movl PT_EBX(%esp),%edx
+	movl	PT_EBX(%esp), %edx
 	CALL_NOSPEC %edx
 	movl $0,PT_EAX(%esp)
 	jmp syscall_exit
@@ -434,8 +434,10 @@ sysenter_past_esp:
 sysenter_do_call:
 	cmpl $(NR_syscalls), %eax
 	jae sysenter_badsys
+	sbb %edx, %edx				/* array_index_mask_nospec() */
+	and %edx, %eax
 #ifdef CONFIG_RETPOLINE
-	movl sys_call_table(,%eax,4), %eax
+	movl sys_call_table(,%eax,4),%eax
 	call __x86_indirect_thunk_eax
 #else
 	call *sys_call_table(,%eax,4)
@@ -520,8 +522,10 @@ ENTRY(system_call)
 	cmpl $(NR_syscalls), %eax
 	jae syscall_badsys
 syscall_call:
+	sbb %edx, %edx				/* array_index_mask_nospec() */
+	and %edx, %eax
 #ifdef CONFIG_RETPOLINE
-	movl sys_call_table(,%eax,4), %eax
+	movl sys_call_table(,%eax,4),%eax
 	call __x86_indirect_thunk_eax
 #else
 	call *sys_call_table(,%eax,4)
