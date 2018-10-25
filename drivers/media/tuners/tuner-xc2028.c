@@ -289,6 +289,14 @@ static void free_firmware(struct xc2028_data *priv)
 	int i;
 	tuner_dbg("%s called\n", __func__);
 
+	/* free allocated f/w string */
+	if (priv->fname != firmware_name)
+		kfree(priv->fname);
+	priv->fname = NULL;
+
+	priv->state = XC2028_NO_FIRMWARE;
+	memset(&priv->cur_fw, 0, sizeof(priv->cur_fw));
+
 	if (!priv->firm)
 		return;
 
@@ -299,9 +307,6 @@ static void free_firmware(struct xc2028_data *priv)
 
 	priv->firm = NULL;
 	priv->firm_size = 0;
-	priv->state = XC2028_NO_FIRMWARE;
-
-	memset(&priv->cur_fw, 0, sizeof(priv->cur_fw));
 }
 
 static int load_all_firmwares(struct dvb_frontend *fe,
@@ -718,6 +723,8 @@ static int load_scode(struct dvb_frontend *fe, unsigned int type,
 	return 0;
 }
 
+static int xc2028_sleep(struct dvb_frontend *fe);
+
 static int check_firmware(struct dvb_frontend *fe, unsigned int type,
 			  v4l2_std_id std, __u16 int_freq)
 {
@@ -890,15 +897,17 @@ read_not_reliable:
 	return 0;
 
 fail:
-	priv->state = XC2028_SLEEP;
+	free_firmware(priv);
 
-	memset(&priv->cur_fw, 0, sizeof(priv->cur_fw));
 	if (retry_count < 8) {
 		msleep(50);
 		retry_count++;
 		tuner_dbg("Retrying firmware load\n");
 		goto retry;
 	}
+
+	/* Firmware didn't load. Put the device to sleep */
+	xc2028_sleep(fe);
 
 	if (rc == -ENOENT)
 		rc = -EINVAL;
@@ -1285,6 +1294,10 @@ static int xc2028_sleep(struct dvb_frontend *fe)
 	if (no_poweroff || priv->ctrl.disable_power_mgmt)
 		return 0;
 
+	/* Device is already in sleep mode */
+	if (priv->state == XC2028_SLEEP)
+		return 0;
+
 	tuner_dbg("Putting xc2028/3028 into poweroff mode.\n");
 	if (debug > 1) {
 		tuner_dbg("Printing sleep stack trace:\n");
@@ -1298,7 +1311,8 @@ static int xc2028_sleep(struct dvb_frontend *fe)
 	else
 		rc = send_seq(priv, {0x80, XREG_POWER_DOWN, 0x00, 0x00});
 
-	priv->state = XC2028_SLEEP;
+	if (rc >= 0)
+		priv->state = XC2028_SLEEP;
 
 	mutex_unlock(&priv->lock);
 
@@ -1314,11 +1328,8 @@ static int xc2028_dvb_release(struct dvb_frontend *fe)
 	mutex_lock(&xc2028_list_mutex);
 
 	/* only perform final cleanup if this is the last instance */
-	if (hybrid_tuner_report_instance_count(priv) == 1) {
+	if (hybrid_tuner_report_instance_count(priv) == 1)
 		free_firmware(priv);
-		kfree(priv->ctrl.fname);
-		priv->ctrl.fname = NULL;
-	}
 
 	if (priv)
 		hybrid_tuner_release_state(priv);
@@ -1366,7 +1377,7 @@ static void load_firmware_cb(const struct firmware *fw,
 
 	if (rc < 0)
 		return;
-	priv->state = XC2028_SLEEP;
+	priv->state = XC2028_ACTIVE;
 }
 
 static int xc2028_set_config(struct dvb_frontend *fe, void *priv_cfg)
@@ -1381,16 +1392,8 @@ static int xc2028_set_config(struct dvb_frontend *fe, void *priv_cfg)
 
 	/*
 	 * Copy the config data.
-	 * For the firmware name, keep a local copy of the string,
-	 * in order to avoid troubles during device release.
 	 */
-	kfree(priv->ctrl.fname);
 	memcpy(&priv->ctrl, p, sizeof(priv->ctrl));
-	if (p->fname) {
-		priv->ctrl.fname = kstrdup(p->fname, GFP_KERNEL);
-		if (priv->ctrl.fname == NULL)
-			rc = -ENOMEM;
-	}
 
 	/*
 	 * If firmware name changed, frees firmware. As free_firmware will
@@ -1405,9 +1408,14 @@ static int xc2028_set_config(struct dvb_frontend *fe, void *priv_cfg)
 
 	if (priv->state == XC2028_NO_FIRMWARE) {
 		if (!firmware_name[0])
-			priv->fname = priv->ctrl.fname;
+			priv->fname = kstrdup(p->fname, GFP_KERNEL);
 		else
 			priv->fname = firmware_name;
+
+		if (!priv->fname) {
+			rc = -ENOMEM;
+			goto unlock;
+		}
 
 		rc = request_firmware_nowait(THIS_MODULE, 1,
 					     priv->fname,
@@ -1421,6 +1429,7 @@ static int xc2028_set_config(struct dvb_frontend *fe, void *priv_cfg)
 		} else
 			priv->state = XC2028_WAITING_FIRMWARE;
 	}
+unlock:
 	mutex_unlock(&priv->lock);
 
 	return rc;
