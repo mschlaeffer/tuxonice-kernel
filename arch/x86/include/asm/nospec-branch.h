@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 
-#ifndef __NOSPEC_BRANCH_H__
-#define __NOSPEC_BRANCH_H__
+#ifndef _ASM_X86_NOSPEC_BRANCH_H_
+#define _ASM_X86_NOSPEC_BRANCH_H_
 
 #include <asm/alternative.h>
 #include <asm/alternative-asm.h>
 #include <asm/cpufeature.h>
+#include <asm/msr-index.h>
 
 /*
  * Fill the CPU return stack buffer.
@@ -189,6 +190,12 @@
 # define THUNK_TARGET(addr) [thunk_target] "rm" (addr)
 #endif
 
+/* The IBPB and IBRS runtime control knobs */
+extern unsigned int ibpb_enabled;
+void ibpb_enable(void);
+extern unsigned int ibrs_enabled;
+void ibrs_enable(void);
+
 /* The Spectre V2 mitigation variants */
 enum spectre_v2_mitigation {
 	SPECTRE_V2_NONE,
@@ -221,8 +228,57 @@ void alternative_msr_write(unsigned int msr, u64 val, unsigned int feature)
 		: "memory");
 }
 
+static inline void indirect_branch_prediction_barrier(void)
+{
+	u64 val = PRED_CMD_IBPB;
+
+	if (ibpb_enabled)
+		alternative_msr_write(MSR_IA32_PRED_CMD, val,
+				      X86_FEATURE_USE_IBPB);
+}
+
 /* The Intel SPEC CTRL MSR base value cache */
 extern u64 x86_spec_ctrl_base;
 
+/*
+ * With retpoline, we must use IBRS to restrict branch prediction
+ * before calling into firmware.
+ *
+ * (Implemented as CPP macros due to header hell.)
+ */
+#define firmware_restrict_branch_speculation_start()			\
+do {									\
+	u64 val = x86_spec_ctrl_base | SPEC_CTRL_IBRS;			\
+									\
+	preempt_disable();						\
+	alternative_msr_write(MSR_IA32_SPEC_CTRL, val,			\
+			      X86_FEATURE_USE_IBRS_FW);			\
+} while (0)
+
+#define firmware_restrict_branch_speculation_end()			\
+do {									\
+	u64 val = x86_spec_ctrl_base;					\
+									\
+	alternative_msr_write(MSR_IA32_SPEC_CTRL, val,			\
+			      X86_FEATURE_USE_IBRS_FW);			\
+	preempt_enable();						\
+} while (0)
+
+#define restricted_branch_speculation_on()				\
+do {									\
+	u64 val = x86_spec_ctrl_base | SPEC_CTRL_IBRS;			\
+									\
+	if (ibrs_enabled)						\
+		native_wrmsrl(MSR_IA32_SPEC_CTRL, val);			\
+} while (0)
+
+#define restricted_branch_speculation_off()				\
+do {									\
+	u64 val = x86_spec_ctrl_base;					\
+									\
+	if (ibrs_enabled)						\
+		native_wrmsrl(MSR_IA32_SPEC_CTRL, val);			\
+} while (0)
+
 #endif /* __ASSEMBLY__ */
-#endif /* __NOSPEC_BRANCH_H__ */
+#endif /* _ASM_X86_NOSPEC_BRANCH_H_ */
